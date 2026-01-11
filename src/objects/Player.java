@@ -13,15 +13,30 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import objects.Tools.Tool;
+import systems.CollisionSystem;
+import systems.ResourceSystem;
+import systems.ToolSystem;
 
 public class Player extends GameObject {
 
-    private final double speed = 30; //player speed
+    private final double speed = 5; //player speed
     private final String name;
 
     private final int maxHealth = 100;
     private int currentHealth = 100;
+
+    private final ToolSystem toolSystem;
+
+    private boolean spaceToggle = false;    
+    private boolean isMouseHolding = false; 
+    private boolean isAnimating = false;  
+    private float swingTimer = 0f;
+    private final float swingSpeed = 0.35f;
+
 
     /**
      * Constructor for Player
@@ -31,9 +46,10 @@ public class Player extends GameObject {
      * @param y
      * @param name
      */
-    public Player(double x, double y, String name) {
+    public Player(double x, double y, String name, ToolSystem toolSystem) {
         super(x, y, 50, 50, new Color(252, 200, 117));
         this.name = name;
+        this.toolSystem = toolSystem;
     }
 
     /**
@@ -110,18 +126,30 @@ public class Player extends GameObject {
      * @param minY
      * @param maxY
      */
-    public void move(boolean up, boolean down, boolean left, boolean right, int minX, int maxX, int minY, int maxY) {
+    public void move(boolean up, boolean down, boolean left, boolean right, int minX, int maxX, int minY, int maxY, ResourceSystem resourceSystem) {
         if (up && y > minY){
-            y -= speed;
+            Rectangle nextYPos = new Rectangle((int)x, (int)(y - speed), width, height);
+            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
+                y -= speed;
+            }
         }
         if (down && y < maxY){
-            y += speed;
+            Rectangle nextYPos = new Rectangle((int)x, (int)(y + speed), width, height);
+            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
+                y += speed;
+            }
         }  
         if (left && x > minX){
-            x -= speed;
+            Rectangle nextYPos = new Rectangle((int)(x - speed), (int)y, width, height);
+            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
+                x -= speed;
+            }
         }
         if (right && x < maxX){
-            x += speed;
+            Rectangle nextYPos = new Rectangle((int)(x + speed), (int)y, width, height);
+            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
+                x += speed;
+            }
         }
     }
 
@@ -133,6 +161,40 @@ public class Player extends GameObject {
      */
     public void takeDamage(int amount) {
         currentHealth = Math.max(0, currentHealth - amount);
+    }
+
+    /**
+     * Toggles the swing action for the player
+     * Precondition: N/A
+     * Postcondition: isSwinging is toggled and swingTimer is reset if stopping
+     */
+    public void toggleSpaceSwing() { 
+        spaceToggle = !spaceToggle; 
+    }
+
+    public void setMouseHolding(boolean holding) { 
+        if (holding && spaceToggle) {
+        spaceToggle = false;
+        }
+        isMouseHolding = holding;
+    }
+
+    public void updateSwing() {
+        if (spaceToggle || isMouseHolding) {
+            isAnimating = true;
+        }
+
+        if (isAnimating) {
+            swingTimer += swingSpeed;
+
+            if (swingTimer >= Math.PI * 2) {
+                swingTimer = 0;
+                
+                if (!spaceToggle && !isMouseHolding) {
+                    isAnimating = false;
+                }
+            }
+        }
     }
 
     /**
@@ -159,11 +221,33 @@ public class Player extends GameObject {
         //************* Player Rotation *************//
         double centerX = screenX + width / 2.0;
         double centerY = screenY + height / 2.0;
-        double angle = Math.atan2(mouseY - centerY, mouseX - centerX);
 
-        java.awt.geom.AffineTransform oldTransform = g2d.getTransform(); // Save current transformation 
+        double baseAngle = Math.atan2(mouseY - centerY, mouseX - centerX);
 
-        g2d.rotate(angle - Math.PI / 2, centerX, centerY);
+        double swingOffset; 
+        if (isAnimating) {
+            swingOffset = Math.sin(swingTimer) * 0.6;
+        } else {
+            swingOffset = 0;
+        }
+
+        double totalAngle = baseAngle + swingOffset;
+
+        AffineTransform oldTransform = g2d.getTransform(); // Save current transformation 
+
+        g2d.rotate(totalAngle - Math.PI / 2, centerX, centerY);
+        
+        //************* Player Tool *************//
+        double leftHandX = screenX + 11;
+        double leftHandY = screenY + 46;
+        double rightHandX = screenX + width - 11;
+        double rightHandY = screenY + 46;
+        double angleToLeftHand = Math.atan2(leftHandY - rightHandY, leftHandX - rightHandX);
+
+        Tool activeTool = toolSystem.getActiveTool();
+        if (activeTool != null){
+            activeTool.draw(g2d, (int)rightHandX, (int)rightHandY, angleToLeftHand + Math.PI / 2, 0.8);
+        }
 
         //************* Player Arms *************//
         g2d.setColor(color);

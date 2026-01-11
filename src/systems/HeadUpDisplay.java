@@ -11,6 +11,7 @@ import game.BenumZombsGame;
 import helpers.FontManager;
 import java.awt.*;
 import objects.Player;
+import objects.Tools.Tool;
 
 public class HeadUpDisplay {
     private final Player player;
@@ -57,13 +58,14 @@ public class HeadUpDisplay {
      * @param screenW
      * @param screenH
      */
-    public void draw(Graphics2D g2d, int screenW, int screenH) {
+    public void draw(Graphics2D g2d, int screenW, int screenH, ToolSystem toolSystem) {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         drawTimeBar(g2d, screenW, screenH);
         drawMinimap(g2d, screenW, screenH);
         drawResourcePanel(g2d, screenW, screenH);
         drawHealthBar(g2d, screenW, screenH);
+        drawToolbars(g2d, screenW, screenH, toolSystem);
     }
 
     /**
@@ -220,5 +222,49 @@ public class HeadUpDisplay {
         //************* Minimap Player Dot *************//
         g2d.setColor(new Color(132, 115, 212)); 
         g2d.fillOval(dotX - 3, dotY - 3, 6, 6);
+    }
+
+    /**
+     * Draws the toolbars on the HUD
+     * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
+     * Postcondition: toolbars are drawn on the HUD
+     * @param g2d
+     * @param screenW
+     * @param screenH
+     * @param toolSystem
+     */
+    public void drawToolbars(Graphics2D g2d, int screenW, int screenH, ToolSystem toolSystem) {
+        int slotSize = 50;
+        int slotPadding = 10;
+
+        int totalWidth = (4 * slotSize) + (3 * slotPadding);
+        int toolBarX = (screenW - totalWidth) / 2;
+        int toolBarY = screenH - 140;
+
+        for (int i = 0; i < 4; i++){
+            int x = toolBarX + i * (slotSize + slotPadding);
+            g2d.setColor(new Color(247, 247, 247, 20));
+            if (toolSystem.getActiveTool() == toolSystem.getToolInSlot(i)){
+                g2d.setColor(new Color(247, 247, 247, 50));
+            }
+            g2d.fillRoundRect(x, toolBarY, slotSize, slotSize, 10, 10);
+
+            Tool tool = toolSystem.getToolInSlot(i);
+            if (tool != null && tool.getIsUnlocked()){
+                tool.draw(g2d, x + slotSize / 2 - 10, toolBarY + slotSize / 2 + 10, 0.8, 0.5);
+            }
+        }
+
+        int buildingBarW = (10 * slotSize) + (9 * slotPadding);
+        int buildingBarX = (screenW - buildingBarW) / 2;
+        int buildingBarY = screenH - 70;
+
+        for (int i = 0; i < 10; i++){
+            int x = buildingBarX + i * (slotSize + slotPadding);
+
+            g2d.setColor(new Color(0, 0, 0, 30));
+            g2d.fillRoundRect(x, buildingBarY, slotSize, slotSize, 10, 10);
+        }
+
     }
 }

@@ -7,12 +7,25 @@
 
 package game;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 import objects.Player;
 import systems.HeadUpDisplay;
 import systems.ResourceSystem;
+import systems.ToolSystem;
 
 public class BenumZombsGame extends JPanel implements ActionListener {
     //************* World Constants *************//
@@ -25,6 +38,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
     private final Player player;
     private final HeadUpDisplay headUpDisplay;
     private final ResourceSystem resourceSystem;
+    private final ToolSystem toolSystem;
     private final Timer gameTimer;
     private boolean up, down, left, right;
 
@@ -41,10 +55,11 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         setBackground(new Color(105, 141, 65));
 
         // Start Player, HUD, resources
+        toolSystem = new ToolSystem();
         Point spawn = helpers.RandomGeneration.getRandomLocation();
-        player = new Player(spawn.x, spawn.y, playerName);
+        player = new Player(spawn.x, spawn.y, playerName, toolSystem);
+        resourceSystem = new ResourceSystem();
         headUpDisplay = new HeadUpDisplay(player);
-        resourceSystem = new ResourceSystem(player);
         resourceSystem.spawnResources(25);
 
         updateCamera();
@@ -66,6 +81,27 @@ public class BenumZombsGame extends JPanel implements ActionListener {
             public void mouseMoved(MouseEvent e) {
                 repaint();
             }
+        });
+
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    player.setMouseHolding(true);
+                }
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    player.setMouseHolding(false);
+                }
+            }
+            @Override
+            public void mouseClicked(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
         });
 
         gameTimer = new Timer(16, this);
@@ -90,6 +126,10 @@ public class BenumZombsGame extends JPanel implements ActionListener {
      * @param isPressed
      */
     private void handleKeys(int keyCode, boolean isPressed) {
+        if (isPressed == true && keyCode == KeyEvent.VK_SPACE) {
+            player.toggleSpaceSwing();
+        }
+
         switch (keyCode) {
             case KeyEvent.VK_W: 
             case KeyEvent.VK_UP:
@@ -125,8 +165,9 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         int maxX = OFFSET + PLAY_AREA - BORDER_THICKNESS - player.getWidth();
         int maxY = OFFSET + PLAY_AREA - BORDER_THICKNESS - player.getHeight();
 
-        player.move(up, down, left, right, minX, maxX, minY, maxY);
+        player.move(up, down, left, right, minX, maxX, minY, maxY, resourceSystem);
         
+        player.updateSwing();
         headUpDisplay.update();
         
         updateCamera();
@@ -199,6 +240,6 @@ public class BenumZombsGame extends JPanel implements ActionListener {
 
         //************* Draw Heads Up Display and Night *************//
         drawNightOverlay(g2d);
-        headUpDisplay.draw(g2d, getWidth(), getHeight());
+        headUpDisplay.draw(g2d, getWidth(), getHeight(), toolSystem);
     }
 }

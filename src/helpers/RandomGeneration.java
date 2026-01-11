@@ -14,6 +14,12 @@ import java.util.Random;
 public class RandomGeneration {
     private static final Random random = new Random();
 
+    /**
+     * Gets a random location within the game boundaries
+     * Precondition: None
+     * Postcondition: A random Point within the game boundaries is returned
+     * @return
+     */
     public static Point getRandomLocation() {
         int minX = BenumZombsGame.OFFSET + BenumZombsGame.BORDER_THICKNESS;
         int maxX = BenumZombsGame.PLAY_AREA - BenumZombsGame.BORDER_THICKNESS - 100;

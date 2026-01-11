@@ -14,27 +14,53 @@ import java.awt.geom.Path2D;
 public class Tree {
     private final int x;
     private final int y;
-    private final int size = 140;
+    private final int size = 140; //size of tree
 
+    /**
+     * Constructor for Tree object
+     * Precondition: x and y are valid integers within the game window
+     * Postcondition: X and Y coordinates of the tree are set
+     * @param x
+     * @param y
+     */
     public Tree (int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Draws the tree object on the screen
+     * Precondition: g2d is a valid Graphics2D object
+     * Postcondition: Tree is drawn on the screen
+     * @param g2d
+     */
     public void draw(Graphics2D g2d) {
         int centerX = x + size / 2;
         int centerY = y + size / 2;
-        float roundness = 0.2f;
-
         float bigOuterRadius = size * 0.45f;
         float bigInnerRadius = size * 0.35f;
         float smallOuterRadius = size * 0.20f;
         float smallInnerRadius = size * 0.15f;
 
-        drawRoundedStar(g2d, centerX, centerY, bigOuterRadius, bigInnerRadius, new Color(78, 100, 55), roundness, true);
-        drawRoundedStar(g2d, centerX, centerY, smallOuterRadius, smallInnerRadius, new Color(88, 123, 57), roundness, false);
+        float roundness = 0.2f;
+
+        drawRoundedStar(g2d, centerX, centerY, bigOuterRadius, bigInnerRadius, new Color(78, 100, 55), roundness, true); //outer star
+        drawRoundedStar(g2d, centerX, centerY, smallOuterRadius, smallInnerRadius, new Color(88, 123, 57), roundness, false); //inner star
     }
 
+    /**
+     * Draws a rounded star shape
+     * Precondition: g2d is a valid Graphics2D object, centerX and centerY are valid integers, outerRadius and innerRadius are positive floats, color is a valid Color object, roundness is a float between 0 and 1, outline is a boolean
+     * Postcondition: Rounded star is drawn on the screen
+     * @param g2d
+     * @param centerX
+     * @param centerY
+     * @param outerRadius
+     * @param innerRadius
+     * @param color
+     * @param roundness
+     * @param outline
+     */
     public void drawRoundedStar(Graphics2D g2d, int centerX, int centerY, float outerRadius, float innerRadius, Color color, float roundness, boolean outline){
 
         Path2D star = new Path2D.Double();
@@ -42,6 +68,7 @@ public class Tree {
         int totalPoints = numPoints * 2;
         double[][] points = new double[totalPoints][2];
 
+        //************* Generate Points *************//
         for (int i = 0; i < totalPoints; i++) {
             double angle = (Math.PI * 2 / totalPoints) * i;
             float radius;
@@ -56,6 +83,7 @@ public class Tree {
             points[i][1] = centerY + Math.sin(angle) * radius;
         }
 
+        //************* Create Rounded Outline *************//
         star.moveTo(points[0][0], points[0][1]);
         for (int i = 0; i < totalPoints; i++){
             int nextPointIndex = (i + 1) % totalPoints;
@@ -73,6 +101,7 @@ public class Tree {
         g2d.setColor(color);
         g2d.fill(star);
 
+        //************* Draw Outline *************//
         if (outline){
             g2d.setColor(new Color(47, 46, 51));
             g2d.setStroke(new BasicStroke(6));
@@ -80,7 +109,14 @@ public class Tree {
         }
     } 
 
+    /**
+     * Gets the bounds of the rectangle of the tree
+     * Precondition: None
+     * Postcondition: Rectangle of the tree is returned
+     * @return
+     */
     public Rectangle getBounds() {
-        return new Rectangle(x, y, size, size);
+        int buffer = size / 7;
+        return new Rectangle(x + buffer, y + buffer, size - 2 * buffer, size - 2 * buffer);
     }
 }
