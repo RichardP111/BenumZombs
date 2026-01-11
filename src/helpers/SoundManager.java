@@ -39,9 +39,8 @@ public class SoundManager {
                 clip.open(audioIn);
                 clip.start();
             }
-        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
-            System.err.println("SoundManager.java - why does your code keep breaking, error playing " + soundFile + ":"
-                    + e.getMessage());
+        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+            System.err.println("SoundManager.java - why does your code keep breaking, error playing " + soundFile + ":" + e.getMessage());
         }
     }
 }

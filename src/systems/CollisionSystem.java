@@ -39,4 +39,32 @@ public class CollisionSystem {
 
         return false;
     }
+
+    /**
+     * Checks for hit collisions between a tool's bounding box and resources
+     * Precondition: toolBounds is a valid Rectangle, resourceSystem is a valid ResourceSystem
+     * Postcondition: returns the type of resource hit ("tree" or "stone"), or null if no collision
+     * @param toolBounds
+     * @param resourceSystem
+     * @return
+     */
+    public static String checkHitCollision(Rectangle toolBounds, ResourceSystem resourceSystem) {
+        //************* Check Collisions Against Trees *************//
+        for (int i = 0; i < resourceSystem.getTrees().size(); i++) {
+            Tree tree = resourceSystem.getTrees().get(i);
+            if (toolBounds.intersects(tree.getBounds())) {
+                return "tree";
+            }
+        } 
+
+        //************* Check Collisions Against Stones *************//
+        for (int i = 0; i < resourceSystem.getStones().size(); i++) {
+            Stone stone = resourceSystem.getStones().get(i);
+            if (toolBounds.intersects(stone.getBounds())) {
+                return "stone";
+            }
+        }
+
+        return null;
+    }
 }

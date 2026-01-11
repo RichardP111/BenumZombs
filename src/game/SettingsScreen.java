@@ -32,14 +32,30 @@ public class SettingsScreen extends JPanel {
     private final JLabel leftControlLabel;
     private final JLabel rightControlLabel;
 
+    private BenumZombsGame gameInstance;
+    private JFrame window;
+
     /**
      * Constructor for SettingsScreen
      * Precondition: window is a valid JFrame
-     * Postcondition: creates a SettingsScreen and adds it to the window
+     * Postcondition: SettingsScreen panel is created within the given window
+     * @param window
+     */
+    public SettingsScreen(JFrame window){
+        this(window, null);
+    }
+
+    /**
+     * Constructor for SettingsScreen
+     * Precondition: window is a valid JFrame, gameInstance is a valid BenumZombsGame, or null
+     * Postcondition: SettingsScreen panel is created within the given window
      * @param window
      */
     @SuppressWarnings("Convert2Lambda")
-    public SettingsScreen(JFrame window){
+    public SettingsScreen(JFrame window, BenumZombsGame gameInstance) {
+        this.window = window;
+        this.gameInstance = gameInstance;
+        
         setLayout(null);
         setBackground(new Color(42, 56, 26));  
 
@@ -131,12 +147,20 @@ public class SettingsScreen extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 window.getContentPane().removeAll();
-                StartMenu startMenu = new StartMenu(window);
-                window.add(startMenu);
+                
+                if (gameInstance != null) {
+                    window.add(gameInstance);
+                    gameInstance.requestFocusInWindow();
+                    System.out.println("SettingsScreen.java - Back to Current Game");
+                } else {
+                    StartMenu startMenu = new StartMenu(window);
+                    System.out.println("SettingsScreen.java - Back to Start Menu");
+                    window.add(startMenu);
+                }
+
                 window.revalidate();
                 window.repaint();
                 SoundManager.playSound("buttonClick.wav");
-                System.out.println("SettingsScreen.java - Back to Start Menu");
             }
         });
     }

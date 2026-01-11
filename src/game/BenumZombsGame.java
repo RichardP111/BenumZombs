@@ -20,6 +20,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import objects.Player;
@@ -39,9 +40,11 @@ public class BenumZombsGame extends JPanel implements ActionListener {
     private final HeadUpDisplay headUpDisplay;
     private final ResourceSystem resourceSystem;
     private final ToolSystem toolSystem;
-    private final Timer gameTimer;
-    private boolean up, down, left, right;
 
+    private int waveCount;
+    private final Timer gameTimer;
+    private float lastTime = 0.0f;
+    private boolean up, down, left, right;
     private double worldX, worldY;
 
     /**
@@ -60,6 +63,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         player = new Player(spawn.x, spawn.y, playerName, toolSystem);
         resourceSystem = new ResourceSystem();
         headUpDisplay = new HeadUpDisplay(player);
+        waveCount = 0;
         resourceSystem.spawnResources(25);
 
         updateCamera();
@@ -86,6 +90,25 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e) {
+                Point p = e.getPoint();
+                if (headUpDisplay.settingsButtonBounds != null && headUpDisplay.settingsButtonBounds.contains(p)) {
+                    JFrame frame = (JFrame) javax.swing.SwingUtilities.getWindowAncestor(BenumZombsGame.this);
+                    frame.getContentPane().removeAll();
+                    frame.add(new SettingsScreen(frame, BenumZombsGame.this));
+                    frame.revalidate();
+                    frame.repaint();
+                    return;
+                }
+
+                // if (headUpDisplay.shopButtonBounds != null && headUpDisplay.shopButtonBounds.contains(p)) {
+                //     JFrame frame = (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+                //     frame.getContentPane().removeAll();
+                //     frame.add(new ShopScreen(frame, this, toolSystem));
+                //     frame.revalidate();
+                //     frame.repaint();
+                //     return;
+                // }   
+
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     player.setMouseHolding(true);
                 }
@@ -167,8 +190,14 @@ public class BenumZombsGame extends JPanel implements ActionListener {
 
         player.move(up, down, left, right, minX, maxX, minY, maxY, resourceSystem);
         
-        player.updateSwing();
+        player.updateSwing(resourceSystem);
         headUpDisplay.update();
+
+        float currentTime = headUpDisplay.getTime();    
+        if (currentTime < lastTime) {
+            waveCount++;
+        }
+        lastTime = currentTime;
         
         updateCamera();
         repaint();
@@ -186,6 +215,16 @@ public class BenumZombsGame extends JPanel implements ActionListener {
 
         g2d.setColor(new Color(0, 0, 20, alpha));
         g2d.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    /**
+     * Returns the current wave count
+     * Precondition: N/A
+     * Postcondition: returns the wave count
+     * @return
+     */
+    public int getWaveCount() {
+        return waveCount;
     }
 
     /**
@@ -240,6 +279,6 @@ public class BenumZombsGame extends JPanel implements ActionListener {
 
         //************* Draw Heads Up Display and Night *************//
         drawNightOverlay(g2d);
-        headUpDisplay.draw(g2d, getWidth(), getHeight(), toolSystem);
+        headUpDisplay.draw(g2d, getWidth(), getHeight(), toolSystem, resourceSystem, waveCount);
     }
 }

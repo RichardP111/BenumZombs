@@ -3,120 +3,60 @@
  * @version 1.0
  * 2026-01-19
  * BenumZombs - Tree Class which defines tree objects
- * Based on Rounded Shapes by frankie zafe (https://openprocessing.org/sketch/17050#)
  */
 
 package objects;
 
 import java.awt.*;
-import java.awt.geom.Path2D;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class Tree {
     private final int x;
     private final int y;
-    private final int size = 140; //size of tree
+    private final int size = 120;
+    private static Image treeImage;
 
     /**
      * Constructor for Tree object
-     * Precondition: x and y are valid integers within the game window
-     * Postcondition: X and Y coordinates of the tree are set
+     * Precondition: x and y are valid coordinates within the game window
+     * Postcondition: A Tree object is created at the specified coordinates
      * @param x
      * @param y
      */
-    public Tree (int x, int y) {
+    public Tree(int x, int y) {
         this.x = x;
         this.y = y;
+        
+        if (treeImage == null) {
+            try {
+                treeImage = ImageIO.read(getClass().getResource("/assets/images/resources/tree.png"));
+            } catch (IOException | IllegalArgumentException | NullPointerException e) {
+                System.out.println("Could not find tree image, enjoy a game without trees: " + e.getMessage());
+            }
+        }
     }
 
     /**
-     * Draws the tree object on the screen
+     * Draws the tree on the provided Graphics2D context
      * Precondition: g2d is a valid Graphics2D object
-     * Postcondition: Tree is drawn on the screen
+     * Postcondition: The tree image is drawn at its coordinates
      * @param g2d
      */
     public void draw(Graphics2D g2d) {
-        int centerX = x + size / 2;
-        int centerY = y + size / 2;
-        float bigOuterRadius = size * 0.45f;
-        float bigInnerRadius = size * 0.35f;
-        float smallOuterRadius = size * 0.20f;
-        float smallInnerRadius = size * 0.15f;
-
-        float roundness = 0.2f;
-
-        drawRoundedStar(g2d, centerX, centerY, bigOuterRadius, bigInnerRadius, new Color(78, 100, 55), roundness, true); //outer star
-        drawRoundedStar(g2d, centerX, centerY, smallOuterRadius, smallInnerRadius, new Color(88, 123, 57), roundness, false); //inner star
+        if (treeImage != null) {
+            g2d.drawImage(treeImage, x, y, size, size, null);
+        }
     }
 
     /**
-     * Draws a rounded star shape
-     * Precondition: g2d is a valid Graphics2D object, centerX and centerY are valid integers, outerRadius and innerRadius are positive floats, color is a valid Color object, roundness is a float between 0 and 1, outline is a boolean
-     * Postcondition: Rounded star is drawn on the screen
-     * @param g2d
-     * @param centerX
-     * @param centerY
-     * @param outerRadius
-     * @param innerRadius
-     * @param color
-     * @param roundness
-     * @param outline
-     */
-    public void drawRoundedStar(Graphics2D g2d, int centerX, int centerY, float outerRadius, float innerRadius, Color color, float roundness, boolean outline){
-
-        Path2D star = new Path2D.Double();
-        int numPoints = 7;
-        int totalPoints = numPoints * 2;
-        double[][] points = new double[totalPoints][2];
-
-        //************* Generate Points *************//
-        for (int i = 0; i < totalPoints; i++) {
-            double angle = (Math.PI * 2 / totalPoints) * i;
-            float radius;
-
-            if (i % 2 == 0){
-                radius = outerRadius;
-            } else {
-                radius = innerRadius;
-            }
-
-            points[i][0] = centerX + Math.cos(angle) * radius;
-            points[i][1] = centerY + Math.sin(angle) * radius;
-        }
-
-        //************* Create Rounded Outline *************//
-        star.moveTo(points[0][0], points[0][1]);
-        for (int i = 0; i < totalPoints; i++){
-            int nextPointIndex = (i + 1) % totalPoints;
-            int prevPointIndex = (i - 1 + totalPoints) % totalPoints;
-
-            double point1X = points[i][0] + (points[i][0] - points[prevPointIndex][0]) * roundness;
-            double point1Y = points[i][1] + (points[i][1] - points[prevPointIndex][1]) * roundness;
-            double point2X = points[nextPointIndex][0] - (points[nextPointIndex][0] - points[i][0]) * roundness;
-            double point2Y = points[nextPointIndex][1] - (points[nextPointIndex][1] - points[i][1]) * roundness;
-
-            star.curveTo(point1X, point1Y, point2X, point2Y, points[nextPointIndex][0], points[nextPointIndex][1]);
-        }
-        star.closePath();
-
-        g2d.setColor(color);
-        g2d.fill(star);
-
-        //************* Draw Outline *************//
-        if (outline){
-            g2d.setColor(new Color(47, 46, 51));
-            g2d.setStroke(new BasicStroke(6));
-            g2d.draw(star);
-        }
-    } 
-
-    /**
-     * Gets the bounds of the rectangle of the tree
+     * Gets the bounding rectangle of the tree for collision detection
      * Precondition: None
-     * Postcondition: Rectangle of the tree is returned
+     * Postcondition: A Rectangle object representing the tree's bounds is returned
      * @return
      */
     public Rectangle getBounds() {
-        int buffer = size / 7;
+        int buffer = size / 4; 
         return new Rectangle(x + buffer, y + buffer, size - 2 * buffer, size - 2 * buffer);
     }
 }

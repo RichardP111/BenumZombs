@@ -30,12 +30,14 @@ public class Player extends GameObject {
     private int currentHealth = 100;
 
     private final ToolSystem toolSystem;
+    private boolean hitProcessed = false; 
 
     private boolean spaceToggle = false;    
     private boolean isMouseHolding = false; 
     private boolean isAnimating = false;  
+    private double baseAngle = 0;
     private float swingTimer = 0f;
-    private final float swingSpeed = 0.35f;
+    private final float swingSpeed = 0.20f;
 
 
     /**
@@ -112,7 +114,6 @@ public class Player extends GameObject {
         return currentHealth;
     }
 
-
     /**
      * Moves the player based on input directions and world bounds
      * Precondition: minX, maxX, minY, maxY define valid movement bounds
@@ -172,6 +173,12 @@ public class Player extends GameObject {
         spaceToggle = !spaceToggle; 
     }
 
+    /**
+     * Sets whether the mouse button is being held down for swinging
+     * Precondition: N/A
+     * Postcondition: isMouseHolding is set to holding, spaceToggle is disabled if holding
+     * @param holding
+     */
     public void setMouseHolding(boolean holding) { 
         if (holding && spaceToggle) {
         spaceToggle = false;
@@ -179,7 +186,12 @@ public class Player extends GameObject {
         isMouseHolding = holding;
     }
 
-    public void updateSwing() {
+    /**
+     * Updates the swing animation state
+     * Precondition: N/A
+     * Postcondition: swingTimer is updated if swinging, isAnimating is set accordingly
+     */
+    public void updateSwing(ResourceSystem resourceSystem) {
         if (spaceToggle || isMouseHolding) {
             isAnimating = true;
         }
@@ -187,14 +199,43 @@ public class Player extends GameObject {
         if (isAnimating) {
             swingTimer += swingSpeed;
 
+            if (swingTimer >= Math.PI / 2 && !hitProcessed) {
+                checkHit(resourceSystem, baseAngle);
+                hitProcessed = true;
+            } 
+
             if (swingTimer >= Math.PI * 2) {
                 swingTimer = 0;
-                
+                hitProcessed = false;
                 if (!spaceToggle && !isMouseHolding) {
                     isAnimating = false;
                 }
             }
         }
+        
+    }
+
+    /**
+     * Checks for hit collisions with resources based on current angle
+     * Precondition: resourceSystem is a valid ResourceSystem, currentAngle is the angle of the player's tool swing
+     * Postcondition: if a resource is hit, appropriate action is taken
+     * @param resourceSystem
+     * @param currentAngle
+     */
+    public void checkHit(ResourceSystem resourceSystem, double currentAngle){
+        double hitX = x + width / 2.0 + Math.cos(currentAngle) * 65;
+        double hitY = y + height / 2.0 + Math.sin(currentAngle) * 65;
+
+        Rectangle hitBox = new Rectangle((int)(hitX - 15), (int)(hitY - 15), 30, 30);
+        String hitObject = CollisionSystem.checkHitCollision(hitBox, resourceSystem);
+        if (hitObject != null){
+            if (hitObject.equals("tree")){
+                resourceSystem.addWood(2);
+            } else if (hitObject.equals("stone")){
+                resourceSystem.addStone(2);
+            }
+        }
+
     }
 
     /**
@@ -222,7 +263,7 @@ public class Player extends GameObject {
         double centerX = screenX + width / 2.0;
         double centerY = screenY + height / 2.0;
 
-        double baseAngle = Math.atan2(mouseY - centerY, mouseX - centerX);
+        baseAngle = Math.atan2(mouseY - centerY, mouseX - centerX);
 
         double swingOffset; 
         if (isAnimating) {

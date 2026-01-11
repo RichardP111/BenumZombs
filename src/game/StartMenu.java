@@ -192,7 +192,7 @@ public class StartMenu extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Desktop.getDesktop().browse(new java.net.URI("https://docs.google.com/document/d/1JccsGbz9-viOxhGuASJULYrJF2vKoy3G_eF5oNd1vVI/edit?usp=sharing"));
-                } catch (IOException | URISyntaxException ex) {
+                } catch (Exception ex) {
                     System.out.println("StartMenu.java - ur credit link is super borken rn and you better fix it" + ex.getMessage());
                 }
                 SoundManager.playSound("buttonClick.wav");

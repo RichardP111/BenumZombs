@@ -10,6 +10,9 @@ package systems;
 import game.BenumZombsGame;
 import helpers.FontManager;
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import objects.Player;
 import objects.Tools.Tool;
 
@@ -17,6 +20,12 @@ public class HeadUpDisplay {
     private final Player player;
     private float time = 0.0f;
     private final float dayLength = 0.00005f; // Speed of day-night cycle
+
+    public Rectangle settingsButtonBounds;
+    public Rectangle shopButtonBounds;
+
+    private Image settingsIcon;
+    private Image shopIcon;
 
     /**
      * Constructor for HeadUpDisplay
@@ -26,6 +35,21 @@ public class HeadUpDisplay {
      */
     public HeadUpDisplay(Player player) {
         this.player = player;
+        loadIcons();
+    }
+
+    /**
+     * Loads icons for the HUD
+     * Precondition: N/A
+     * Postcondition: icons are loaded for settings and shop buttons
+     */
+    private void loadIcons() {
+        try {
+            settingsIcon = ImageIO.read(getClass().getResource("/assets/images/settingIcon.png"));
+            shopIcon = ImageIO.read(getClass().getResource("/assets/images/shopIcon.png"));
+        } catch (IOException | IllegalArgumentException | NullPointerException e) {
+            System.out.println("Your icons are very broken. Good luck!!!! :)))): " + e.getMessage());
+        }
     }
 
     /**
@@ -58,14 +82,15 @@ public class HeadUpDisplay {
      * @param screenW
      * @param screenH
      */
-    public void draw(Graphics2D g2d, int screenW, int screenH, ToolSystem toolSystem) {
+    public void draw(Graphics2D g2d, int screenW, int screenH, ToolSystem toolSystem, ResourceSystem resourceSystem, int waveCount) {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        drawTimeBar(g2d, screenW, screenH);
-        drawMinimap(g2d, screenW, screenH);
-        drawResourcePanel(g2d, screenW, screenH);
+        drawTimeBar(g2d, screenH);
+        drawMinimap(g2d, screenH);
+        drawResourcePanel(g2d, screenW, screenH, resourceSystem, waveCount);
         drawHealthBar(g2d, screenW, screenH);
         drawToolbars(g2d, screenW, screenH, toolSystem);
+        drawActionButtons(g2d, screenW, screenH);
     }
 
     /**
@@ -76,7 +101,7 @@ public class HeadUpDisplay {
      * @param screenW
      * @param screenH
      */
-    public void drawResourcePanel(Graphics2D g2d, int screenW, int screenH) {
+    private void drawResourcePanel(Graphics2D g2d, int screenW, int screenH, ResourceSystem resourceSystem, int waveCount) {
         //************* Resource Panel Size *************//
         int resourcePanelW = 240, resourcePanelH = 130;
         int resourcePanelX = screenW - resourcePanelW - 20;
@@ -96,13 +121,13 @@ public class HeadUpDisplay {
         g2d.drawString("WAVE: ", resourcePanelX + 15, resourcePanelY + 110);
 
         //************* Resource Panel Values *************//
-        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 16f));
+        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 14f));
         g2d.setColor(Color.WHITE);
-        g2d.drawString("0", resourcePanelX + (resourcePanelW / 2) - 20, resourcePanelY + 30); 
-        g2d.drawString("1", resourcePanelX + (resourcePanelW - 20), resourcePanelY + 30);
-        g2d.drawString("2", resourcePanelX + (resourcePanelW / 2) - 20, resourcePanelY + 70);
-        g2d.drawString("3", resourcePanelX + (resourcePanelW - 20), resourcePanelY + 70);
-        g2d.drawString("--", resourcePanelX + (resourcePanelW - 20), resourcePanelY + 110);
+        g2d.drawString(String.valueOf(resourceSystem.getWoodCount()), resourcePanelX + (resourcePanelW / 2) - 40, resourcePanelY + 30); 
+        g2d.drawString(String.valueOf(resourceSystem.getStoneCount()), resourcePanelX + (resourcePanelW - 35), resourcePanelY + 30);
+        g2d.drawString(String.valueOf(resourceSystem.getGoldCount()), resourcePanelX + (resourcePanelW / 2) - 45, resourcePanelY + 70);
+        g2d.drawString(String.valueOf(resourceSystem.getTokenCount()), resourcePanelX + (resourcePanelW - 25), resourcePanelY + 70);
+        g2d.drawString(String.valueOf(waveCount), resourcePanelX + (resourcePanelW - 20) - 10, resourcePanelY + 110);
 
         //************* Resource Panel Dividers *************//
         g2d.setColor(new Color(105, 140, 65, 100));
@@ -121,7 +146,7 @@ public class HeadUpDisplay {
      * @param screenW
      * @param screenH
      */
-    public void drawHealthBar(Graphics2D g2d, int screenW, int screenH) {
+    private void drawHealthBar(Graphics2D g2d, int screenW, int screenH) {
         //************* Health Bar Size and Position *************//
         int healthBarW = 240, healthBarH = 40;
         int healthBarX = screenW - healthBarW - 20;
@@ -156,7 +181,7 @@ public class HeadUpDisplay {
      * @param screenW
      * @param screenH
      */
-    public void drawTimeBar(Graphics2D g2d, int screenW, int screenH) {
+    private void drawTimeBar(Graphics2D g2d, int screenH) {
         //************* Time Bar Size and Position *************//
         int barW = 150, barH = 20;
         int barX = 20, barY = screenH - 200;
@@ -165,19 +190,19 @@ public class HeadUpDisplay {
 
         Shape oldClip = g2d.getClip(); // Save current clip
 
-        g2d.setClip(new java.awt.geom.RoundRectangle2D.Float(barX, barY, barW, barH, 15, 15));
+        g2d.setClip(new RoundRectangle2D.Float(barX, barY, barW, barH, 15, 15));
 
         //************* Time Bar Fill *************//
-        g2d.setColor(new Color(132, 115, 212, 180)); // Purple
+        g2d.setColor(new Color(214, 171, 53, 180)); // Yellow
         g2d.fillRect(barX - offset, barY, barW / 2, barH);
         
-        g2d.setColor(new Color(214, 171, 53, 180)); // Yellow
+        g2d.setColor(new Color(132, 115, 212, 180)); // Purple
         g2d.fillRect(barX + (barW / 2) - offset, barY, barW / 2, barH);
         
-        g2d.setColor(new Color(132, 115, 212, 180)); // Purple
+        g2d.setColor(new Color(214, 171, 53, 180)); // Yellow
         g2d.fillRect(barX + barW - offset, barY, barW / 2, barH);
         
-        g2d.setColor(new Color(214, 171, 53, 180));  // Yellow
+        g2d.setColor(new Color(132, 115, 212, 180));  // Purple
         g2d.fillRect(barX + (int)(barW * 1.5) - offset, barY, barW / 2, barH);
 
         g2d.setClip(oldClip);
@@ -201,7 +226,7 @@ public class HeadUpDisplay {
      * @param screenW
      * @param screenH
      */
-    public void drawMinimap(Graphics2D g2d, int screenW, int screenH) {
+    private void drawMinimap(Graphics2D g2d, int screenH) {
         //************* Minimap Size and Position *************//
         int miniSize = 150;
         int miniX = 20, miniY = screenH - miniSize - 15;
@@ -233,7 +258,8 @@ public class HeadUpDisplay {
      * @param screenH
      * @param toolSystem
      */
-    public void drawToolbars(Graphics2D g2d, int screenW, int screenH, ToolSystem toolSystem) {
+    private void drawToolbars(Graphics2D g2d, int screenW, int screenH, ToolSystem toolSystem) {
+        //************* Toolbar Size and Position *************//
         int slotSize = 50;
         int slotPadding = 10;
 
@@ -241,6 +267,7 @@ public class HeadUpDisplay {
         int toolBarX = (screenW - totalWidth) / 2;
         int toolBarY = screenH - 140;
 
+        //************* Tool Bar Slots and Tools *************//
         for (int i = 0; i < 4; i++){
             int x = toolBarX + i * (slotSize + slotPadding);
             g2d.setColor(new Color(247, 247, 247, 20));
@@ -255,16 +282,55 @@ public class HeadUpDisplay {
             }
         }
 
+        //************* Building Bar Size and Position *************//
         int buildingBarW = (10 * slotSize) + (9 * slotPadding);
         int buildingBarX = (screenW - buildingBarW) / 2;
         int buildingBarY = screenH - 70;
 
+        //************* Building Bar Slots *************//
         for (int i = 0; i < 10; i++){
             int x = buildingBarX + i * (slotSize + slotPadding);
 
             g2d.setColor(new Color(0, 0, 0, 30));
             g2d.fillRoundRect(x, buildingBarY, slotSize, slotSize, 10, 10);
         }
+    }
 
+    /**
+     * Draws the action buttons on the HUD
+     * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
+     * Postcondition: action buttons are drawn on the HUD
+     * @param g2d
+     * @param screenW
+     * @param screenH
+     */
+    private void drawActionButtons(Graphics2D g2d, int screenW, int screenH) {
+        //************* Action Buttons Size and Position *************//
+        int buttonSize = 60;
+
+        int settingButtonX = screenW - buttonSize;
+        int settingButtonY = screenH / 2 + buttonSize/2;
+        int shopButtonX = screenW - buttonSize;
+        int shopButtonY = screenH / 2 - buttonSize/2;
+
+        //************* Action Buttons Backgrounds and Bounds *************//
+        g2d.setColor(new Color(0, 0, 0, 100));
+        g2d.fillRoundRect(settingButtonX, settingButtonY, buttonSize, buttonSize, 15, 15);
+        settingsButtonBounds = new Rectangle(settingButtonX, settingButtonY, buttonSize, buttonSize);
+
+        g2d.fillRoundRect(shopButtonX, shopButtonY, buttonSize, buttonSize, 15, 15);
+        shopButtonBounds = new Rectangle(shopButtonX, shopButtonY, buttonSize, buttonSize);
+
+        //************* Action Buttons Icons *************//
+        int iconSize = 30;
+        int offset = (buttonSize / 2) - (iconSize / 2);
+
+        if (settingsIcon != null) {
+            g2d.drawImage(settingsIcon, settingsButtonBounds.x + offset, settingsButtonBounds.y + offset, iconSize, iconSize, null);
+        }
+
+        if (shopIcon != null) {
+            g2d.drawImage(shopIcon, shopButtonBounds.x + offset, shopButtonBounds.y + offset, iconSize, iconSize, null);
+        }
     }
 }

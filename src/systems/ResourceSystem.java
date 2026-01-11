@@ -14,8 +14,13 @@ import objects.Stone;
 import objects.Tree;
 
 public class ResourceSystem {
-    private final ArrayList<Tree> trees = new ArrayList<>();
-    private final ArrayList<Stone> stones = new ArrayList<>();
+    private final ArrayList<Tree> trees;
+    private final ArrayList<Stone> stones;
+
+    private int woodCount;
+    private int stoneCount;
+    private int goldCount;
+    private int tokenCount;
 
     /**
      * Constructor for Resource System
@@ -24,6 +29,13 @@ public class ResourceSystem {
      * @param player
      */
     public ResourceSystem(){
+        trees = new ArrayList<>();
+        stones = new ArrayList<>();
+
+        woodCount = 0;
+        stoneCount = 0;
+        goldCount = 0;
+        tokenCount = 0;
     }
 
     /**
@@ -82,5 +94,37 @@ public class ResourceSystem {
      */
     public ArrayList<Stone> getStones() {
         return stones;
+    }
+
+    public void addWood(int amount) {
+        woodCount += amount;      
+    }
+
+    public void addStone(int amount) {
+        stoneCount += amount;      
+    }
+
+    public void addGold(int amount) {
+        goldCount += amount;      
+    }
+
+    public void addTokens(int amount) {
+        tokenCount += amount;      
+    }
+
+    public int getWoodCount() {
+        return woodCount;
+    }
+
+    public int getStoneCount() {
+        return stoneCount;
+    }
+
+    public int getGoldCount() {
+        return goldCount;
+    }
+
+    public int getTokenCount() {
+        return tokenCount;
     }
 }
