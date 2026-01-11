@@ -1,0 +1,42 @@
+/**
+ * @author Richard Pu
+ * @version 1.0
+ * 2026-01-19
+ * BenumZombs - Helper Class for Rounded JButtons
+ */
+
+package helpers;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class RoundedJButton extends JButton{
+    /**
+     * Constructor for RoundedJButton
+     * Precondition: label is a valid String
+     * Postcondition: creates a RoundedJButton with the specified label
+     * @param label
+     */
+    public RoundedJButton(String label) {
+        super(label);
+        setContentAreaFilled(false);
+        setBorderPainted(false);
+        setFocusPainted(false);
+    }
+
+    /**
+     * Paints the RoundedJButton
+     * Precondition: g is a valid Graphics object
+     * Postcondition: paints the RoundedJButton with rounded corners
+     */
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if (getModel().isArmed()) g2.setColor(getBackground().darker());
+        else g2.setColor(getBackground());
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+        super.paintComponent(g2);
+        g2.dispose();
+    }
+}
