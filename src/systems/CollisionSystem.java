@@ -1,8 +1,9 @@
 /**
+ * CollisionSystem.java
+ * The CollisionSystem class for BenumZombs, managing collision detection between game objects
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Collision System for managing collisions
+ * @since 2026-01-10
  */
 
 package systems;
@@ -36,6 +37,8 @@ public class CollisionSystem {
                 return true;
             }
         }
+        
+        //other stuff later if im still alive
 
         return false;
     }
@@ -53,6 +56,7 @@ public class CollisionSystem {
         for (int i = 0; i < resourceSystem.getTrees().size(); i++) {
             Tree tree = resourceSystem.getTrees().get(i);
             if (toolBounds.intersects(tree.getBounds())) {
+                tree.playAnimation();
                 return "tree";
             }
         } 
@@ -61,6 +65,7 @@ public class CollisionSystem {
         for (int i = 0; i < resourceSystem.getStones().size(); i++) {
             Stone stone = resourceSystem.getStones().get(i);
             if (toolBounds.intersects(stone.getBounds())) {
+                stone.playAnimation();
                 return "stone";
             }
         }

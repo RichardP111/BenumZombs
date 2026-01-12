@@ -1,8 +1,9 @@
 /**
+ * HealthManager.java
+ * Helper class for managing health bars in BenumZombs
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Helper Class for Health Management which provides health bar below objects
+ * @since 2026-01-08
  */
 
 package helpers;

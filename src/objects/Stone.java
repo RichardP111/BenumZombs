@@ -1,8 +1,9 @@
 /**
+ * Stone.java
+ * The Stone class for BenumZombs, defining stone properties and behaviors
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Stone Class which defines stone objects
+ * @since 2026-01-10
  */
 
 package objects;
@@ -12,9 +13,10 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Stone {
-    private final int x;
-    private final int y;
-    private final int size = 120;
+    private final int x, y;
+    private static final int SIZE = 120; //size of rock
+    private double shakeOffset = 0;
+    private static final double RECOVERY_RATE = 0.9;
     private static Image stoneImage;
 
     /**
@@ -38,6 +40,28 @@ public class Stone {
     }
 
     /**
+     * Plays the stone's shake animation
+     * Precondition: None
+     * Postcondition: The stone's shake offset is set to initiate the animation
+     */
+    public void playAnimation(){
+        this.shakeOffset = 15;
+    }
+
+    /**
+     * Updates the stone's animation state
+     * Precondition: None
+     * Postcondition: The stone's shake offset is updated
+     */
+    public void update(){
+        if (Math.abs(shakeOffset) > 0.5) {
+            shakeOffset *= RECOVERY_RATE;
+        } else {
+            shakeOffset = 0;
+        }
+    }
+
+    /**
      * Draws the stone on the provided Graphics2D context
      * Precondition: g2d is a valid Graphics2D object
      * Postcondition: The stone image is drawn at its coordinates
@@ -45,7 +69,7 @@ public class Stone {
      */
     public void draw(Graphics2D g2d) {
         if (stoneImage != null) {
-            g2d.drawImage(stoneImage, x, y, size, size, null);
+            g2d.drawImage(stoneImage, x + (int)shakeOffset, y, SIZE, SIZE, null);
         }
     }
 
@@ -56,8 +80,8 @@ public class Stone {
      * @return
      */
     public Rectangle getBounds() {
-        int buffer = size / 4; 
-        return new Rectangle(x + buffer, y + buffer, size - 2 * buffer, size - 2 * buffer);
+        int buffer = SIZE / 4; 
+        return new Rectangle(x + buffer, y + buffer, SIZE - 2 * buffer, SIZE - 2 * buffer);
     }
 }
 

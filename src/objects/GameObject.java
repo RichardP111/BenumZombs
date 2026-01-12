@@ -1,8 +1,9 @@
 /**
+ * GameObject.java
+ * The GameObject base class for BenumZombs, defining general game object properties and behaviors
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Game Object Base Class
+ * @since 2026-01-07
  */
 
 package objects;
@@ -34,14 +35,4 @@ public abstract class GameObject {
 
     public abstract void update();
     public abstract void draw(Graphics2D g2d);
-
-    /**
-     * Get the bounding rectangle of the GameObject
-     * Precondition: none
-     * Postcondition: Rectangle is returned
-     * @return
-     */
-    public Rectangle getBounds() {
-        return new Rectangle((int)x, (int)y, width, height);
-    }
 }

@@ -1,10 +1,10 @@
 /**
+ * RoundedJButton.java
+ * Helper class for creating rounded JButton components in BenumZombs
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Helper Class for Rounded JButtons
+ * @since 2026-01-06
  */
-
 package helpers;
 
 import java.awt.*;
@@ -33,8 +33,13 @@ public class RoundedJButton extends JButton{
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        if (getModel().isArmed()) g2.setColor(getBackground().darker());
-        else g2.setColor(getBackground());
+
+        if (getModel().isArmed()){ //if clicked
+            g2.setColor(getBackground().darker());
+        } else {
+            g2.setColor(getBackground());
+        }
+
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
         super.paintComponent(g2);
         g2.dispose();

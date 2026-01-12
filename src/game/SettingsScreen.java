@@ -1,8 +1,9 @@
 /**
+ * SettingsScreen.java
+ * The settings screen panel for BenumZombs, allowing players to adjust game settings
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Settings Screen class
+ * @since 2026-01-06
  */
 
 package game;
@@ -17,33 +18,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
 public class SettingsScreen extends JPanel {
 
-    private final RoundedJButton backButton;
-    private final RoundedJButton soundToggleButton;
-
-    private final JLabel settingsLabel;
-    private final JLabel controlTitleLabel;
-    private final JLabel leftControlLabel;
-    private final JLabel rightControlLabel;
+    private final RoundedJButton backButton, soundToggleButton;
+    private final JLabel settingsLabel, controlTitleLabel, leftControlLabel, rightControlLabel;
 
     private BenumZombsGame gameInstance;
-    private JFrame window;
-
-    /**
-     * Constructor for SettingsScreen
-     * Precondition: window is a valid JFrame
-     * Postcondition: SettingsScreen panel is created within the given window
-     * @param window
-     */
-    public SettingsScreen(JFrame window){
-        this(window, null);
-    }
 
     /**
      * Constructor for SettingsScreen
@@ -52,10 +35,7 @@ public class SettingsScreen extends JPanel {
      * @param window
      */
     @SuppressWarnings("Convert2Lambda")
-    public SettingsScreen(JFrame window, BenumZombsGame gameInstance) {
-        this.window = window;
-        this.gameInstance = gameInstance;
-        
+    public SettingsScreen() {
         setLayout(null);
         setBackground(new Color(42, 56, 26));  
 
@@ -146,23 +126,25 @@ public class SettingsScreen extends JPanel {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                window.getContentPane().removeAll();
-                
                 if (gameInstance != null) {
-                    window.add(gameInstance);
+                    Main.showScreen("GAME");
                     gameInstance.requestFocusInWindow();
-                    System.out.println("SettingsScreen.java - Back to Current Game");
                 } else {
-                    StartMenu startMenu = new StartMenu(window);
-                    System.out.println("SettingsScreen.java - Back to Start Menu");
-                    window.add(startMenu);
+                    Main.showScreen("MENU");
                 }
-
-                window.revalidate();
-                window.repaint();
                 SoundManager.playSound("buttonClick.wav");
             }
         });
+    }
+
+    /**
+     * Sets the game instance associated with this settings screen
+     * Precondition: game is a valid BenumZombsGame object or null
+     * Postcondition: gameInstance is set to the provided game
+     * @param game
+     */
+    public void setGameInstance(BenumZombsGame game) {
+        this.gameInstance = game;
     }
 
     /**
@@ -174,7 +156,7 @@ public class SettingsScreen extends JPanel {
         int width = getWidth();
         int height = getHeight();
 
-        //size and position of large and small graphical boxes
+        //************* Size and Position of Large and Small Graphical Boxes *************//
         int largeBoxW = width - 200;
         int largeBoxH = height - 200;
         int largeBoxX = (width - largeBoxW) / 2;
@@ -185,7 +167,7 @@ public class SettingsScreen extends JPanel {
         int smallBoxX = largeBoxX + 30;
         int smallBoxY = largeBoxY + 80;
 
-        //set bounds of main labels and buttons
+        //************* Set Bounds of Main Labels and Buttons *************//
         settingsLabel.setBounds(largeBoxX + 30, largeBoxY + 20, 300, 40);
         controlTitleLabel.setBounds(smallBoxX + 20, smallBoxY + 15, 200, 30);
 
@@ -210,7 +192,7 @@ public class SettingsScreen extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        //large box
+        //************* Large Box *************//
         int largeBoxW = getWidth() - 200;
         int largeBoxH = getHeight() - 200;
         int largeBoxX = (getWidth() - largeBoxW) / 2;
@@ -219,7 +201,7 @@ public class SettingsScreen extends JPanel {
         g2d.setColor(new Color(25, 34, 16));
         g2d.fillRoundRect(largeBoxX, largeBoxY, largeBoxW, largeBoxH, 30, 30);
     
-        //small box
+        //************* Small Box *************//
         int smallBoxW = largeBoxW - 60;
         int smallBoxH = largeBoxH - 100;
         int smallBoxX = largeBoxX + 30;

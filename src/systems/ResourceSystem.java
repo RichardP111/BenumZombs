@@ -1,12 +1,14 @@
 /**
+ * ResourceSystem.java
+ * The ResourceSystem class for BenumZombs, managing resources and their spawning
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Resource System for managing resources and spawning
+ * @since 2026-01-08
  */
 
 package systems;
 
+import helpers.RandomGeneration;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -48,9 +50,9 @@ public class ResourceSystem {
         Random random = new Random();
 
         for (int i = 0; i < count; i++){
-            java.awt.Point point = helpers.RandomGeneration.getRandomLocation();
+            Point point = RandomGeneration.getRandomLocation();
 
-            if (random.nextFloat() < 0.5){
+            if (random.nextFloat() < 0.5){ //50% chance for tree or stone
                 trees.add(new Tree(point.x, point.y));
             } else {
                 stones.add(new Stone(point.x, point.y));
@@ -58,7 +60,21 @@ public class ResourceSystem {
         }
     }
 
+    /**
+     * Updates the resources' animation states
+     * Precondition: None
+     * Postcondition: Resources are updated
+     */
     public void update() {
+        for (int j = 0; j < trees.size(); j++) {
+            Tree tree = trees.get(j);
+            tree.update();
+        }
+
+        for (int i = 0; i < stones.size(); i++) {
+            Stone stone = stones.get(i);
+            stone.update();
+        }
     }
 
     /**
@@ -96,34 +112,82 @@ public class ResourceSystem {
         return stones;
     }
 
+    /**
+     * Adds wood to the resource count
+     * Precondition: amount is a positive integer
+     * Postcondition: Wood count is increased by amount
+     * @param amount
+     */
     public void addWood(int amount) {
         woodCount += amount;      
     }
 
+    /**
+     * Adds stone to the resource count
+     * Precondition: amount is a positive integer
+     * Postcondition: Stone count is increased by amount
+     * @param amount
+     */
     public void addStone(int amount) {
         stoneCount += amount;      
     }
 
+    /**
+     * Adds gold to the resource count
+     * Precondition: amount is a positive integer
+     * Postcondition: Gold count is increased by amount
+     * @param amount
+     */
     public void addGold(int amount) {
         goldCount += amount;      
     }
 
+    /**
+     * Adds tokens to the resource count
+     * Precondition: amount is a positive integer
+     * Postcondition: Token count is increased by amount
+     * @param amount
+     */
     public void addTokens(int amount) {
         tokenCount += amount;      
     }
 
+    /**
+     * Gets the current wood count
+     * Precondition: None
+     * Postcondition: Current wood count is returned
+     * @return
+     */
     public int getWoodCount() {
         return woodCount;
     }
 
+    /**
+     * Gets the current stone count
+     * Precondition: None
+     * Postcondition: Current stone count is returned
+     * @return
+     */
     public int getStoneCount() {
         return stoneCount;
     }
 
+    /**
+     * Gets the current gold count
+     * Precondition: None
+     * Postcondition: Current gold count is returned
+     * @return
+     */
     public int getGoldCount() {
         return goldCount;
     }
 
+    /**
+     * Gets the current token count
+     * Precondition: None
+     * Postcondition: Current token count is returned
+     * @return
+     */
     public int getTokenCount() {
         return tokenCount;
     }

@@ -1,8 +1,9 @@
 /**
+ * Player.java
+ * The Player class for BenumZombs, defining player properties and behaviors
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Player Class
+ * @since 2026-01-07
  */
 
 package objects;
@@ -23,10 +24,10 @@ import systems.ToolSystem;
 
 public class Player extends GameObject {
 
-    private final double speed = 5; //player speed
+    private static final double SPEED = 5; //player speed
     private final String name;
 
-    private final int maxHealth = 100;
+    private static final int MAX_HEALTH = 100;
     private int currentHealth = 100;
 
     private final ToolSystem toolSystem;
@@ -61,7 +62,7 @@ public class Player extends GameObject {
      * @return
      */
     public double getCenterX() { 
-        return x + width / 2.0; 
+        return x + width / 2; 
     }
 
     /**
@@ -71,7 +72,7 @@ public class Player extends GameObject {
      * @return
      */
     public double getCenterY() { 
-        return y + height / 2.0; 
+        return y + height / 2; 
     }
 
     /**
@@ -101,7 +102,7 @@ public class Player extends GameObject {
      * @return
      */
     public int getMaxHealth() {
-        return maxHealth;
+        return MAX_HEALTH;
     }
 
     /**
@@ -129,27 +130,27 @@ public class Player extends GameObject {
      */
     public void move(boolean up, boolean down, boolean left, boolean right, int minX, int maxX, int minY, int maxY, ResourceSystem resourceSystem) {
         if (up && y > minY){
-            Rectangle nextYPos = new Rectangle((int)x, (int)(y - speed), width, height);
-            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
-                y -= speed;
+            Rectangle nextYPos = new Rectangle((int)x, (int)(y - SPEED), width, height);
+            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){ // Check collision before moving
+                y -= SPEED;
             }
         }
         if (down && y < maxY){
-            Rectangle nextYPos = new Rectangle((int)x, (int)(y + speed), width, height);
+            Rectangle nextYPos = new Rectangle((int)x, (int)(y + SPEED), width, height);
             if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
-                y += speed;
+                y += SPEED;
             }
         }  
         if (left && x > minX){
-            Rectangle nextYPos = new Rectangle((int)(x - speed), (int)y, width, height);
+            Rectangle nextYPos = new Rectangle((int)(x - SPEED), (int)y, width, height);
             if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
-                x -= speed;
+                x -= SPEED;
             }
         }
         if (right && x < maxX){
-            Rectangle nextYPos = new Rectangle((int)(x + speed), (int)y, width, height);
+            Rectangle nextYPos = new Rectangle((int)(x + SPEED), (int)y, width, height);
             if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
-                x += speed;
+                x += SPEED;
             }
         }
     }
@@ -192,19 +193,19 @@ public class Player extends GameObject {
      * Postcondition: swingTimer is updated if swinging, isAnimating is set accordingly
      */
     public void updateSwing(ResourceSystem resourceSystem) {
-        if (spaceToggle || isMouseHolding) {
+        if (spaceToggle || isMouseHolding) { // start swinging
             isAnimating = true;
         }
 
         if (isAnimating) {
             swingTimer += swingSpeed;
 
-            if (swingTimer >= Math.PI / 2 && !hitProcessed) {
+            if (swingTimer >= Math.PI / 2 && !hitProcessed) { // Check for hit at midpoint of swing
                 checkHit(resourceSystem, baseAngle);
                 hitProcessed = true;
             } 
 
-            if (swingTimer >= Math.PI * 2) {
+            if (swingTimer >= Math.PI * 2) { // Reset swing animation after full swing
                 swingTimer = 0;
                 hitProcessed = false;
                 if (!spaceToggle && !isMouseHolding) {
@@ -223,10 +224,11 @@ public class Player extends GameObject {
      * @param currentAngle
      */
     public void checkHit(ResourceSystem resourceSystem, double currentAngle){
-        double hitX = x + width / 2.0 + Math.cos(currentAngle) * 65;
-        double hitY = y + height / 2.0 + Math.sin(currentAngle) * 65;
+        double hitX = getCenterX() + Math.cos(currentAngle) * 65; // calculate hit position
+        double hitY = getCenterY() + Math.sin(currentAngle) * 65;
 
         Rectangle hitBox = new Rectangle((int)(hitX - 15), (int)(hitY - 15), 30, 30);
+
         String hitObject = CollisionSystem.checkHitCollision(hitBox, resourceSystem);
         if (hitObject != null){
             if (hitObject.equals("tree")){
@@ -234,8 +236,7 @@ public class Player extends GameObject {
             } else if (hitObject.equals("stone")){
                 resourceSystem.addStone(2);
             }
-        }
-
+        }   
     }
 
     /**
@@ -318,7 +319,7 @@ public class Player extends GameObject {
         g2d.drawString(name, nameX, screenY - 20);
 
         //************* Local Player Health *************//
-        helpers.HealthManager.drawStatusBar(g2d, currentHealth, maxHealth, screenX, screenY, width, height, new Color(113, 191, 71));
+        helpers.HealthManager.drawStatusBar(g2d, currentHealth, MAX_HEALTH, screenX, screenY, width, height, new Color(113, 191, 71));
     }
 
     /**

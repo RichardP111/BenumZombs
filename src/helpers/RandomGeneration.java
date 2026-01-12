@@ -1,8 +1,9 @@
 /**
+ * RandomGeneration.java
+ * Helper class for generating random locations within the game boundaries in BenumZombs
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Random generator class to find a random area to spwan a object
+ * @since 2026-01-10
  */
 
 package helpers;

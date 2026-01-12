@@ -1,8 +1,9 @@
 /**
+ * StartMenu.java
+ * The start menu panel for BenumZombs, allowing players to start the game, adjust settings, or exit
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Start Menu class
+ * @since 2026-01-06
  */
 
 package game;
@@ -26,27 +27,23 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URI;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 public class StartMenu extends JPanel {
 
-    private final JLabel titleLabel;
-    private final JLabel subtitleLabel;
-    private final JLabel versionLabel;
-    private final RoundedJButton startButton;
-    private final RoundedJButton settingButton;
-    private final RoundedJButton exitButton;   
+    private final JLabel titleLabel, subtitleLabel, versionLabel;
+    private final RoundedJButton startButton, settingButton, exitButton;   
     private final JButton creditsButton;
     private RoundedJText nameField;
 
     private static String playerName = "Player";
 
     @SuppressWarnings("Convert2Lambda")
-    public StartMenu(JFrame window) {
+    public StartMenu() {
         setLayout(null);
         setBackground(new Color(42, 56, 26));
 
@@ -145,18 +142,16 @@ public class StartMenu extends JPanel {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (nameField.getText().equals("Enter a name") || nameField.getText().trim().isEmpty()) {
+                if (nameField.getText().equals("Enter a name") || nameField.getText().trim().isEmpty()) { //set default name if none entered
                     nameField.setText("Player");
                 }
                 playerName = nameField.getText();
 
-                window.getContentPane().removeAll();
-                BenumZombsGame gamePanel = new BenumZombsGame(playerName);
-                window.add(gamePanel);
-                window.revalidate();
-                window.repaint();
-
-                gamePanel.requestFocusInWindow();
+                BenumZombsGame game = new BenumZombsGame(playerName);
+                Main.mainPanel.add(game, "GAME");
+                
+                Main.showScreen("GAME");
+                game.requestFocusInWindow();
                 SoundManager.playSound("buttonClick.wav");
                 System.out.println("StartMenu.java - Game started from Start Menu.");
             }
@@ -166,11 +161,8 @@ public class StartMenu extends JPanel {
         settingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                window.getContentPane().removeAll();
-                SettingsScreen settingsScreen = new SettingsScreen(window);
-                window.add(settingsScreen);
-                window.revalidate();
-                window.repaint();
+                Main.settingsScreen.setGameInstance(null);
+                Main.showScreen("SETTINGS");
                 SoundManager.playSound("buttonClick.wav");
                 System.out.println("StartMenu.java - Settings shown");
             }
@@ -191,8 +183,8 @@ public class StartMenu extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new java.net.URI("https://docs.google.com/document/d/1JccsGbz9-viOxhGuASJULYrJF2vKoy3G_eF5oNd1vVI/edit?usp=sharing"));
-                } catch (Exception ex) {
+                    Desktop.getDesktop().browse(new URI("https://docs.google.com/document/d/1JccsGbz9-viOxhGuASJULYrJF2vKoy3G_eF5oNd1vVI/edit?usp=sharing"));
+                } catch (IOException | URISyntaxException ex) {
                     System.out.println("StartMenu.java - ur credit link is super borken rn and you better fix it" + ex.getMessage());
                 }
                 SoundManager.playSound("buttonClick.wav");

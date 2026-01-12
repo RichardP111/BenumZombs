@@ -1,8 +1,9 @@
 /**
+ * Pickaxe.java
+ * The Pickaxe tool object for BenumZombs, used to mine resources
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Pickaxe Class which defines pickaxe object
+ * @since 2026-01-11
  */
 
 package objects.Tools;
@@ -30,31 +31,16 @@ public class Pickaxe extends Tool {
         g2d.rotate(angle);
         g2d.scale(scale, scale);
 
-        switch (level) {
-            case 1:
-                headColor = new Color(102, 102, 102);
-                break;
-            case 2:
-                headColor = new Color(198, 156, 109);
-                break;
-            case 3:
-                headColor = new Color(204, 204, 204);
-                break;
-            case 4:
-                headColor = new Color(250, 176, 59);
-                break;
-            case 5:
-                headColor = new Color(100, 185, 237);
-                break;
-            case 6:
-                headColor = new Color(186, 54, 63);
-                break;
-            case 7:
-                headColor = new Color(65, 241, 131);
-                break;
-            default:
-                headColor = new Color(102, 102, 102);
-        }
+        headColor = switch (level) {
+            case 1 -> new Color(102, 102, 102);
+            case 2 -> new Color(198, 156, 109);
+            case 3 -> new Color(204, 204, 204);
+            case 4 -> new Color(250, 176, 59);
+            case 5 -> new Color(100, 185, 237);
+            case 6 -> new Color(186, 54, 63);
+            case 7 -> new Color(65, 241, 131);
+            default -> new Color(102, 102, 102);
+        };
 
         g2d.setColor(new Color(135, 95, 69));
         g2d.fillRoundRect(-2, -55, 4, 75, 2, 2); 

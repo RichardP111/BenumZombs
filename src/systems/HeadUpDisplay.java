@@ -1,8 +1,9 @@
 /**
+ * HeadUpDisplay.java
+ * The HeadUpDisplay class for BenumZombs, managing the game's HUD elements
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Head-Up Display System shown during gameplay
+ * @since 2026-01-08
  */
 
 package systems;
@@ -271,13 +272,13 @@ public class HeadUpDisplay {
         for (int i = 0; i < 4; i++){
             int x = toolBarX + i * (slotSize + slotPadding);
             g2d.setColor(new Color(247, 247, 247, 20));
-            if (toolSystem.getActiveTool() == toolSystem.getToolInSlot(i)){
+            if (toolSystem.getActiveTool() == toolSystem.getToolInSlot(i)){ //active tool color highlight
                 g2d.setColor(new Color(247, 247, 247, 50));
             }
             g2d.fillRoundRect(x, toolBarY, slotSize, slotSize, 10, 10);
 
             Tool tool = toolSystem.getToolInSlot(i);
-            if (tool != null && tool.getIsUnlocked()){
+            if (tool != null && tool.getIsUnlocked()){ //draw tool if unlocked
                 tool.draw(g2d, x + slotSize / 2 - 10, toolBarY + slotSize / 2 + 10, 0.8, 0.5);
             }
         }
@@ -292,7 +293,7 @@ public class HeadUpDisplay {
             int x = buildingBarX + i * (slotSize + slotPadding);
 
             g2d.setColor(new Color(0, 0, 0, 30));
-            g2d.fillRoundRect(x, buildingBarY, slotSize, slotSize, 10, 10);
+            g2d.fillRoundRect(x, buildingBarY, slotSize, slotSize, 10, 10); /////////////////////////////////////////////////////////////////////////////
         }
     }
 

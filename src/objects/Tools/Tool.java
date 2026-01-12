@@ -1,8 +1,9 @@
 /**
+ * Tool.java
+ * The Tool class for BenumZombs, defining general tool logic and shared properties
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Tool Class which defines general tool logic and shared properties
+ * @since 2026-01-10
  */
 
 package objects.Tools;
@@ -27,8 +28,8 @@ public abstract class Tool {
     }
 
     /**
-     * Upgrades the tool by increasing its level by 1, up to a maximum of 5
-     * Precondition: level is between 1 and 5
+     * Upgrades the tool by increasing its level by 1, up to a maximum of 7
+     * Precondition: level is between 1 and 7
      */
     public void upgrade() {
        if (level < 7){

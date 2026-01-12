@@ -1,8 +1,9 @@
 /**
+ * RoundedJText.java
+ * Helper class for creating rounded JTextField components in BenumZombs
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Helper Class for Rounded JTextFields
+ * @since 2026-01-06
  */
 
 package helpers;
@@ -32,8 +33,9 @@ public class RoundedJText extends JTextField {
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getBackground());
-        g2.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 40, 40); 
+
+        g2.setColor(Color.WHITE);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40); 
         super.paintComponent(g2);
         g2.dispose();
     }
