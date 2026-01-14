@@ -21,9 +21,9 @@ public class ToolSystem {
      */
     public ToolSystem(){
         slots[0] = new Pickaxe(true);
-        slots[1] = new Spear(false);
-        slots[2] = new Bow(false);
-        slots[3] = new HealthPotion(false);
+        slots[1] = new Spear(true);
+        slots[2] = new Bow(true);
+        slots[3] = new HealthPotion(true);
     }
 
     /**

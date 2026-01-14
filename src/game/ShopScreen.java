@@ -8,6 +8,9 @@
 
 package game;
 
+import helpers.FontManager;
+import helpers.RoundedJButton;
+import helpers.SoundManager;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -20,25 +23,19 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import helpers.FontManager;
-import helpers.RoundedJButton;
-import helpers.SoundManager;
-
 @SuppressWarnings("Convert2Lambda")
 public class ShopScreen extends JPanel {
+    private BenumZombsGame gameInstance;
+    private final RoundedJButton backButton;
+    private final JLabel shopLabel;
 
     private enum ShopTab {
         Weapons, Armor, Utility
     }
-
-    private final RoundedJButton backButton;
-    private final JLabel shopLabel;
-    private BenumZombsGame gameInstance;
 
     private ShopTab currentTab = ShopTab.Weapons;
     private final Rectangle[] tabBounds = new Rectangle[ShopTab.values().length];
@@ -58,7 +55,7 @@ public class ShopScreen extends JPanel {
         add(shopLabel);
        
         //************* Back Button *************//
-        backButton = new RoundedJButton("Back");
+        backButton = new RoundedJButton("Back To Game");
         backButton.setFont(FontManager.googleSansFlex.deriveFont(20f));  
         backButton.setBackground(new Color(103, 90, 166));
         backButton.setForeground(Color.WHITE);
@@ -138,7 +135,7 @@ public class ShopScreen extends JPanel {
 
         //************* Set Bounds of Main Labels and Buttons *************//
         shopLabel.setBounds(largeBoxX + 30, largeBoxY + 20, 300, 40);
-        backButton.setBounds((width - 150) / 2, largeBoxY + largeBoxH + 50, 150, 40);
+        backButton.setBounds((width - 150) / 2, largeBoxY + largeBoxH + 50, 250, 40);
 
         int tabWidth = (largeBoxW - 60) / tabs.length;
         for (int i = 0; i < tabs.length; i++) {
@@ -175,10 +172,10 @@ public class ShopScreen extends JPanel {
                 int tabH = Math.max(50, largeBoxH / 15);
                 g2d.fillRoundRect(largeBoxX + 30 + (i * tabWidth), (largeBoxY + 130) - tabH, tabWidth - 10, tabH + 5, 20, 20);
                 g2d.setColor(Color.WHITE);
-                g2d.drawString(tabs[i].name(), largeBoxX + 40 + (i * tabWidth), largeBoxY + 105);
+                g2d.drawString(tabs[i].name(), largeBoxX + 40 + (i * tabWidth), largeBoxY + 110);
             } else {
                 g2d.setColor(new Color(150, 150, 150));
-                g2d.drawString(tabs[i].name(), largeBoxX + 40 + (i * tabWidth), largeBoxY + 105);
+                g2d.drawString(tabs[i].name(), largeBoxX + 40 + (i * tabWidth), largeBoxY + 110);
             }
         }
   

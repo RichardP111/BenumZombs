@@ -155,12 +155,20 @@ public class BenumZombsGame extends JPanel implements ActionListener {
             player.toggleSpaceSwing();
         }
         switch (keyCode) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> up = isPressed;
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> down = isPressed;
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> left = isPressed;
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> right = isPressed;
-            default -> {
-            }
+        case KeyEvent.VK_W, KeyEvent.VK_UP:
+            up = isPressed;
+            break;
+        case KeyEvent.VK_S, KeyEvent.VK_DOWN:
+            down = isPressed;
+            break;
+        case KeyEvent.VK_A, KeyEvent.VK_LEFT:
+            left = isPressed;
+            break;
+        case KeyEvent.VK_D, KeyEvent.VK_RIGHT:
+            right = isPressed;
+            break;
+        default:
+            break;
         }
     }
 
