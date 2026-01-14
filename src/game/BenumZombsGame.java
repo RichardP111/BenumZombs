@@ -100,10 +100,16 @@ public class BenumZombsGame extends JPanel implements ActionListener {
                 if (headUpDisplay.settingsButtonBounds != null && headUpDisplay.settingsButtonBounds.contains(p)) { // Clicked settings button
                     Main.settingsScreen.setGameInstance(BenumZombsGame.this);
                     Main.showScreen("SETTINGS");
+                    System.out.println("BenumZombsGame.java - Opening Settings Screen from Game.");
                     return;
                 }
 
-                //shop stuff here later
+                if (headUpDisplay.shopButtonBounds != null && headUpDisplay.shopButtonBounds.contains(p)) { // Clicked shop button
+                    Main.shopScreen.setGameInstance(BenumZombsGame.this);
+                    Main.showScreen("SHOP");
+                    System.out.println("BenumZombsGame.java - Opening Shop Screen from Game.");
+                    return;
+                }
 
                 if (e.getButton() == MouseEvent.BUTTON1) { // Left click
                     player.setMouseHolding(true);

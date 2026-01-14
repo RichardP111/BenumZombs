@@ -21,6 +21,7 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
 public class SettingsScreen extends JPanel {
 
     private final RoundedJButton backButton, soundToggleButton;
@@ -129,8 +130,10 @@ public class SettingsScreen extends JPanel {
                 if (gameInstance != null) {
                     Main.showScreen("GAME");
                     gameInstance.requestFocusInWindow();
+                    System.out.println("SettingsScreen.java - Returning to game from Settings Screen.");
                 } else {
                     Main.showScreen("MENU");
+                    System.out.println("SettingsScreen.java - Returning to menu from Settings Screen.");
                 }
                 SoundManager.playSound("buttonClick.wav");
             }

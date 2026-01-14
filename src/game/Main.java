@@ -18,6 +18,8 @@ public class Main {
 	public static JPanel mainPanel;
     public static CardLayout cardLayout;
     public static SettingsScreen settingsScreen;
+	public static ShopScreen shopScreen;
+	public static BenumZombsGame gamePanel;
 
 	public static void main(String[] args) {
 		//Create main game window
@@ -41,9 +43,11 @@ public class Main {
 		cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 		settingsScreen = new SettingsScreen();
+		shopScreen = new ShopScreen();
 
 		mainPanel.add(new StartMenu(), "MENU");
         mainPanel.add(settingsScreen, "SETTINGS");
+		mainPanel.add(shopScreen, "SHOP");
 
         window.add(mainPanel);
         window.setVisible(true);
