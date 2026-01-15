@@ -9,6 +9,7 @@
 package objects.Tools;
 
 import java.awt.Graphics2D;
+import objects.Player;
 
 public abstract class Tool {
     protected String toolName;
@@ -28,15 +29,14 @@ public abstract class Tool {
     }
 
     /**
-     * Upgrades the tool by increasing its level by 1, up to a maximum of 7
-     * Precondition: level is between 1 and 7
+     * Upgrades the tool by increasing its level by 1
+     * Precondition: None
+     * Postcondition: Tool level is increased by 1
      */
     public void upgrade() {
-       if (level < 7){
         level++;
-       }
-    }   
-    
+    }
+
     /**
      * Gets the level of the tool
      * Precondition: None
@@ -45,6 +45,16 @@ public abstract class Tool {
      */
     public int getLevel() {
         return level;
+    }
+
+    /**
+     * Gets the name of the tool
+     * Precondition: None
+     * Postcondition: returns the name of the tool
+     * @return
+     */
+    public String getToolName() {
+        return toolName;
     }
 
     /**
@@ -67,6 +77,14 @@ public abstract class Tool {
         isUnlocked = unlocked;
     }
 
+    public boolean isConsumable() {
+        return false;
+    }
+
+    public void onGet(Player player) {}
+
+    public abstract int getUpgradeCost();
+    
     public abstract void draw(Graphics2D g2d, int x, int y, double angle, double scale);
 
     public abstract void use();

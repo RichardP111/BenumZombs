@@ -10,6 +10,8 @@ package systems;
 
 import game.BenumZombsGame;
 import helpers.FontManager;
+import helpers.SoundManager;
+import helpers.TextFormatter;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
@@ -27,6 +29,8 @@ public class HeadUpDisplay {
 
     private Image settingsIcon;
     private Image shopIcon;
+    private final BenumZombsGame game;
+    private final ToolSystem toolSystem;
 
     /**
      * Constructor for HeadUpDisplay
@@ -34,9 +38,19 @@ public class HeadUpDisplay {
      * Postcondition: HeadUpDisplay is created for the player
      * @param player
      */
-    public HeadUpDisplay(Player player) {
+    public HeadUpDisplay(BenumZombsGame game, Player player, ToolSystem toolSystem) {
+        this.game = game;
         this.player = player;
+        this.toolSystem = toolSystem;
+
         loadIcons();
+
+        game.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                handleToolbarClick(e.getPoint());
+            }
+        });
     }
 
     /**
@@ -50,6 +64,37 @@ public class HeadUpDisplay {
             shopIcon = ImageIO.read(getClass().getResource("/assets/images/shopIcon.png"));
         } catch (IOException | IllegalArgumentException | NullPointerException e) {
             System.out.println("Your icons are very broken. Good luck!!!! :)))): " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles clicks on the toolbar
+     * Precondition: p is a valid Point object representing the mouse click location
+     * Postcondition: active tool is changed if a toolbar slot is clicked
+     * @param p
+     */
+    private void handleToolbarClick(Point p) {
+        int width = game.getWidth();
+        int height = game.getHeight();
+        
+        int slotSize = 50;
+        int slotPadding = 10;
+        int totalWidth = (slotSize * 4) + (slotPadding * 3);
+        int toolBarX = (width - totalWidth) / 2;
+        int toolBarY = height - 140;
+
+        for (int i = 0; i < 4; i++) {
+            int x = toolBarX + i * (slotSize + slotPadding);
+            Rectangle slotBounds = new Rectangle(x, toolBarY, slotSize, slotSize);
+
+            if (slotBounds.contains(p)) {
+                Tool tool = toolSystem.getToolInSlot(i);
+                if (tool != null && tool.getIsUnlocked()) {
+                    toolSystem.setActiveSlot(i);
+                    SoundManager.playSound("buttonClick.wav");
+                    System.out.println("HUD.java - Switched to: " + tool.getToolName());
+                }
+            }
         }
     }
 
@@ -106,7 +151,7 @@ public class HeadUpDisplay {
         //************* Resource Panel Size *************//
         int resourcePanelW = 240, resourcePanelH = 130;
         int resourcePanelX = screenW - resourcePanelW - 20;
-        int resourcePanelY = screenH - resourcePanelH - 70;
+        int resourcePanelY = screenH - resourcePanelH - 80;
 
         //************* Resource Panel Background *************//
         g2d.setColor(new Color(0, 0, 0, 100));
@@ -124,10 +169,10 @@ public class HeadUpDisplay {
         //************* Resource Panel Values *************//
         g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 14f));
         g2d.setColor(Color.WHITE);
-        g2d.drawString(String.valueOf(resourceSystem.getWoodCount()), resourcePanelX + (resourcePanelW / 2) - 40, resourcePanelY + 30); 
-        g2d.drawString(String.valueOf(resourceSystem.getStoneCount()), resourcePanelX + (resourcePanelW - 35), resourcePanelY + 30);
-        g2d.drawString(String.valueOf(resourceSystem.getGoldCount()), resourcePanelX + (resourcePanelW / 2) - 45, resourcePanelY + 70);
-        g2d.drawString(String.valueOf(resourceSystem.getTokenCount()), resourcePanelX + (resourcePanelW - 25), resourcePanelY + 70);
+        g2d.drawString(TextFormatter.formatValue(resourceSystem.getWoodCount()), resourcePanelX + (resourcePanelW / 2) - 40, resourcePanelY + 30); 
+        g2d.drawString(TextFormatter.formatValue(resourceSystem.getStoneCount()), resourcePanelX + (resourcePanelW - 35), resourcePanelY + 30);
+        g2d.drawString(TextFormatter.formatValue(resourceSystem.getGoldCount()), resourcePanelX + (resourcePanelW / 2) - 45, resourcePanelY + 70);
+        g2d.drawString(TextFormatter.formatValue(resourceSystem.getTokenCount()), resourcePanelX + (resourcePanelW - 25), resourcePanelY + 70);
         g2d.drawString(String.valueOf(waveCount), resourcePanelX + (resourcePanelW - 20) - 10, resourcePanelY + 110);
 
         //************* Resource Panel Dividers *************//
@@ -152,6 +197,32 @@ public class HeadUpDisplay {
         int healthBarW = 240, healthBarH = 40;
         int healthBarX = screenW - healthBarW - 20;
         int healthBarY = screenH - 55;
+
+        //************* Armor Bar *************//
+        int shield = player.getShieldHealth();
+        int maxShield = player.getMaxShieldHealth();
+
+        if (maxShield > 0) {
+            int armorBarH = 13; 
+            int armorBarY = (int)(healthBarY - armorBarH / 1.5f) - 10;
+
+            //************* Health Bar Background *************//
+            g2d.setColor(new Color(0, 0, 0, 100));
+            g2d.fillRoundRect(healthBarX, armorBarY, healthBarW, armorBarH, 10, 10);
+
+            //************* Armor Bar Fill *************//
+            int armorInnerX = healthBarX + 5, armorInnerY = armorBarY + armorBarH / 4;
+            int armorInnerW = healthBarW - 10, armorInnerH = armorBarH / 2;
+
+            g2d.setColor(new Color(20, 50, 80, 100));
+            g2d.fillRoundRect(armorInnerX, armorInnerY, armorInnerW, armorInnerH, 5, 5);
+ 
+            g2d.setColor(new Color(61, 161, 217)); 
+            double armorPercent = (double) shield / maxShield;
+
+            g2d.fillRoundRect(armorInnerX, armorInnerY, (int)(armorInnerW * armorPercent), armorInnerH, 5, 5);
+        
+        }
 
         //************* Health Bar Background *************//
         g2d.setColor(new Color(0, 0, 0, 100));

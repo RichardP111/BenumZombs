@@ -69,7 +69,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         resourceSystem = new ResourceSystem();
         resourceSystem.spawnResources(25);
 
-        headUpDisplay = new HeadUpDisplay(player);
+        headUpDisplay = new HeadUpDisplay(this, player, toolSystem);
         waveCount = 0;
 
         updateCamera();
@@ -144,6 +144,15 @@ public class BenumZombsGame extends JPanel implements ActionListener {
     }
 
     /**
+     * Returns the Player instance
+     * Precondition: N/A
+     * Postcondition: returns the player
+     */
+    public Player getPlayer() {
+        return player;
+    }
+
+    /**
      * Handles key press and release events to update movement flags
      * Precondition: keyCode is a valid KeyEvent code, isPressed indicates key state
      * Postcondition: movement flags are updated based on key events
@@ -154,6 +163,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         if (isPressed == true && keyCode == KeyEvent.VK_SPACE) {
             player.toggleSpaceSwing();
         }
+        
         switch (keyCode) {
         case KeyEvent.VK_W, KeyEvent.VK_UP:
             up = isPressed;
@@ -189,6 +199,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         player.move(up, down, left, right, minX, maxX, minY, maxY, resourceSystem);
         
         //************* Update Systems *************//
+        player.update();
         player.updateSwing(resourceSystem);
         headUpDisplay.update();
         resourceSystem.update();
@@ -227,6 +238,26 @@ public class BenumZombsGame extends JPanel implements ActionListener {
      */
     public int getWaveCount() {
         return waveCount;
+    }
+
+    /**
+     * Returns the ToolSystem instance
+     * Precondition: N/A
+     * Postcondition: returns the tool system
+     * @return
+     */
+    public ToolSystem getToolSystem() {
+        return this.toolSystem; 
+    }
+
+    /**
+     * Returns the ResourceSystem instance
+     * Precondition: N/A
+     * Postcondition: returns the resource system
+     * @return
+     */
+    public ResourceSystem getResourceSystem() {
+        return this.resourceSystem; 
     }
 
     /**

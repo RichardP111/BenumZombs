@@ -36,7 +36,7 @@ public class ResourceSystem {
 
         woodCount = 0;
         stoneCount = 0;
-        goldCount = 0;
+        goldCount = 1000000;
         tokenCount = 0;
     }
 

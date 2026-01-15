@@ -98,7 +98,7 @@ public class SettingsScreen extends JPanel {
         backButton.setFocusPainted(false);
         add(backButton);
 
-        //Update layout on resize
+        //************* Component Listener For Resizing *************//
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {

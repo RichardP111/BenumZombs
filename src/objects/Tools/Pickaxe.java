@@ -15,6 +15,10 @@ import java.awt.geom.Path2D;
 public class Pickaxe extends Tool {
     private Color headColor;
 
+    private final int[] costs = {0, 1000, 3000, 6000, 8000, 24000, 90000};
+    private final double[] harvestValues = {1.5, 3.0, 3.0, 4.5, 4.5, 6.0, 9.0};
+    private final double[] attackSpeeds = {3.33, 3.33, 3.51, 4.0, 5.0, 5.0, 5.0};
+
     /**
      * Constructor for Pickaxe
      * Precondition: N/A
@@ -27,6 +31,22 @@ public class Pickaxe extends Tool {
 
     @Override
     public void use(){
+    }
+
+    @Override
+    public int getUpgradeCost() {
+        if (level >= 7){
+            return -1;
+        }
+        return costs[level]; 
+    }
+
+    public double getHarvestPower() {
+        return harvestValues[level - 1];
+    }
+
+    public double getAttackSpeed() {
+        return attackSpeeds[level - 1];
     }
 
     /**
@@ -65,10 +85,10 @@ public class Pickaxe extends Tool {
                 headColor = new Color(186, 54, 63);
                 break;
             case 7:
-                headColor = new Color(186, 85, 211);
+                headColor = new Color(65, 242, 131);
                 break;
             default:
-                headColor = new Color(65, 241, 131);
+                headColor = new Color(102, 102, 102);
         };
 
         g2d.setColor(new Color(135, 95, 69));

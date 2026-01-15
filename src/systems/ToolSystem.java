@@ -11,7 +11,7 @@ package systems;
 import objects.Tools.*;
 
 public class ToolSystem {
-    private final Tool[] slots = new Tool[4];
+    private final Tool[] slots = new Tool[5];
     private int activeSlot = 0;
 
     /**
@@ -21,9 +21,10 @@ public class ToolSystem {
      */
     public ToolSystem(){
         slots[0] = new Pickaxe(true);
-        slots[1] = new Spear(true);
-        slots[2] = new Bow(true);
-        slots[3] = new HealthPotion(true);
+        slots[1] = new Spear(false);
+        slots[2] = new Bow(false);
+        slots[3] = new HealthPotion(false);
+        slots[4] = new Armor(false);
     }
 
     /**

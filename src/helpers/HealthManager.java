@@ -23,13 +23,19 @@ public class HealthManager {
      * @param y
      * @param width
      * @param height
-     * @param barColor
+     * @param barColor 
+     * @param armorBar whether the bar is an armor bar (true) or a health bar (false)
      */
-    public static void drawStatusBar(Graphics2D g2d, double current, double max, int x, int y, int width, int height, Color barColor) {
+    public static void drawStatusBar(Graphics2D g2d, double current, double max, int x, int y, int width, int height, Color barColor, boolean armorBar) {
         int barW = 50; 
         int barH = 6;
         int barX = x + (width / 2) - (barW / 2);
-        int barY = y + height + 15;
+        int barY;
+        if (armorBar) { //if drawing armor bar, position it below health bar
+            barY = y + height + 25;
+        } else {
+            barY = y + height + 15;
+        }
 
         g2d.setColor(new Color(0, 0, 0, 160));
         g2d.fillRoundRect(barX, barY, barW, barH, 4, 4);

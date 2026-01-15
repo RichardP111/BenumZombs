@@ -17,6 +17,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import objects.Tools.Armor;
 import objects.Tools.Tool;
 import systems.CollisionSystem;
 import systems.ResourceSystem;
@@ -28,7 +29,10 @@ public class Player extends GameObject {
     private final String name;
 
     private static final int MAX_HEALTH = 100;
-    private int currentHealth = 100;
+    private int currentHealth = 50;
+    private int shieldHealth = 0;
+    private long lastRegenTime = 0;
+    private static final int REGEN_DELAY = 100;
 
     private final ToolSystem toolSystem;
     private boolean hitProcessed = false; 
@@ -115,6 +119,18 @@ public class Player extends GameObject {
         return currentHealth;
     }
 
+    public int getMaxShieldHealth() {
+    Armor armor = (Armor) toolSystem.getToolInSlot(4);
+        if (armor != null && armor.getIsUnlocked()) {
+            return armor.getBonusHP();
+        }
+        return 0;
+    }
+
+    public int getShieldHealth() {
+        return shieldHealth;
+    }
+
     /**
      * Moves the player based on input directions and world bounds
      * Precondition: minX, maxX, minY, maxY define valid movement bounds
@@ -162,7 +178,24 @@ public class Player extends GameObject {
      * @param amount
      */
     public void takeDamage(int amount) {
-        currentHealth = Math.max(0, currentHealth - amount);
+        if (shieldHealth > 0) {
+            if (amount <= shieldHealth) {
+                shieldHealth -= amount;
+            } else {
+                int remainingDamage = amount - shieldHealth;
+                shieldHealth = 0;
+                currentHealth = Math.max(0, currentHealth - remainingDamage);
+            }
+        } else {
+            currentHealth = Math.max(0, currentHealth - amount);
+        }
+    }
+
+    public void fillShield() {
+        int max = getMaxShieldHealth();
+        if (max > 0) {
+            shieldHealth = max;
+        }
     }
 
     /**
@@ -193,7 +226,25 @@ public class Player extends GameObject {
      * Postcondition: swingTimer is updated if swinging, isAnimating is set accordingly
      */
     public void updateSwing(ResourceSystem resourceSystem) {
-        if (spaceToggle || isMouseHolding) { // start swinging
+        if (spaceToggle || isMouseHolding) { 
+            Tool activeTool = toolSystem.getActiveTool();
+            if (activeTool != null && activeTool.isConsumable()) {
+                if (currentHealth < MAX_HEALTH) {
+                    currentHealth = MAX_HEALTH;
+                    fillShield();
+                    activeTool.setUnlocked(false); 
+                    
+                    toolSystem.setActiveSlot(0); 
+                    
+                    //SoundManager.playSound("heal.wav"); 
+                    System.out.println("Player.java - Used health potion");
+                }
+
+                isMouseHolding = false;
+                spaceToggle = false;
+                return; 
+            }
+
             isAnimating = true;
         }
 
@@ -245,7 +296,24 @@ public class Player extends GameObject {
      * Postcondition: N/A
      */
     @Override
-    public void update() {}
+    public void update() {
+        Armor armor = (Armor) toolSystem.getToolInSlot(4); 
+        if (armor != null && armor.getIsUnlocked()) {
+            int maxShield = armor.getBonusHP();
+            if (System.currentTimeMillis() - lastRegenTime > REGEN_DELAY) {
+                if (shieldHealth < maxShield) {
+                    if (maxShield <= 1000) {
+                        shieldHealth = Math.min(maxShield, shieldHealth + 5);
+                    } else if (maxShield <= 10000) {
+                        shieldHealth = Math.min(maxShield, shieldHealth + 50);
+                    } else {
+                        shieldHealth = Math.min(maxShield, shieldHealth + 500);
+                    }
+                    lastRegenTime = System.currentTimeMillis();
+                }
+            }
+        }
+    }
 
     /**
      * Draws the player at specified screen coordinates, rotated to face mouse position
@@ -319,7 +387,10 @@ public class Player extends GameObject {
         g2d.drawString(name, nameX, screenY - 20);
 
         //************* Local Player Health *************//
-        helpers.HealthManager.drawStatusBar(g2d, currentHealth, MAX_HEALTH, screenX, screenY, width, height, new Color(113, 191, 71));
+        helpers.HealthManager.drawStatusBar(g2d, currentHealth, MAX_HEALTH, screenX, screenY, width, height, new Color(113, 191, 71), false);
+        if (getMaxShieldHealth() > 0) {
+            helpers.HealthManager.drawStatusBar(g2d, shieldHealth, getMaxShieldHealth(), screenX, screenY, width, height, new Color(61, 161, 217), true);
+        }
     }
 
     /**

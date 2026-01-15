@@ -28,6 +28,7 @@ public class RoundedJButton extends JButton{
      * Paints the RoundedJButton
      * Precondition: g is a valid Graphics object
      * Postcondition: paints the RoundedJButton with rounded corners
+     * @param g
      */
     @Override
     protected void paintComponent(Graphics g) {

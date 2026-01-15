@@ -28,6 +28,7 @@ public class RoundedJText extends JTextField {
      * Paints the RoundedJText
      * Precondition: g is a valid Graphics object
      * Postcondition: paints the RoundedJText with rounded corners
+     * @param g
      */
     @Override
     protected void paintComponent(Graphics g) {

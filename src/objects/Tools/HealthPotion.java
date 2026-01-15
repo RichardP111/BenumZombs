@@ -10,17 +10,27 @@ package objects.Tools;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Path2D;
 
 public class HealthPotion extends Tool {
-    private Color headColor;
+    private Color potionColor;
 
     public HealthPotion(boolean unlocked) {
-        super("HealthPotion", unlocked);
+        super("Health Potion", unlocked);
+        potionColor = new Color(200, 64, 49);
     }
 
     @Override
     public void use(){
+    }
+
+    @Override
+    public int getUpgradeCost() {
+        return 100;
+    }
+
+    @Override
+    public boolean isConsumable() {
+        return true;
     }
 
     @Override
@@ -31,50 +41,17 @@ public class HealthPotion extends Tool {
         g2d.rotate(angle);
         g2d.scale(scale, scale);
 
-        switch (level) {
-            case 1:
-                headColor = new Color(102, 102, 102);
-                break;
-            case 2:
-                headColor = new Color(198, 156, 109);
-                break;
-            case 3:
-                headColor = new Color(204, 204, 204);
-                break;
-            case 4:
-                headColor = new Color(250, 176, 59);
-                break;
-            case 5:
-                headColor = new Color(100, 185, 237);
-                break;
-            case 6:
-                headColor = new Color(186, 54, 63);
-                break;
-            case 7:
-                headColor = new Color(186, 85, 211);
-                break;
-            default:
-                headColor = new Color(65, 241, 131);
-        };
-
-        g2d.setColor(new Color(135, 95, 63));
-        g2d.fillRoundRect(-2, -20, 4, 40, 2, 2);
-
-        Path2D head = new Path2D.Double();
-        head.moveTo(-14, -45);
-        head.lineTo(10, -50);
-        head.lineTo(11, -60);
-        head.lineTo(-10, -70);
-        head.lineTo(-25, -60);
-        head.closePath();
-
-        g2d.setColor(headColor);
-        g2d.fill(head);
-
+        g2d.setColor(potionColor);
+        g2d.fillRoundRect(-11, -63, 20, 15, 2, 2);
         g2d.setColor(new Color(47, 46, 51));
         g2d.setStroke(new BasicStroke(3));
-        g2d.drawRoundRect(-2, -20, 4, 40, 2, 2);
-        g2d.draw(head);
+        g2d.drawRoundRect(-11, -63, 20, 15, 2, 2);
+
+        g2d.setColor(potionColor);
+        g2d.fillOval(-25, -57, 50, 50);
+        g2d.setColor(new Color(47, 46, 51));
+        g2d.setStroke(new BasicStroke(3));
+        g2d.drawOval(-25, -57, 50, 50);
 
         g2d.setTransform(oldTransform);
     }

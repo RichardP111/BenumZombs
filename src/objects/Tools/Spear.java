@@ -15,6 +15,10 @@ import java.awt.geom.Path2D;
 public class Spear extends Tool {
     private Color headColor;
 
+    private final int[] costs = {1400, 2800, 5600, 11200, 22500, 45000, 90000};
+    private final double[] damageValues = {20, 80, 120, 300, 2000, 8000, 10000};
+    private final double[] attackSpeeds = {4, 4, 4, 4, 4, 4, 4};
+
     /**
      * Constructor for Spear
      * Precondition: N/A
@@ -27,6 +31,22 @@ public class Spear extends Tool {
 
     @Override
     public void use(){
+    }
+
+    @Override
+    public int getUpgradeCost() {
+        if (level >= 7){
+            return -1;
+        }
+        return costs[level]; 
+    }
+
+    public double getDamage() {
+        return damageValues[level - 1];
+    }
+
+    public double getAttackSpeed() {
+        return attackSpeeds[level - 1];
     }
 
     /**
@@ -65,34 +85,34 @@ public class Spear extends Tool {
                 headColor = new Color(186, 54, 63);
                 break;
             case 7:
-                headColor = new Color(186, 85, 211);
+                headColor = new Color(65, 242, 131);
                 break;
             default:
-                headColor = new Color(65, 241, 131);
+                headColor = new Color(102, 102, 102);
         };
 
         g2d.setColor(new Color(135, 95, 69));
-        g2d.fillRoundRect(-2, -55, 4, 75, 2, 2);
+        g2d.fillRoundRect(-2, -65, 4, 80, 2, 2);
 
         g2d.setColor(new Color(47, 46, 51));
         g2d.setStroke(new BasicStroke(3));
-        g2d.drawRoundRect(-2, -55, 4, 75, 2, 2);
+        g2d.drawRoundRect(-2, -65, 4, 80, 2, 2);
 
         Path2D head = new Path2D.Double();
-        head.moveTo(-5, -40);
-        head.lineTo(-5, -70);
-        head.lineTo(0, -75);
-        head.lineTo(5, -70);
-        head.lineTo(5, -40);
-        head.lineTo(0, -35);
+        head.moveTo(-5, -50);
+        head.lineTo(-5, -80);
+        head.lineTo(0, -85);
+        head.lineTo(5, -80);
+        head.lineTo(5, -50);
+        head.lineTo(0, -45);
         head.closePath();
 
         g2d.setColor(headColor);
-        g2d.fillRoundRect(-12, -40, 25, 8, 2, 2);
+        g2d.fillRoundRect(-12, -50, 25, 8, 2, 2);
 
         g2d.setColor(new Color(47, 46, 51));
         g2d.setStroke(new BasicStroke(3));
-        g2d.drawRoundRect(-12, -40, 25, 8, 2, 2);
+        g2d.drawRoundRect(-12, -50, 25, 8, 2, 2);
 
         g2d.setColor(headColor);
         g2d.fill(head);

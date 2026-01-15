@@ -26,8 +26,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -130,7 +130,7 @@ public class StartMenu extends JPanel {
         creditsButton.setOpaque(false);
         add(creditsButton);
 
-        //Update layout on resize
+        //************* Component Listener For Resizing *************//
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -184,11 +184,11 @@ public class StartMenu extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Desktop.getDesktop().browse(new URI("https://docs.google.com/document/d/1JccsGbz9-viOxhGuASJULYrJF2vKoy3G_eF5oNd1vVI/edit?usp=sharing"));
+                    SoundManager.playSound("buttonClick.wav");
+                    System.out.println("StartMenu.java - Credits shown");
                 } catch (IOException | URISyntaxException ex) {
                     System.out.println("StartMenu.java - ur credit link is super borken rn and you better fix it" + ex.getMessage());
                 }
-                SoundManager.playSound("buttonClick.wav");
-                System.out.println("StartMenu.java - Credits shown");
             }
         });
 
