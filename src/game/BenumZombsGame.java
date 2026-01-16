@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +26,8 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import objects.Player;
+import objects.Tools.Tool;
+import systems.CollisionSystem;
 import systems.HeadUpDisplay;
 import systems.ResourceSystem;
 import systems.ToolSystem;
@@ -62,12 +65,19 @@ public class BenumZombsGame extends JPanel implements ActionListener {
 
         // Start Player, HUD, resources
         toolSystem = new ToolSystem();
-
-        Point spawn = RandomGeneration.getRandomLocation();
-        player = new Player(spawn.x, spawn.y, playerName, toolSystem);
-
         resourceSystem = new ResourceSystem();
         resourceSystem.spawnResources(25);
+
+        Point spawn;
+        while (true) {
+            spawn = RandomGeneration.getRandomLocation();
+            Rectangle playerHitbox = new Rectangle(spawn.x, spawn.y, 50, 50);
+            
+            if (!CollisionSystem.checkCollision(playerHitbox, resourceSystem)) {
+                break; 
+            }
+        }
+        player = new Player(spawn.x, spawn.y, playerName, toolSystem);
 
         headUpDisplay = new HeadUpDisplay(this, player, toolSystem);
         waveCount = 0;
@@ -163,11 +173,37 @@ public class BenumZombsGame extends JPanel implements ActionListener {
      * @param keyCode
      * @param isPressed
      */
+    @SuppressWarnings("EnhancedSwitchMigration")
     private void handleKeys(int keyCode, boolean isPressed) {
-        if (isPressed == true && keyCode == KeyEvent.VK_SPACE) {
-            player.toggleSpaceSwing();
-        }
+        if (isPressed) {
+            if (keyCode == KeyEvent.VK_SPACE) {
+                player.toggleSpaceSwing();
+            }
 
+            if (keyCode == KeyEvent.VK_B) {
+                Main.shopScreen.setGameInstance(BenumZombsGame.this);
+                Main.showScreen("SHOP");
+                System.out.println("BenumZombsGame.java - Shop Opened via 'B'");
+                return;
+            }
+
+            if (keyCode == KeyEvent.VK_Q) {
+                int current = toolSystem.getActiveSlotIndex();
+                for (int i = 1; i <= 4; i++) {
+                    int nextSlot = (current + i) % 4;
+                    Tool nextTool = toolSystem.getToolInSlot(nextSlot);
+                    if (nextTool != null && nextTool.getIsUnlocked()) {
+                        toolSystem.setActiveSlot(nextSlot);
+                        break; 
+                    }
+                }
+            }
+
+            if (keyCode == KeyEvent.VK_F) {
+                player.usePotion();
+            }
+        }
+        
         switch (keyCode) {
         case KeyEvent.VK_W, KeyEvent.VK_UP:
             up = isPressed;
@@ -182,7 +218,6 @@ public class BenumZombsGame extends JPanel implements ActionListener {
             right = isPressed;
             break;
         default:
-            break;
         }
     }
 

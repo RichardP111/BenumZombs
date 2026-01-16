@@ -30,7 +30,7 @@ public class Player extends GameObject {
     private final String name;
 
     private static final int MAX_HEALTH = 100;
-    private int currentHealth = 50;
+    private int currentHealth = 100;
     private int shieldHealth = 0;
     private long lastRegenTime = 0;
     private static final int REGEN_DELAY = 100;
@@ -194,6 +194,21 @@ public class Player extends GameObject {
         }
     }
 
+    public void usePotion() {
+        Tool potion = toolSystem.getToolInSlot(3);
+        
+        if (potion != null && potion.getIsUnlocked() && currentHealth < MAX_HEALTH) {
+            currentHealth = MAX_HEALTH;
+            fillShield();
+            
+            potion.setUnlocked(false); 
+            
+            toolSystem.setActiveSlot(0); 
+            
+            System.out.println("Player.java - Used health potion");
+        }
+    }
+    
     public void fillShield() {
         int max = getMaxShieldHealth();
         if (max > 0) {
@@ -232,16 +247,7 @@ public class Player extends GameObject {
         Tool activeTool = toolSystem.getActiveTool();
 
         if ((spaceToggle || isMouseHolding) && activeTool != null && activeTool.isConsumable()) { 
-            if (currentHealth < MAX_HEALTH) {
-                currentHealth = MAX_HEALTH;
-                fillShield();
-                activeTool.setUnlocked(false); 
-                toolSystem.setActiveSlot(0); 
-                
-                //SoundManager.playSound("heal.wav"); 
-                System.out.println("Player.java - Used health potion");
-            }
-
+            usePotion();
             isMouseHolding = false;
             spaceToggle = false;
             return; 

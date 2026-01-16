@@ -122,6 +122,8 @@ public abstract class Tool {
     public void onGet(Player player) {}
 
     public abstract int getUpgradeCost();
+
+    public abstract String getDescription();
     
     public abstract void draw(Graphics2D g2d, int x, int y, double angle, double scale);
 

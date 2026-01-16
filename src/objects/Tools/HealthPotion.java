@@ -24,6 +24,11 @@ public class HealthPotion extends Tool {
     }
 
     @Override
+    public String getDescription() {
+        return "Heals your player to full health";
+    }
+
+    @Override
     public int getUpgradeCost() {
         return 100;
     }

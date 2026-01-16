@@ -12,6 +12,8 @@ import helpers.FontManager;
 import helpers.RoundedJButton;
 import helpers.SoundManager;
 import helpers.TextFormatter;
+import objects.Tools.Tool;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -22,13 +24,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import objects.Tools.Tool;
+
 import systems.ResourceSystem;
 import systems.ToolSystem;
 
@@ -60,6 +64,7 @@ public class ShopScreen extends JPanel {
     public ShopScreen() {
         setLayout(null);
         setBackground(new Color(42, 56, 26));  
+        setFocusable(true);
 
         tabs = ShopTab.values();
         hoverPoint = new Point(0, 0);
@@ -167,6 +172,19 @@ public class ShopScreen extends JPanel {
             @Override
             public void mouseExited(MouseEvent e) {}
         });
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_B) {
+                    if (gameInstance != null) {
+                        Main.showScreen("GAME");
+                        gameInstance.requestFocusInWindow();
+                        System.out.println("ShopScreen.java - Closed via 'B'");
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -177,6 +195,7 @@ public class ShopScreen extends JPanel {
      */
     public void setGameInstance(BenumZombsGame game) {
         this.gameInstance = game;
+        this.requestFocusInWindow();
     }
 
     /**

@@ -30,6 +30,11 @@ public class Bow extends Tool {
     }
 
     @Override
+    public String getDescription() {
+        return "Ranged weapon with high damage";
+    }
+
+    @Override
     public boolean isRanged() {
         return true;
     }

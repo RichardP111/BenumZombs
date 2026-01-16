@@ -34,6 +34,11 @@ public class Pickaxe extends Tool {
     }
 
     @Override
+    public String getDescription() {
+        return "Harvests stone or wood";
+    }
+
+    @Override
     public boolean canHarvest() {
         return true;
     }

@@ -34,6 +34,11 @@ public class Spear extends Tool {
     }
 
     @Override
+    public String getDescription() {
+        return "Meelee weapon with high attack speed";
+    }
+
+    @Override
     public int getUpgradeCost() {
         if (level >= 7){
             return -1;

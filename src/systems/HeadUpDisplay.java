@@ -23,6 +23,7 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import objects.Player;
 import objects.Tools.Tool;
@@ -353,23 +354,39 @@ public class HeadUpDisplay {
         //************* Toolbar Size and Position *************//
         int slotSize = 50;
         int slotPadding = 10;
+        Point mousePos = game.getMousePosition();
 
         int totalWidth = (4 * slotSize) + (3 * slotPadding);
         int toolBarX = (screenW - totalWidth) / 2;
         int toolBarY = screenH - 140;
 
+        Tool tooltipTool = null;
+        int hoverSlotX = 0;
+
         //************* Tool Bar Slots and Tools *************//
         for (int i = 0; i < 4; i++){
             int x = toolBarX + i * (slotSize + slotPadding);
-            g2d.setColor(new Color(247, 247, 247, 20));
-            if (toolSystem.getActiveTool() == toolSystem.getToolInSlot(i)){ //active tool color highlight
-                g2d.setColor(new Color(247, 247, 247, 50));
-            }
-            g2d.fillRoundRect(x, toolBarY, slotSize, slotSize, 10, 10);
+            Rectangle slotRect = new Rectangle(x, toolBarY, slotSize, slotSize);
+            boolean isHovered = (mousePos != null && slotRect.contains(mousePos));
 
             Tool tool = toolSystem.getToolInSlot(i);
-            if (tool != null && tool.getIsUnlocked()){ //draw tool if unlocked
+            boolean isUnlocked = tool != null && tool.getIsUnlocked();
+            
+            if (isHovered && isUnlocked) {
+                g2d.setColor(new Color(247, 247, 247, 55));
+            } else {
+                g2d.setColor(new Color(247, 247, 247, 30));
+            }
+            
+            g2d.fillRoundRect(x, toolBarY, slotSize, slotSize, 10, 10);
+            
+            if (isUnlocked){ 
                 tool.draw(g2d, x + slotSize / 2 - 10, toolBarY + slotSize / 2 + 10, 0.8, 0.5);
+
+                if (isHovered) {
+                    tooltipTool = tool;
+                    hoverSlotX = x;
+                }
             }
         }
 
@@ -381,9 +398,15 @@ public class HeadUpDisplay {
         //************* Building Bar Slots *************//
         for (int i = 0; i < 10; i++){
             int x = buildingBarX + i * (slotSize + slotPadding);
+            Rectangle slotRect = new Rectangle(x, buildingBarY, slotSize, slotSize);
+            boolean isHovered = (mousePos != null && slotRect.contains(mousePos));
 
             g2d.setColor(new Color(0, 0, 0, 30));
             g2d.fillRoundRect(x, buildingBarY, slotSize, slotSize, 10, 10); /////////////////////////////////////////////////////////////////////////////
+        }
+
+        if (tooltipTool != null) {
+            drawTooltip(g2d, hoverSlotX, toolBarY, slotSize, tooltipTool);
         }
     }
 
@@ -422,6 +445,37 @@ public class HeadUpDisplay {
 
         if (shopIcon != null) {
             g2d.drawImage(shopIcon, shopButtonBounds.x + offset, shopButtonBounds.y + offset, iconSize, iconSize, null);
+        }
+    }
+
+    private void drawTooltip(Graphics2D g2d, int slotX, int slotY, int slotSize, Tool tool) {
+        ArrayList<String> lines = new ArrayList<>();
+
+        lines.add(tool.getToolName());
+
+        lines.add("Tier " + tool.getLevel() + " Item");
+
+        lines.add(tool.getDescription());
+
+        int boxW = 230;
+        int boxH = 100;
+        int boxX = slotX + (slotSize / 2) - (boxW / 2); 
+        int boxY = slotY - boxH - 15;
+
+        g2d.setColor(new Color(0, 0, 0, 100));
+        g2d.fillRoundRect(boxX, boxY, boxW, boxH, 10, 10);
+
+        int textY = boxY + 25;
+        for (int i = 0; i < lines.size(); i++) {
+            if (i == 0) {
+                g2d.setColor(Color.WHITE); 
+                g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 13f));
+            } else {
+                g2d.setColor(Color.LIGHT_GRAY);
+                g2d.setFont(FontManager.googleSansFlex.deriveFont(12f));
+            }
+            g2d.drawString(lines.get(i), boxX + 10, textY);
+            textY += 18;
         }
     }
 }

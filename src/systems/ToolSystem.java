@@ -42,6 +42,16 @@ public class ToolSystem {
     }
 
     /**
+     * Gets the currently active slot index
+     * Precondition: N/A
+     * Postcondition: returns the active slot index
+     * @return
+     */
+    public int getActiveSlotIndex() {
+        return activeSlot;
+    }
+
+    /**
      * Gets the currently active tool
      * Precondition: N/A
      * Postcondition: returns the active Tool

@@ -25,6 +25,11 @@ public class Armor extends Tool {
     }
 
     @Override
+    public String getDescription() {
+        return "Harvests stone or wood";
+    }
+
+    @Override
     public int getUpgradeCost() {
         if (level >= 10){
             return -1;
