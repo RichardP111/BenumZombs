@@ -12,7 +12,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class HealthPotion extends Tool {
-    private Color potionColor;
+    private final Color potionColor;
 
     public HealthPotion(boolean unlocked) {
         super("Health Potion", unlocked);

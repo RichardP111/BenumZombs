@@ -41,10 +41,12 @@ public class Spear extends Tool {
         return costs[level]; 
     }
 
+    @Override
     public double getDamage() {
         return damageValues[level - 1];
     }
 
+    @Override
     public double getAttackSpeed() {
         return attackSpeeds[level - 1];
     }
@@ -89,7 +91,7 @@ public class Spear extends Tool {
                 break;
             default:
                 headColor = new Color(102, 102, 102);
-        };
+        }
 
         g2d.setColor(new Color(135, 95, 69));
         g2d.fillRoundRect(-2, -65, 4, 80, 2, 2);

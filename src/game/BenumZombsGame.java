@@ -111,6 +111,10 @@ public class BenumZombsGame extends JPanel implements ActionListener {
                     return;
                 }
 
+                if (headUpDisplay.handleToolbarClick(p)) {
+                    return; 
+                }
+
                 if (e.getButton() == MouseEvent.BUTTON1) { // Left click
                     player.setMouseHolding(true);
                 }
@@ -163,7 +167,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         if (isPressed == true && keyCode == KeyEvent.VK_SPACE) {
             player.toggleSpaceSwing();
         }
-        
+
         switch (keyCode) {
         case KeyEvent.VK_W, KeyEvent.VK_UP:
             up = isPressed;
@@ -296,6 +300,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         g2d.fillRect(OFFSET + PLAY_AREA - BORDER_THICKNESS, OFFSET, BORDER_THICKNESS, PLAY_AREA); // Right
 
         resourceSystem.draw(g2d); //draw resources
+        player.drawProjectiles(g2d);
 
         g2d.translate(-worldX, -worldY); // Reset translation for player and HUD drawing
 

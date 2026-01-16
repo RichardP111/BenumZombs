@@ -47,6 +47,7 @@ public class Armor extends Tool {
         player.fillShield();
     }
     
+    @Override
     public void draw(Graphics2D g2d, int x, int y, double angle, double scale) {
         AffineTransform oldTransform = g2d.getTransform();
 
@@ -86,7 +87,7 @@ public class Armor extends Tool {
                 break;
             default:
                 armorColor = new Color(61, 161, 217);
-        };
+        }
 
         Path2D shield = new Path2D.Double();
         shield.moveTo(18, -60);

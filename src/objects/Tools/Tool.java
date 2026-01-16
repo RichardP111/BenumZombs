@@ -48,6 +48,16 @@ public abstract class Tool {
     }
 
     /**
+     * Sets the level of the tool
+     * Precondition: level is a positive integer
+     * Postcondition: sets the level of the tool
+     * @param level
+     */
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    /**
      * Gets the name of the tool
      * Precondition: None
      * Postcondition: returns the name of the tool
@@ -77,8 +87,36 @@ public abstract class Tool {
         isUnlocked = unlocked;
     }
 
+    /**
+     * Checks if the tool is consumable
+     * Precondition: None
+     * Postcondition: returns false for non-consumable tools
+     * @return
+     */
     public boolean isConsumable() {
         return false;
+    }
+
+    /**
+     * Checks if the tool can harvest resources
+     * Precondition: None
+     * Postcondition: returns false for non-harvesting tools
+     * @return
+     */
+    public boolean canHarvest() {
+        return false; 
+    }
+
+    public boolean isRanged() {
+        return false;
+    }
+
+    public double getAttackSpeed() {
+        return 1.0;
+    }
+
+    public double getDamage() {
+        return 0;
     }
 
     public void onGet(Player player) {}

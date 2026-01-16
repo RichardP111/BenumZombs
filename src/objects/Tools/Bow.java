@@ -30,6 +30,11 @@ public class Bow extends Tool {
     }
 
     @Override
+    public boolean isRanged() {
+        return true;
+    }
+
+    @Override
     public int getUpgradeCost() {
         if (level >= 7){
             return -1;
@@ -37,10 +42,12 @@ public class Bow extends Tool {
         return costs[level]; 
     }
 
+    @Override
     public double getDamage() {
         return damageValues[level - 1];
     }
 
+    @Override
     public double getAttackSpeed() {
         return attackSpeeds[level - 1];
     }
@@ -79,7 +86,7 @@ public class Bow extends Tool {
                 break;
             default:
                 bowColor = new Color(102, 102, 102);
-        };
+        }
         
         g2d.setColor(new Color(135, 95, 69));
         g2d.fillRoundRect(-5, -70, 4, 70, 2, 2);

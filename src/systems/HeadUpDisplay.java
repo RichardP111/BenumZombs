@@ -12,7 +12,15 @@ import game.BenumZombsGame;
 import helpers.FontManager;
 import helpers.SoundManager;
 import helpers.TextFormatter;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -44,13 +52,6 @@ public class HeadUpDisplay {
         this.toolSystem = toolSystem;
 
         loadIcons();
-
-        game.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mousePressed(java.awt.event.MouseEvent e) {
-                handleToolbarClick(e.getPoint());
-            }
-        });
     }
 
     /**
@@ -73,7 +74,7 @@ public class HeadUpDisplay {
      * Postcondition: active tool is changed if a toolbar slot is clicked
      * @param p
      */
-    private void handleToolbarClick(Point p) {
+    public boolean handleToolbarClick(Point p) {
         int width = game.getWidth();
         int height = game.getHeight();
         
@@ -83,19 +84,33 @@ public class HeadUpDisplay {
         int toolBarX = (width - totalWidth) / 2;
         int toolBarY = height - 140;
 
-        for (int i = 0; i < 4; i++) {
-            int x = toolBarX + i * (slotSize + slotPadding);
-            Rectangle slotBounds = new Rectangle(x, toolBarY, slotSize, slotSize);
+        Rectangle toolBarRect = new Rectangle(toolBarX, toolBarY, totalWidth, slotSize);
+        boolean clickedToolbar = toolBarRect.contains(p);
 
-            if (slotBounds.contains(p)) {
-                Tool tool = toolSystem.getToolInSlot(i);
-                if (tool != null && tool.getIsUnlocked()) {
-                    toolSystem.setActiveSlot(i);
-                    SoundManager.playSound("buttonClick.wav");
-                    System.out.println("HUD.java - Switched to: " + tool.getToolName());
+        if (clickedToolbar) {
+            for (int i = 0; i < 4; i++) {
+                int x = toolBarX + i * (slotSize + slotPadding);
+                Rectangle slotBounds = new Rectangle(x, toolBarY, slotSize, slotSize);
+
+                if (slotBounds.contains(p)) {
+                    Tool tool = toolSystem.getToolInSlot(i);
+                    if (tool != null && tool.getIsUnlocked()) {
+                        toolSystem.setActiveSlot(i);
+                        SoundManager.playSound("buttonClick.wav");
+                        System.out.println("HUD.java - Switched to: " + tool.getToolName());
+                    }
                 }
             }
         }
+        
+        int buildingBarW = (10 * slotSize) + (9 * slotPadding);
+        int buildingBarX = (width - buildingBarW) / 2;
+        int buildingBarY = height - 70;
+        
+        Rectangle buildingBarRect = new Rectangle(buildingBarX, buildingBarY, buildingBarW, slotSize);
+        boolean clickedBuildingBar = buildingBarRect.contains(p);
+
+        return clickedToolbar || clickedBuildingBar;
     }
 
     /**
@@ -259,23 +274,27 @@ public class HeadUpDisplay {
         int barX = 20, barY = screenH - 200;
 
         int offset = (int)(time * barW);
+        int shift = barW / 4;
 
         Shape oldClip = g2d.getClip(); // Save current clip
 
         g2d.setClip(new RoundRectangle2D.Float(barX, barY, barW, barH, 15, 15));
 
         //************* Time Bar Fill *************//
-        g2d.setColor(new Color(214, 171, 53, 180)); // Yellow
-        g2d.fillRect(barX - offset, barY, barW / 2, barH);
+        g2d.setColor(new Color(132, 115, 212, 180)); // purple
+        g2d.fillRect(barX - (barW / 2) - offset + shift, barY, barW / 2, barH);
+
+        g2d.setColor(new Color(214, 171, 53, 180)); // yellow
+        g2d.fillRect(barX - offset + shift, barY, barW / 2, barH);
         
-        g2d.setColor(new Color(132, 115, 212, 180)); // Purple
-        g2d.fillRect(barX + (barW / 2) - offset, barY, barW / 2, barH);
+        g2d.setColor(new Color(132, 115, 212, 180)); // purple
+        g2d.fillRect(barX + (barW / 2) - offset + shift, barY, barW / 2, barH);
         
-        g2d.setColor(new Color(214, 171, 53, 180)); // Yellow
-        g2d.fillRect(barX + barW - offset, barY, barW / 2, barH);
+        g2d.setColor(new Color(214, 171, 53, 180)); // yellow
+        g2d.fillRect(barX + barW - offset + shift, barY, barW / 2, barH);
         
-        g2d.setColor(new Color(132, 115, 212, 180));  // Purple
-        g2d.fillRect(barX + (int)(barW * 1.5) - offset, barY, barW / 2, barH);
+        g2d.setColor(new Color(132, 115, 212, 180)); // purple
+        g2d.fillRect(barX + (int)(barW * 1.5) - offset + shift, barY, barW / 2, barH);
 
         g2d.setClip(oldClip);
 

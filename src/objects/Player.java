@@ -17,6 +17,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 import objects.Tools.Armor;
 import objects.Tools.Tool;
 import systems.CollisionSystem;
@@ -42,8 +43,10 @@ public class Player extends GameObject {
     private boolean isAnimating = false;  
     private double baseAngle = 0;
     private float swingTimer = 0f;
-    private final float swingSpeed = 0.20f;
+    private final float swingSpeed = 0.30f;
 
+    private final ArrayList<Projectile> projectiles = new ArrayList<>();
+    private long lastAttackTime = 0;
 
     /**
      * Constructor for Player
@@ -226,25 +229,42 @@ public class Player extends GameObject {
      * Postcondition: swingTimer is updated if swinging, isAnimating is set accordingly
      */
     public void updateSwing(ResourceSystem resourceSystem) {
-        if (spaceToggle || isMouseHolding) { 
-            Tool activeTool = toolSystem.getActiveTool();
-            if (activeTool != null && activeTool.isConsumable()) {
-                if (currentHealth < MAX_HEALTH) {
-                    currentHealth = MAX_HEALTH;
-                    fillShield();
-                    activeTool.setUnlocked(false); 
-                    
-                    toolSystem.setActiveSlot(0); 
-                    
-                    //SoundManager.playSound("heal.wav"); 
-                    System.out.println("Player.java - Used health potion");
-                }
+        Tool activeTool = toolSystem.getActiveTool();
 
-                isMouseHolding = false;
-                spaceToggle = false;
-                return; 
+        if ((spaceToggle || isMouseHolding) && activeTool != null && activeTool.isConsumable()) { 
+            if (currentHealth < MAX_HEALTH) {
+                currentHealth = MAX_HEALTH;
+                fillShield();
+                activeTool.setUnlocked(false); 
+                toolSystem.setActiveSlot(0); 
+                
+                //SoundManager.playSound("heal.wav"); 
+                System.out.println("Player.java - Used health potion");
             }
 
+            isMouseHolding = false;
+            spaceToggle = false;
+            return; 
+        }
+        
+        if (activeTool != null && activeTool.isRanged()) {
+            if (isMouseHolding || spaceToggle) {
+                long currentTime = System.currentTimeMillis();
+                
+                long cooldown = (long)(1000 / activeTool.getAttackSpeed());
+                
+                if (currentTime - lastAttackTime > cooldown) {
+                    projectiles.add(new Projectile(getCenterX(), getCenterY(), baseAngle, activeTool.getDamage()));
+                    lastAttackTime = currentTime;
+                }
+            }
+
+            isAnimating = false;
+            swingTimer = 0;
+            return;
+        }
+
+        if (spaceToggle || isMouseHolding) { 
             isAnimating = true;
         }
 
@@ -268,6 +288,18 @@ public class Player extends GameObject {
     }
 
     /**
+     * Draws the player's projectiles
+     * Precondition: g2d is a valid Graphics2D object
+     * Postcondition: projectiles are drawn on screen
+     * @param g2d
+     */
+    public void drawProjectiles(Graphics2D g2d) {
+        for (int i = 0; i < projectiles.size(); i++) {
+            projectiles.get(i).draw(g2d);
+        }
+    }
+
+    /**
      * Checks for hit collisions with resources based on current angle
      * Precondition: resourceSystem is a valid ResourceSystem, currentAngle is the angle of the player's tool swing
      * Postcondition: if a resource is hit, appropriate action is taken
@@ -275,17 +307,29 @@ public class Player extends GameObject {
      * @param currentAngle
      */
     public void checkHit(ResourceSystem resourceSystem, double currentAngle){
+        Tool activeTool = toolSystem.getActiveTool();
+
+        if (activeTool != null && !activeTool.canHarvest()) {
+            return;
+        }
+
         double hitX = getCenterX() + Math.cos(currentAngle) * 65; // calculate hit position
         double hitY = getCenterY() + Math.sin(currentAngle) * 65;
 
         Rectangle hitBox = new Rectangle((int)(hitX - 15), (int)(hitY - 15), 30, 30);
 
         String hitObject = CollisionSystem.checkHitCollision(hitBox, resourceSystem);
+
         if (hitObject != null){
+            int amount = 2; 
+            if (activeTool != null) {
+                amount = activeTool.getLevel() * 2; 
+            }
+
             if (hitObject.equals("tree")){
-                resourceSystem.addWood(2);
+                resourceSystem.addWood(amount);
             } else if (hitObject.equals("stone")){
-                resourceSystem.addStone(2);
+                resourceSystem.addStone(amount);
             }
         }   
     }
@@ -311,6 +355,15 @@ public class Player extends GameObject {
                     }
                     lastRegenTime = System.currentTimeMillis();
                 }
+            }
+        }
+
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
+            Projectile p = projectiles.get(i);
+            p.update();
+            
+            if (p.isDead()) {
+                projectiles.remove(i);
             }
         }
     }
@@ -356,7 +409,20 @@ public class Player extends GameObject {
 
         Tool activeTool = toolSystem.getActiveTool();
         if (activeTool != null){
-            activeTool.draw(g2d, (int)rightHandX, (int)rightHandY, angleToLeftHand + Math.PI / 2, 0.8);
+            int drawX, drawY;
+            double drawAngle;
+
+            if (activeTool.isRanged()) {
+                drawX = (int)centerX;
+                drawY = (int)centerY;
+                drawAngle = Math.PI;
+            } else {
+                drawX = (int)rightHandX;
+                drawY = (int)rightHandY;
+                drawAngle = angleToLeftHand + Math.PI / 2;
+            }
+
+            activeTool.draw(g2d, drawX, drawY, drawAngle, 0.8);
         }
 
         //************* Player Arms *************//

@@ -34,6 +34,11 @@ public class Pickaxe extends Tool {
     }
 
     @Override
+    public boolean canHarvest() {
+        return true;
+    }
+
+    @Override
     public int getUpgradeCost() {
         if (level >= 7){
             return -1;
@@ -45,6 +50,7 @@ public class Pickaxe extends Tool {
         return harvestValues[level - 1];
     }
 
+    @Override
     public double getAttackSpeed() {
         return attackSpeeds[level - 1];
     }
@@ -89,7 +95,7 @@ public class Pickaxe extends Tool {
                 break;
             default:
                 headColor = new Color(102, 102, 102);
-        };
+        }
 
         g2d.setColor(new Color(135, 95, 69));
         g2d.fillRoundRect(-2, -55, 4, 75, 2, 2); 

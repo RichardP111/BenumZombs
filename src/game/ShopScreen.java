@@ -288,12 +288,23 @@ public class ShopScreen extends JPanel {
         g2d.fillRoundRect(x, y, w, h, 20, 20);
 
         //************* Tool Icon *************//
+        int originalLevel = tool.getLevel();
+        int displayLevel = originalLevel;
+
+        if (tool.getIsUnlocked() && !tool.isConsumable() && cost != -1) {
+            displayLevel++;
+        }
+
         int iconPadding = 12;
         int iconBoxSize = h - (iconPadding * 2);
         int iconX = x + iconPadding;
         int iconY = y + iconPadding;
 
+        tool.setLevel(displayLevel);
+
         tool.draw(g2d, iconX + (iconBoxSize / 3), (int)(iconY + iconBoxSize - (iconBoxSize * 0.25)), 0.8, (iconBoxSize / 80.0) * 0.75);
+
+        tool.setLevel(originalLevel);
 
         //************* Tool Info Text *************//
         g2d.setColor(Color.WHITE);
@@ -302,15 +313,25 @@ public class ShopScreen extends JPanel {
 
         g2d.setFont(FontManager.googleSansFlex.deriveFont(14f));
         g2d.setColor(new Color(150, 150, 150));
-        g2d.drawString("Tier " + tool.getLevel(), iconX + iconBoxSize + 20, y + 55); // Tool tier
 
+        if (cost == -1) {
+            g2d.drawString("Max Tier", iconX + iconBoxSize + 20, y + 55);
+        } else {
+            int displayTier = tool.getLevel();
+            if (tool.getIsUnlocked() && !tool.isConsumable()) {
+                displayTier++;
+            }
+            g2d.drawString("Tier " + displayTier, iconX + iconBoxSize + 20, y + 55);
+        }
+
+        //************* Cost Info *************//
         g2d.setColor(new Color(251, 177, 59));
-        g2d.fillOval(x + w - 100, y + 20, 14, 14); // Gold icon
+        g2d.fillOval(x + w - 100, y + 20, 14, 14);
 
         g2d.setColor(Color.WHITE);
         g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 18f));
 
-        if (cost != -1){ //Cost to upgrade or purchase
+        if (cost != -1){ 
             g2d.drawString(String.valueOf(cost), x + w - 75, y + 32);
         } else{
             g2d.drawString("MAX", x + w - 75, y + 32);

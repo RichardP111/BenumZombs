@@ -1,9 +1,11 @@
 /**
+ * Tree.java
+ * The Tree class for BenumZombs, defining tree properties and behaviors
  * @author Richard Pu
  * @version 1.0
- * 2026-01-19
- * BenumZombs - Tree Class which defines tree objects
+ * @since 2026-01-10
  */
+
 
 package objects;
 
