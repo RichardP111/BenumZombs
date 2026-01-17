@@ -17,9 +17,9 @@ public class RandomGeneration {
 
     /**
      * Gets a random location within the game boundaries
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: A random Point within the game boundaries is returned
-     * @return
+     * @return Point representing a random location
      */
     public static Point getRandomLocation() {
         int minX = BenumZombsGame.OFFSET + BenumZombsGame.BORDER_THICKNESS;

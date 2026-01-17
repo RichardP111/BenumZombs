@@ -33,7 +33,7 @@ public class SettingsScreen extends JPanel {
      * Constructor for SettingsScreen
      * Precondition: window is a valid JFrame, gameInstance is a valid BenumZombsGame, or null
      * Postcondition: SettingsScreen panel is created within the given window
-     * @param window
+     * @param window the main game window
      */
     @SuppressWarnings("Convert2Lambda")
     public SettingsScreen() {
@@ -130,10 +130,10 @@ public class SettingsScreen extends JPanel {
                 if (gameInstance != null) {
                     Main.showScreen("GAME");
                     gameInstance.requestFocusInWindow();
-                    System.out.println("SettingsScreen.java - Returning to game from Settings Screen.");
+                    System.out.println("SettingsScreen.java - Returning to game.");
                 } else {
                     Main.showScreen("MENU");
-                    System.out.println("SettingsScreen.java - Returning to menu from Settings Screen.");
+                    System.out.println("SettingsScreen.java - Returning to menu.");
                 }
                 SoundManager.playSound("buttonClick.wav");
             }
@@ -144,7 +144,7 @@ public class SettingsScreen extends JPanel {
      * Sets the game instance associated with this settings screen
      * Precondition: game is a valid BenumZombsGame object or null
      * Postcondition: gameInstance is set to the provided game
-     * @param game
+     * @param game the BenumZombsGame instance to associate with this settings screen
      */
     public void setGameInstance(BenumZombsGame game) {
         this.gameInstance = game;
@@ -152,7 +152,7 @@ public class SettingsScreen extends JPanel {
 
     /**
      * Updates the layout of the components based on the current size of the panel
-     * Precondition: none
+     * Precondition: N/A
      * Postcondition: components are repositioned and resized based on screen size
      */
     private void updateLayout() {
@@ -187,8 +187,9 @@ public class SettingsScreen extends JPanel {
 
     /**
      * Updates the layout of the graphical boxes based on the current size of screen
-     * Precondition: none
+     * Precondition: N/A
      * Postcondition: background boxes are painted
+     * @param g the Graphics object to draw on
      */
     @Override
     protected void paintComponent(Graphics g) {

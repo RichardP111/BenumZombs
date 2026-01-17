@@ -19,11 +19,11 @@ public abstract class GameObject {
      * Constructor for GameObject
      * Precondition: width and height are positive integers
      * Postcondition: GameObject is created
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param color
+     * @param x the x-coordinate of the game object
+     * @param y the y-coordinate of the game object
+     * @param width the width of the game object
+     * @param height the height of the game object
+     * @param color the color of the game object
      */
     public GameObject(double x, double y, int width, int height, Color color) {
         this.x = x;

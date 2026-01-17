@@ -26,6 +26,7 @@ import systems.ToolSystem;
 
 public class Player extends GameObject {
 
+    //************* Player Properties *************//
     private static final double SPEED = 5; //player speed
     private final String name;
 
@@ -35,6 +36,7 @@ public class Player extends GameObject {
     private long lastRegenTime = 0;
     private static final int REGEN_DELAY = 100;
 
+    //************* Player Systems and States *************//
     private final ToolSystem toolSystem;
     private boolean hitProcessed = false; 
 
@@ -52,9 +54,9 @@ public class Player extends GameObject {
      * Constructor for Player
      * Precondition: x, y are within game world bounds
      * Postcondition: Player object is created at (x, y) with name
-     * @param x
-     * @param y
-     * @param name
+     * @param x the x-coordinate of the player
+     * @param y the y-coordinate of the player
+     * @param name the name of the player
      */
     public Player(double x, double y, String name, ToolSystem toolSystem) {
         super(x, y, 50, 50, new Color(252, 200, 117));
@@ -66,7 +68,7 @@ public class Player extends GameObject {
      * Gets the center X coordinate of the player
      * Precondition: N/A
      * Postcondition: returns center X coordinate
-     * @return
+     * @return the center X coordinate of the player
      */
     public double getCenterX() { 
         return x + width / 2; 
@@ -76,7 +78,7 @@ public class Player extends GameObject {
      * Gets the center Y coordinate of the player
      * Precondition: N/A
      * Postcondition: returns center Y coordinate
-     * @return
+     * @return the center Y coordinate of the player
      */
     public double getCenterY() { 
         return y + height / 2; 
@@ -86,7 +88,7 @@ public class Player extends GameObject {
      * Gets the width of the player
      * Precondition: N/A
      * Postcondition: returns width
-     * @return
+     * @return the width of the player
      */
     public int getWidth() { 
         return width; 
@@ -96,7 +98,7 @@ public class Player extends GameObject {
      * Gets the height of the player
      * Precondition: N/A
      * Postcondition: returns height
-     * @return
+     * @return the height of the player
      */
     public int getHeight() { 
         return height; 
@@ -106,7 +108,7 @@ public class Player extends GameObject {
      * Gets the maximum health of the player
      * Precondition: N/A
      * Postcondition: returns max health
-     * @return
+     * @return the maximum health of the player
      */
     public int getMaxHealth() {
         return MAX_HEALTH;
@@ -116,12 +118,18 @@ public class Player extends GameObject {
      * Gets the current health of the player
      * Precondition: N/A
      * Postcondition: returns current health
-     * @return
+     * @return the current health of the player
      */ 
     public int getCurrentHealth() {
         return currentHealth;
     }
 
+    /**
+     * Gets the maximum shield health provided by equipped armor
+     * Precondition: N/A
+     * Postcondition: returns max shield health
+     * @return the maximum shield health of the player
+     */
     public int getMaxShieldHealth() {
     Armor armor = (Armor) toolSystem.getToolInSlot(4);
         if (armor != null && armor.getIsUnlocked()) {
@@ -130,22 +138,29 @@ public class Player extends GameObject {
         return 0;
     }
 
+    /**
+     * Gets the current shield health of the player
+     * Precondition: N/A
+     * Postcondition: returns current shield health
+     * @return the current shield health of the player
+     */
     public int getShieldHealth() {
         return shieldHealth;
     }
 
     /**
      * Moves the player based on input directions and world bounds
-     * Precondition: minX, maxX, minY, maxY define valid movement bounds
+     * Precondition: up, down, left, right indicate movement directions; minX, maxX, minY, maxY define movement bounds; resourceSystem is valid for collision detection 
      * Postcondition: player position is updated within bounds
-     * @param up
-     * @param down
-     * @param left
-     * @param right
-     * @param minX
-     * @param maxX
-     * @param minY
-     * @param maxY
+     * @param up whether the player is moving up
+     * @param down whether the player is moving down
+     * @param left whether the player is moving left
+     * @param right whether the player is moving right
+     * @param minX the minimum x-coordinate the player can move to
+     * @param maxX the maximum x-coordinate the player can move to
+     * @param minY the minimum y-coordinate the player can move to
+     * @param maxY the maximum y-coordinate the player can move to
+     * @param resourceSystem the ResourceSystem for collision detection
      */
     public void move(boolean up, boolean down, boolean left, boolean right, int minX, int maxX, int minY, int maxY, ResourceSystem resourceSystem) {
         if (up && y > minY){
@@ -178,7 +193,7 @@ public class Player extends GameObject {
      * Reduces the player's health by the specified amount
      * Precondition: amount is non-negative
      * Postcondition: currentHealth is decreased by amount, not below 0
-     * @param amount
+     * @param amount the amount of damage to take
      */
     public void takeDamage(int amount) {
         if (shieldHealth > 0) {
@@ -194,6 +209,11 @@ public class Player extends GameObject {
         }
     }
 
+    /**
+     * Uses a health potion if available to restore health and shield
+     * Precondition: N/A
+     * Postcondition: currentHealth is restored to MAX_HEALTH and shieldHealth is filled if potion is used
+     */
     public void usePotion() {
         Tool potion = toolSystem.getToolInSlot(3);
         
@@ -209,6 +229,11 @@ public class Player extends GameObject {
         }
     }
     
+    /**
+     * Fills the player's shield health to maximum based on equipped armor
+     * Precondition: N/A
+     * Postcondition: shieldHealth is set to maximum shield health
+     */
     public void fillShield() {
         int max = getMaxShieldHealth();
         if (max > 0) {
@@ -229,7 +254,7 @@ public class Player extends GameObject {
      * Sets whether the mouse button is being held down for swinging
      * Precondition: N/A
      * Postcondition: isMouseHolding is set to holding, spaceToggle is disabled if holding
-     * @param holding
+     * @param holding whether the mouse button is being held down
      */
     public void setMouseHolding(boolean holding) { 
         if (holding && spaceToggle) {
@@ -239,13 +264,15 @@ public class Player extends GameObject {
     }
 
     /**
-     * Updates the swing animation state
+     * Updates the player's swing animation and processes hits
      * Precondition: N/A
-     * Postcondition: swingTimer is updated if swinging, isAnimating is set accordingly
+     * Postcondition: swing animation is updated and hits are processed
+     * @param resourceSystem the ResourceSystem for hit detection
      */
     public void updateSwing(ResourceSystem resourceSystem) {
         Tool activeTool = toolSystem.getActiveTool();
 
+        //************* Use Potion *************//
         if ((spaceToggle || isMouseHolding) && activeTool != null && activeTool.isConsumable()) { 
             usePotion();
             isMouseHolding = false;
@@ -253,6 +280,7 @@ public class Player extends GameObject {
             return; 
         }
         
+        //************* Arrows *************//
         if (activeTool != null && activeTool.isRanged()) {
             if (isMouseHolding || spaceToggle) {
                 long currentTime = System.currentTimeMillis();
@@ -264,12 +292,12 @@ public class Player extends GameObject {
                     lastAttackTime = currentTime;
                 }
             }
-
             isAnimating = false;
             swingTimer = 0;
             return;
         }
 
+        //************* Swing Animation *************//
         if (spaceToggle || isMouseHolding) { 
             isAnimating = true;
         }
@@ -289,15 +317,14 @@ public class Player extends GameObject {
                     isAnimating = false;
                 }
             }
-        }
-        
+        }     
     }
 
     /**
      * Draws the player's projectiles
      * Precondition: g2d is a valid Graphics2D object
      * Postcondition: projectiles are drawn on screen
-     * @param g2d
+     * @param g2d the Graphics2D object to draw on
      */
     public void drawProjectiles(Graphics2D g2d) {
         for (int i = 0; i < projectiles.size(); i++) {
@@ -309,8 +336,8 @@ public class Player extends GameObject {
      * Checks for hit collisions with resources based on current angle
      * Precondition: resourceSystem is a valid ResourceSystem, currentAngle is the angle of the player's tool swing
      * Postcondition: if a resource is hit, appropriate action is taken
-     * @param resourceSystem
-     * @param currentAngle
+     * @param resourceSystem the ResourceSystem for hit detection
+     * @param currentAngle the angle of the player's tool swing
      */
     public void checkHit(ResourceSystem resourceSystem, double currentAngle){
         Tool activeTool = toolSystem.getActiveTool();
@@ -326,10 +353,10 @@ public class Player extends GameObject {
 
         String hitObject = CollisionSystem.checkHitCollision(hitBox, resourceSystem);
 
-        if (hitObject != null){
-            int amount = 2; 
+        if (hitObject != null){     
+            int amount = 2;
             if (activeTool != null) {
-                amount = activeTool.getLevel() * 2; 
+                //amount = activeTool.getHarvestPower();  /////////////////////////////////////////////////////////
             }
 
             if (hitObject.equals("tree")){
@@ -343,10 +370,11 @@ public class Player extends GameObject {
     /**
      * Updates the player's state
      * Precondition: N/A
-     * Postcondition: N/A
+     * Postcondition: player's shield regenerates and projectiles are updated
      */
     @Override
     public void update() {
+        //************* Shield Regeneration *************//
         Armor armor = (Armor) toolSystem.getToolInSlot(4); 
         if (armor != null && armor.getIsUnlocked()) {
             int maxShield = armor.getBonusHP();
@@ -364,6 +392,7 @@ public class Player extends GameObject {
             }
         }
 
+        //************* Update Projectiles *************//
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             Projectile p = projectiles.get(i);
             p.update();
@@ -378,11 +407,11 @@ public class Player extends GameObject {
      * Draws the player at specified screen coordinates, rotated to face mouse position
      * Precondition: g2d is a valid Graphics2D object, screenX/Y are the top-left screen coordinates to draw the player, mouseX/Y are the current mouse coordinates
      * Postcondition: player is drawn on screen facing mouse position
-     * @param g2d
-     * @param screenX
-     * @param screenY
-     * @param mouseX
-     * @param mouseY
+     * @param g2d the Graphics2D object to draw on
+     * @param screenX the x-coordinate on the screen to draw the player
+     * @param screenY the y-coordinate on the screen to draw the player
+     * @param mouseX the current x-coordinate of the mouse
+     * @param mouseY the current y-coordinate of the mouse
      */
     public void drawAt(Graphics2D g2d, int screenX, int screenY, int mouseX, int mouseY) {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -469,6 +498,7 @@ public class Player extends GameObject {
      * Draws the player at its current position without rotation
      * Precondition: g2d is a valid Graphics2D object
      * Postcondition: player is drawn on screen at its (x, y) position
+     * @param g2d the Graphics2D object to draw on
      */
     @Override
     public void draw(Graphics2D g2d) {

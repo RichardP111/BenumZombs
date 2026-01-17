@@ -23,34 +23,55 @@ public class Spear extends Tool {
      * Constructor for Spear
      * Precondition: N/A
      * Postcondition: Spear tool object is created
-     * @param unlocked
+     * @param unlocked whether the spear is unlocked
      */
     public Spear(boolean unlocked) {
         super("Spear", unlocked);
+        this.description = "Melee weapon with high attack speed";
     }
 
-    @Override
-    public void use(){
-    }
-
+    /**
+     * Gets the description of the spear
+     * Precondition: N/A
+     * Postcondition: returns the description of the spear
+     * @return the description of the spear
+     */
     @Override
     public String getDescription() {
-        return "Meelee weapon with high attack speed";
+        return description;
     }
 
+    /**
+     * Gets the upgrade cost of the spear
+     * Precondition: N/A
+     * Postcondition: returns the upgrade cost of the spear
+     * @return the upgrade cost of the spear
+     */
     @Override
     public int getUpgradeCost() {
         if (level >= 7){
             return -1;
         }
-        return costs[level]; 
+        return costs[level];
     }
 
+    /**
+     * Gets the damage of the spear
+     * Precondition: N/A
+     * Postcondition: returns the damage of the spear
+     * @return the damage of the spear
+     */
     @Override
     public double getDamage() {
         return damageValues[level - 1];
     }
 
+    /**
+     * Gets the attack speed of the spear
+     * Precondition: N/A
+     * Postcondition: returns the attack speed of the spear
+     * @return the attack speed of the spear
+     */
     @Override
     public double getAttackSpeed() {
         return attackSpeeds[level - 1];
@@ -60,9 +81,11 @@ public class Spear extends Tool {
      * Draws the spear at the specified position, angle, and scale
      * Precondition: g2d is a valid Graphics2D object, x and y are valid coordinates, angle is a valid rotation angle, scale is a positive scaling factor
      * Postcondition: Spear is drawn on the Graphics2D context at the specified position, angle, and scale
-     * @param g2d
-     * @param x
-     * @param y
+     * @param g2d the Graphics2D context to draw on
+     * @param x the x-coordinate where the spear is drawn
+     * @param y the y-coordinate where the spear is drawn
+     * @param angle the rotation angle of the spear
+     * @param scale the scaling factor for the spear
      */
     @Override
     public void draw(Graphics2D g2d, int x, int y, double angle, double scale) {
@@ -72,6 +95,7 @@ public class Spear extends Tool {
         g2d.rotate(angle);
         g2d.scale(scale, scale);
 
+        //************* Set head color based on level *************//
         switch (level) {
             case 1:
                 headColor = new Color(102, 102, 102);
@@ -98,6 +122,7 @@ public class Spear extends Tool {
                 headColor = new Color(102, 102, 102);
         }
 
+        //************* Draw Handle *************//
         g2d.setColor(new Color(135, 95, 69));
         g2d.fillRoundRect(-2, -65, 4, 80, 2, 2);
 
@@ -105,6 +130,7 @@ public class Spear extends Tool {
         g2d.setStroke(new BasicStroke(3));
         g2d.drawRoundRect(-2, -65, 4, 80, 2, 2);
 
+        //************* Draw Spear *************//
         Path2D head = new Path2D.Double();
         head.moveTo(-5, -50);
         head.lineTo(-5, -80);
@@ -131,6 +157,15 @@ public class Spear extends Tool {
         g2d.setTransform(oldTransform);
     }
 
+    /**
+     * Draws the spear at the specified position and angle with default scale
+     * Precondition: g2d is a valid Graphics2D object, x and y are valid coordinates, angle is a valid rotation angle
+     * Postcondition: Spear is drawn on the Graphics2D context at the specified position and angle with default scale
+     * @param g2d the Graphics2D context to draw on
+     * @param x the x-coordinate where the spear is drawn
+     * @param y the y-coordinate where the spear is drawn
+     * @param angle the rotation angle of the spear
+     */
     public void draw(Graphics2D g2d, int x, int y, double angle) {
         draw(g2d, x, y, angle, 1.0);
     }

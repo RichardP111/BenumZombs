@@ -6,7 +6,6 @@
  * @since 2026-01-10
  */
 
-
 package objects;
 
 import java.awt.*;
@@ -24,8 +23,8 @@ public class Tree {
      * Constructor for Tree object
      * Precondition: x and y are valid coordinates within the game window
      * Postcondition: A Tree object is created at the specified coordinates
-     * @param x
-     * @param y
+     * @param x the x-coordinate of the tree
+     * @param y the y-coordinate of the tree
      */
     public Tree(int x, int y) {
         this.x = x;
@@ -41,18 +40,18 @@ public class Tree {
     }
 
     /**
-     * Plays the stone's shake animation
-     * Precondition: None
-     * Postcondition: The stone's shake offset is set to initiate the animation
+     * Plays the tree's shake animation
+     * Precondition: N/A
+     * Postcondition: The tree's shake offset is set to initiate the animation
      */
     public void playAnimation(){
         this.shakeOffset = 15;
     }
 
     /**
-     * Updates the stone's animation state
-     * Precondition: None
-     * Postcondition: The stone's shake offset is updated
+     * Updates the trees's animation state
+     * Precondition: N/A
+     * Postcondition: The tree's shake offset is updated
      */
     public void update(){
         if (Math.abs(shakeOffset) > 0.5) {
@@ -66,7 +65,7 @@ public class Tree {
      * Draws the tree on the provided Graphics2D context
      * Precondition: g2d is a valid Graphics2D object
      * Postcondition: The tree image is drawn at its coordinates
-     * @param g2d
+     * @param g2d the Graphics2D object to draw on
      */
     public void draw(Graphics2D g2d) {
         if (treeImage != null) {
@@ -76,9 +75,9 @@ public class Tree {
 
     /**
      * Gets the bounding rectangle of the tree for collision detection
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: A Rectangle object representing the tree's bounds is returned
-     * @return
+     * @return a Rectangle representing the tree's bounding box
      */
     public Rectangle getBounds() {
         int buffer = SIZE / 4; 

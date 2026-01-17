@@ -18,7 +18,7 @@ public class FontManager {
 
     /**
      * Loads the Google Sans Flex font
-     * Precondition: none
+     * Precondition: N/A
      * Postcondition: googleSansFlex is loaded
      */
     public static void loadGoogleSansFlex() {

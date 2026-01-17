@@ -25,6 +25,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import objects.Buildings.Building;
 import objects.Player;
 import objects.Tools.Tool;
 
@@ -35,9 +36,9 @@ public class HeadUpDisplay {
 
     public Rectangle settingsButtonBounds;
     public Rectangle shopButtonBounds;
-
     private Image settingsIcon;
     private Image shopIcon;
+
     private final BenumZombsGame game;
     private final ToolSystem toolSystem;
 
@@ -45,7 +46,9 @@ public class HeadUpDisplay {
      * Constructor for HeadUpDisplay
      * Precondition: player is a valid Player object
      * Postcondition: HeadUpDisplay is created for the player
-     * @param player
+     * @param player  the Player object for whom the HUD is created
+     * @param game the main game object
+     * @param toolSystem the ToolSystem object managing tools
      */
     public HeadUpDisplay(BenumZombsGame game, Player player, ToolSystem toolSystem) {
         this.game = game;
@@ -73,9 +76,10 @@ public class HeadUpDisplay {
      * Handles clicks on the toolbar
      * Precondition: p is a valid Point object representing the mouse click location
      * Postcondition: active tool is changed if a toolbar slot is clicked
-     * @param p
+     * @param p the Point object representing the mouse click location
      */
     public boolean handleToolbarClick(Point p) {
+        //************* Toolbar Bounds *************//
         int width = game.getWidth();
         int height = game.getHeight();
         
@@ -85,6 +89,7 @@ public class HeadUpDisplay {
         int toolBarX = (width - totalWidth) / 2;
         int toolBarY = height - 140;
 
+        //************* Toolbar Click Handling *************//
         Rectangle toolBarRect = new Rectangle(toolBarX, toolBarY, totalWidth, slotSize);
         boolean clickedToolbar = toolBarRect.contains(p);
 
@@ -103,7 +108,7 @@ public class HeadUpDisplay {
                 }
             }
         }
-        
+        //************* Building Bar Bounds *************//
         int buildingBarW = (10 * slotSize) + (9 * slotPadding);
         int buildingBarX = (width - buildingBarW) / 2;
         int buildingBarY = height - 70;
@@ -140,9 +145,12 @@ public class HeadUpDisplay {
      * Draws the HUD elements on the screen
      * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
      * Postcondition: HUD elements are drawn on the screen
-     * @param g2d
-     * @param screenW
-     * @param screenH
+     * @param g2d the Graphics2D object used for drawing
+     * @param screenW the width of the screen
+     * @param screenH the height of the screen
+     * @param toolSystem the ToolSystem object managing tools
+     * @param resourceSystem the ResourceSystem object managing resources
+     * @param waveCount the current wave count in the game
      */
     public void draw(Graphics2D g2d, int screenW, int screenH, ToolSystem toolSystem, ResourceSystem resourceSystem, int waveCount) {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -159,9 +167,11 @@ public class HeadUpDisplay {
      * Draws the resource panel on the HUD
      * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
      * Postcondition: resource panel is drawn on the HUD
-     * @param g2d
-     * @param screenW
-     * @param screenH
+     * @param g2d the Graphics2D object used for drawing
+     * @param screenW the width of the screen
+     * @param screenH the height of the screen
+     * @param resourceSystem the ResourceSystem object managing resources
+     * @param waveCount the current wave count in the game
      */
     private void drawResourcePanel(Graphics2D g2d, int screenW, int screenH, ResourceSystem resourceSystem, int waveCount) {
         //************* Resource Panel Size *************//
@@ -204,9 +214,9 @@ public class HeadUpDisplay {
      * Draws the health bar on the HUD
      * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
      * Postcondition: health bar is drawn on the HUD
-     * @param g2d
-     * @param screenW
-     * @param screenH
+     * @param g2d the Graphics2D object used for drawing
+     * @param screenW the width of the screen
+     * @param screenH the height of the screen
      */
     private void drawHealthBar(Graphics2D g2d, int screenW, int screenH) {
         //************* Health Bar Size and Position *************//
@@ -265,9 +275,9 @@ public class HeadUpDisplay {
      * Draws the time bar on the HUD
      * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
      * Postcondition: time bar is drawn on the HUD
-     * @param g2d
-     * @param screenW
-     * @param screenH
+     * @param g2d the Graphics2D object used for drawing
+     * @param screenW the width of the screen
+     * @param screenH the height of the screen
      */
     private void drawTimeBar(Graphics2D g2d, int screenH) {
         //************* Time Bar Size and Position *************//
@@ -314,9 +324,8 @@ public class HeadUpDisplay {
      * Draws the minimap on the HUD
      * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
      * Postcondition: minimap is drawn on the HUD
-     * @param g2d
-     * @param screenW
-     * @param screenH
+     * @param g2d the Graphics2D object used for drawing
+     * @param screenH the height of the screen
      */
     private void drawMinimap(Graphics2D g2d, int screenH) {
         //************* Minimap Size and Position *************//
@@ -345,10 +354,10 @@ public class HeadUpDisplay {
      * Draws the toolbars on the HUD
      * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
      * Postcondition: toolbars are drawn on the HUD
-     * @param g2d
-     * @param screenW
-     * @param screenH
-     * @param toolSystem
+     * @param g2d the Graphics2D object used for drawing
+     * @param screenW the width of the screen
+     * @param screenH the height of the screen
+     * @param toolSystem the ToolSystem object managing tools
      */
     private void drawToolbars(Graphics2D g2d, int screenW, int screenH, ToolSystem toolSystem) {
         //************* Toolbar Size and Position *************//
@@ -360,7 +369,8 @@ public class HeadUpDisplay {
         int toolBarX = (screenW - totalWidth) / 2;
         int toolBarY = screenH - 140;
 
-        Tool tooltipTool = null;
+        Tool toolToolTip = null;
+        Building buildingToolTip = null;
         int hoverSlotX = 0;
 
         //************* Tool Bar Slots and Tools *************//
@@ -370,43 +380,62 @@ public class HeadUpDisplay {
             boolean isHovered = (mousePos != null && slotRect.contains(mousePos));
 
             Tool tool = toolSystem.getToolInSlot(i);
-            boolean isUnlocked = tool != null && tool.getIsUnlocked();
-            
-            if (isHovered && isUnlocked) {
+            boolean isUnlocked = tool.getIsUnlocked();
+
+            if (isHovered && isUnlocked) { //Hover effect
                 g2d.setColor(new Color(247, 247, 247, 55));
             } else {
                 g2d.setColor(new Color(247, 247, 247, 30));
             }
-            
             g2d.fillRoundRect(x, toolBarY, slotSize, slotSize, 10, 10);
             
-            if (isUnlocked){ 
+            if (isUnlocked){  // Draw tool icon if unlocked
                 tool.draw(g2d, x + slotSize / 2 - 10, toolBarY + slotSize / 2 + 10, 0.8, 0.5);
 
-                if (isHovered) {
-                    tooltipTool = tool;
+                if (isHovered) { // Open info box on hover
+                    toolToolTip = tool;
                     hoverSlotX = x;
                 }
             }
         }
 
         //************* Building Bar Size and Position *************//
-        int buildingBarW = (10 * slotSize) + (9 * slotPadding);
+        int buildingBarW = (11 * slotSize) + (9 * slotPadding);
         int buildingBarX = (screenW - buildingBarW) / 2;
         int buildingBarY = screenH - 70;
+        BuildingSystem buildingSystem = game.getBuildingSystem();
 
         //************* Building Bar Slots *************//
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < 11; i++){
             int x = buildingBarX + i * (slotSize + slotPadding);
             Rectangle slotRect = new Rectangle(x, buildingBarY, slotSize, slotSize);
             boolean isHovered = (mousePos != null && slotRect.contains(mousePos));
 
-            g2d.setColor(new Color(0, 0, 0, 30));
-            g2d.fillRoundRect(x, buildingBarY, slotSize, slotSize, 10, 10); /////////////////////////////////////////////////////////////////////////////
+            if (isHovered){ //Hover effect
+                g2d.setColor(new Color(0, 0, 0, 55));
+            } else {
+                g2d.setColor(new Color(0, 0, 0, 30));
+            }
+            g2d.fillRoundRect(x, buildingBarY, slotSize, slotSize, 10, 10);
+            
+            if (buildingSystem != null) { 
+                Building building = buildingSystem.getBuildingInSlot(i);
+                if (building != null && building.getIcon() != null) { // Draw building icon
+                    g2d.drawImage(building.getIcon(), x + 5, buildingBarY + 5, slotSize - 10, slotSize - 10, null);
+                    
+                    if (isHovered) { // Open info box on hover
+                        buildingToolTip = building;
+                        hoverSlotX = x;
+                    }
+                }
+            }
         }
 
-        if (tooltipTool != null) {
-            drawTooltip(g2d, hoverSlotX, toolBarY, slotSize, tooltipTool);
+        if (toolToolTip != null) { // Draw tool info box
+            drawToolTip(g2d, hoverSlotX, toolBarY, slotSize, toolToolTip);
+        }
+        if (buildingToolTip != null) { // Draw building info box
+            drawBuildingTip(g2d, hoverSlotX, buildingBarY, slotSize, buildingToolTip);
         }
     }
 
@@ -414,9 +443,9 @@ public class HeadUpDisplay {
      * Draws the action buttons on the HUD
      * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
      * Postcondition: action buttons are drawn on the HUD
-     * @param g2d
-     * @param screenW
-     * @param screenH
+     * @param g2d the Graphics2D object used for drawing
+     * @param screenW the width of the screen
+     * @param screenH the height of the screen
      */
     private void drawActionButtons(Graphics2D g2d, int screenW, int screenH) {
         //************* Action Buttons Size and Position *************//
@@ -448,15 +477,25 @@ public class HeadUpDisplay {
         }
     }
 
-    private void drawTooltip(Graphics2D g2d, int slotX, int slotY, int slotSize, Tool tool) {
+    /**
+     * Draws the tooltip for a tool
+     * Precondition: g2d is a valid Graphics2D object, slotX and slotY are the position of the tool slot, slotSize is the size of the tool slot, tool is a valid Tool object
+     * Postcondition: tooltip is drawn for the tool
+     * @param g2d the Graphics2D object used for drawing
+     * @param slotX the x-coordinate of the tool slot
+     * @param slotY the y-coordinate of the tool slot
+     * @param slotSize the size of the tool slot
+     * @param tool the Tool object for which the tooltip is drawn
+     */
+    private void drawToolTip(Graphics2D g2d, int slotX, int slotY, int slotSize, Tool tool) {
+        //************* Info Box Content *************//
         ArrayList<String> lines = new ArrayList<>();
 
         lines.add(tool.getToolName());
-
         lines.add("Tier " + tool.getLevel() + " Item");
-
         lines.add(tool.getDescription());
 
+        //************* Info Box Size and Position *************//
         int boxW = 230;
         int boxH = 100;
         int boxX = slotX + (slotSize / 2) - (boxW / 2); 
@@ -467,7 +506,48 @@ public class HeadUpDisplay {
 
         int textY = boxY + 25;
         for (int i = 0; i < lines.size(); i++) {
-            if (i == 0) {
+            if (i == 0) { // Title line
+                g2d.setColor(Color.WHITE); 
+                g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 13f));
+            } else {
+                g2d.setColor(Color.LIGHT_GRAY);
+                g2d.setFont(FontManager.googleSansFlex.deriveFont(12f));
+            }
+            g2d.drawString(lines.get(i), boxX + 10, textY);
+            textY += 18;
+        }
+    }
+
+    /**
+     * Draws the tooltip for a building
+     * Precondition: g2d is a valid Graphics2D object, slotX and slotY are the position of the building slot, slotSize is the size of the building slot, building is a valid Building object
+     * Postcondition: tooltip is drawn for the building
+     * @param g2d the Graphics2D object used for drawing
+     * @param slotX the x-coordinate of the building slot
+     * @param slotY the y-coordinate of the building slot
+     * @param slotSize the size of the building slot
+     * @param building the Building object for which the tooltip is drawn
+     */
+    private void drawBuildingTip(Graphics2D g2d, int slotX, int slotY, int slotSize, Building building) {
+        //************* Info Box Content *************//
+        ArrayList<String> lines = new ArrayList<>();
+
+        lines.add(building.getName());
+        lines.add("Tier " + building.getLevel() + " Item");
+        lines.add(building.getDescription());
+
+        //************* Info Box Size and Position *************//
+        int boxW = 230;
+        int boxH = 100;
+        int boxX = slotX + (slotSize / 2) - (boxW / 2); 
+        int boxY = slotY - boxH - 15;
+
+        g2d.setColor(new Color(0, 0, 0, 100));
+        g2d.fillRoundRect(boxX, boxY, boxW, boxH, 10, 10);
+
+        int textY = boxY + 25;
+        for (int i = 0; i < lines.size(); i++) {
+            if (i == 0) { // Title line
                 g2d.setColor(Color.WHITE); 
                 g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 13f));
             } else {

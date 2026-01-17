@@ -29,9 +29,9 @@ public class ToolSystem {
 
     /**
      * Sets the active tool slot
-     * Precondition: slotIndex is between 0 and 3
+     * Precondition: slotIndex is between 0 and 4
      * Postcondition: activeSlot is updated to slotIndex if the tool is unlocked
-     * @param slotIndex
+     * @param slotIndex the index of the slot to set as active
      */
     public void setActiveSlot(int slotIndex){
         if (slotIndex >= 0 && slotIndex < slots.length){
@@ -45,7 +45,7 @@ public class ToolSystem {
      * Gets the currently active slot index
      * Precondition: N/A
      * Postcondition: returns the active slot index
-     * @return
+     * @return the active slot index
      */
     public int getActiveSlotIndex() {
         return activeSlot;
@@ -55,7 +55,7 @@ public class ToolSystem {
      * Gets the currently active tool
      * Precondition: N/A
      * Postcondition: returns the active Tool
-     * @return
+     * @return the active Tool
      */
     public Tool getActiveTool(){
         return slots[activeSlot];
@@ -63,10 +63,10 @@ public class ToolSystem {
 
     /**
      * Gets the tool in the specified slot
-     * Precondition: slotIndex is between 0 and 3
+     * Precondition: slotIndex is between 0 and 4
      * Postcondition: returns the Tool in the specified slot, or null if invalid index
-     * @param slotIndex
-     * @return
+     * @param slotIndex the index of the slot to get the tool from
+     * @return the Tool in the specified slot, or null if invalid index
      */
     public Tool getToolInSlot(int slotIndex){
         if (slotIndex >= 0 && slotIndex < slots.length){

@@ -23,8 +23,8 @@ public class Stone {
      * Constructor for Stone object
      * Precondition: x and y are valid coordinates within the game window
      * Postcondition: A Stone object is created at the specified coordinates
-     * @param x
-     * @param y
+     * @param x the x-coordinate of the stone
+     * @param y the y-coordinate of the stone
      */
     public Stone(int x, int y) {
         this.x = x;
@@ -41,7 +41,7 @@ public class Stone {
 
     /**
      * Plays the stone's shake animation
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: The stone's shake offset is set to initiate the animation
      */
     public void playAnimation(){
@@ -50,7 +50,7 @@ public class Stone {
 
     /**
      * Updates the stone's animation state
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: The stone's shake offset is updated
      */
     public void update(){
@@ -65,7 +65,7 @@ public class Stone {
      * Draws the stone on the provided Graphics2D context
      * Precondition: g2d is a valid Graphics2D object
      * Postcondition: The stone image is drawn at its coordinates
-     * @param g2d
+     * @param g2d the Graphics2D object to draw on
      */
     public void draw(Graphics2D g2d) {
         if (stoneImage != null) {
@@ -75,9 +75,9 @@ public class Stone {
 
     /**
      * Gets the bounding rectangle of the stone for collision detection
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: A Rectangle object representing the stone's bounds is returned
-     * @return
+     * @return a Rectangle representing the stone's bounding box
      */
     public Rectangle getBounds() {
         int buffer = SIZE / 4; 

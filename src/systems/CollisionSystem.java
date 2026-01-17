@@ -17,9 +17,9 @@ public class CollisionSystem {
      * Checks for collisions between a bounding box and resources
      * Precondition: bouds is a valid Rectangle, resourceSystem is a valid ResourceSystem
      * Postcondition: returns true if a collision is detected, false otherwise
-     * @param bouds
-     * @param resourceSystem
-     * @return
+     * @param bouds the bounding box to check for collisions
+     * @param resourceSystem the resource system containing trees and stones
+     * @return true if collision detected, false otherwise
      */
     public static boolean checkCollision(Rectangle bouds, ResourceSystem resourceSystem) {
         //************* Check Collisions Against Trees *************//
@@ -47,9 +47,9 @@ public class CollisionSystem {
      * Checks for hit collisions between a tool's bounding box and resources
      * Precondition: toolBounds is a valid Rectangle, resourceSystem is a valid ResourceSystem
      * Postcondition: returns the type of resource hit ("tree" or "stone"), or null if no collision
-     * @param toolBounds
-     * @param resourceSystem
-     * @return
+     * @param toolBounds the bounding box of the tool to check for collisions
+     * @param resourceSystem the resource system containing trees and stones
+     * @return the type of resource hit ("tree" or "stone"), or null if no collision
      */
     public static String checkHitCollision(Rectangle toolBounds, ResourceSystem resourceSystem) {
         //************* Check Collisions Against Trees *************//

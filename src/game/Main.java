@@ -39,7 +39,7 @@ public class Main {
 		
 		FontManager.loadGoogleSansFlex(); // Load custom font
 
-		//Create main panel with CardLayout to switch between screens
+		/***************** Set up CardLayout for screen management *****************/
 		cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 		settingsScreen = new SettingsScreen();
@@ -59,7 +59,7 @@ public class Main {
 	 * Switches the visible screen in the main window
 	 * Precondition: screenName corresponds to a valid screen added to mainPanel
 	 * Postcondition: The visible screen is changed to the specified screen
-	 * @param screenName
+	 * @param screenName the name of the screen to display
 	 */
 	public static void showScreen(String screenName) {
         cardLayout.show(mainPanel, screenName);

@@ -27,8 +27,7 @@ public class ResourceSystem {
     /**
      * Constructor for Resource System
      * Precondition: N/A
-     * Postcondition: N/A
-     * @param player
+     * Postcondition: ResourceSystem object is created
      */
     public ResourceSystem(){
         trees = new ArrayList<>();
@@ -44,7 +43,7 @@ public class ResourceSystem {
      * Spawns resources randomly on the map
      * Precondition: count is a positive integer
      * Postcondition: Resources are spawned on the map
-     * @param count
+     * @param count the number of resources to spawn
      */
     public void spawnResources( int count){
         Random random = new Random();
@@ -62,7 +61,7 @@ public class ResourceSystem {
 
     /**
      * Updates the resources' animation states
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: Resources are updated
      */
     public void update() {
@@ -81,7 +80,7 @@ public class ResourceSystem {
      * Draws the resources on the screen
      * Precondition: g2d is a valid Graphics2D object
      * Postcondition: Resources are drawn on the screen
-     * @param g2d
+     * @param g2d the Graphics2D object used for drawing
      */
     public void draw(Graphics2D g2d){
         for (int i = 0; i < trees.size(); i++){
@@ -94,9 +93,9 @@ public class ResourceSystem {
 
     /**
      * Gets the list of trees
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: List of trees is returned
-     * @return
+     * @return the list of Tree objects
      */
     public ArrayList<Tree> getTrees() {
         return trees;
@@ -104,9 +103,9 @@ public class ResourceSystem {
 
     /**
      * Gets the list of stones
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: List of stones is returned
-     * @return
+     * @return the list of Stone objects
      */
     public ArrayList<Stone> getStones() {
         return stones;
@@ -116,7 +115,7 @@ public class ResourceSystem {
      * Adds wood to the resource count
      * Precondition: amount is a positive integer
      * Postcondition: Wood count is increased by amount
-     * @param amount
+     * @param amount the amount of wood to add
      */
     public void addWood(int amount) {
         woodCount += amount;      
@@ -126,7 +125,7 @@ public class ResourceSystem {
      * Adds stone to the resource count
      * Precondition: amount is a positive integer
      * Postcondition: Stone count is increased by amount
-     * @param amount
+     * @param amount the amount of stone to add
      */
     public void addStone(int amount) {
         stoneCount += amount;      
@@ -136,7 +135,7 @@ public class ResourceSystem {
      * Adds gold to the resource count
      * Precondition: amount is a positive integer
      * Postcondition: Gold count is increased by amount
-     * @param amount
+     * @param amount the amount of gold to add
      */
     public void addGold(int amount) {
         goldCount += amount;      
@@ -146,7 +145,7 @@ public class ResourceSystem {
      * Adds tokens to the resource count
      * Precondition: amount is a positive integer
      * Postcondition: Token count is increased by amount
-     * @param amount
+     * @param amount the amount of tokens to add
      */
     public void addTokens(int amount) {
         tokenCount += amount;      
@@ -154,9 +153,9 @@ public class ResourceSystem {
 
     /**
      * Gets the current wood count
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: Current wood count is returned
-     * @return
+     * @return the current wood count
      */
     public int getWoodCount() {
         return woodCount;
@@ -164,9 +163,9 @@ public class ResourceSystem {
 
     /**
      * Gets the current stone count
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: Current stone count is returned
-     * @return
+     * @return the current stone count
      */
     public int getStoneCount() {
         return stoneCount;
@@ -174,9 +173,9 @@ public class ResourceSystem {
 
     /**
      * Gets the current gold count
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: Current gold count is returned
-     * @return
+     * @return the current gold count
      */
     public int getGoldCount() {
         return goldCount;
@@ -184,9 +183,9 @@ public class ResourceSystem {
 
     /**
      * Gets the current token count
-     * Precondition: None
+     * Precondition: N/A
      * Postcondition: Current token count is returned
-     * @return
+     * @return the current token count
      */
     public int getTokenCount() {
         return tokenCount;

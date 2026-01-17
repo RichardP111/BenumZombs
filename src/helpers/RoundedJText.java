@@ -16,7 +16,7 @@ public class RoundedJText extends JTextField {
      * Constructor for RoundedJText
      * Precondition: text is a valid String
      * Postcondition: creates a RoundedJText with the specified text
-     * @param text
+     * @param text the text to display in the text field
      */
     public RoundedJText(String text) {
         super(text);
@@ -28,7 +28,7 @@ public class RoundedJText extends JTextField {
      * Paints the RoundedJText
      * Precondition: g is a valid Graphics object
      * Postcondition: paints the RoundedJText with rounded corners
-     * @param g
+     * @param g the Graphics object to draw on
      */
     @Override
     protected void paintComponent(Graphics g) {

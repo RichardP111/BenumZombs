@@ -23,7 +23,7 @@ public class SoundManager {
      * Plays a sound from the specified sound file if sound is enabled.
      * Precondition: soundFile exists in /assets/sounds/
      * Postcondition: sound is played if isSoundOn is true
-     * @param soundFile
+     * @param soundFile the name of the sound file to play
      */
     public static void playSound(String soundFile) {
         if (!isSoundOn) { //check if sound is enabled

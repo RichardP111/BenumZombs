@@ -23,26 +23,41 @@ public class Pickaxe extends Tool {
      * Constructor for Pickaxe
      * Precondition: N/A
      * Postcondition: Pickaxe tool object is created
-     * @param unlocked
+     * @param unlocked whether the pickaxe is unlocked
      */
     public Pickaxe(boolean unlocked) {
         super("Pickaxe", unlocked);
+        this.description = "Harvests stone or wood";
     }
 
-    @Override
-    public void use(){
-    }
-
+    /**
+     * Gets the description of the pickaxe
+     * Precondition: N/A
+     * Postcondition: returns the description of the pickaxe
+     * @return the description of the pickaxe
+     */
     @Override
     public String getDescription() {
-        return "Harvests stone or wood";
+        return description;
     }
 
+    /**
+     * Checks if the pickaxe can harvest resources
+     * Precondition: N/A
+     * Postcondition: returns true since pickaxe can harvest
+     * @return true if the pickaxe can harvest, false otherwise
+     */
     @Override
     public boolean canHarvest() {
         return true;
     }
 
+    /**
+     * Gets the upgrade cost of the pickaxe
+     * Precondition: N/A
+     * Postcondition: returns the upgrade cost of the pickaxe
+     * @return the upgrade cost of the pickaxe
+     */
     @Override
     public int getUpgradeCost() {
         if (level >= 7){
@@ -51,10 +66,22 @@ public class Pickaxe extends Tool {
         return costs[level]; 
     }
 
+    /**
+     * Gets the harvest power of the pickaxe
+     * Precondition: N/A
+     * Postcondition: returns the harvest power of the pickaxe
+     * @return the harvest power of the pickaxe
+     */
     public double getHarvestPower() {
         return harvestValues[level - 1];
     }
 
+    /**
+     * Gets the attack speed of the pickaxe
+     * Precondition: N/A
+     * Postcondition: returns the attack speed of the pickaxe
+     * @return the attack speed of the pickaxe
+     */
     @Override
     public double getAttackSpeed() {
         return attackSpeeds[level - 1];
@@ -64,9 +91,11 @@ public class Pickaxe extends Tool {
      * Draws the pickaxe at the specified position, angle, and scale
      * Precondition: g2d is a valid Graphics2D object, x and y are valid coordinates, angle is a valid rotation angle, scale is a positive scaling factor
      * Postcondition: Pickaxe is drawn on the Graphics2D context at the specified position, angle, and scale
-     * @param g2d 
-     * @param x 
-     * @param y 
+     * @param g2d the Graphics2D context to draw on
+     * @param x the x-coordinate to draw the pickaxe
+     * @param y the y-coordinate to draw the pickaxe
+     * @param angle the rotation angle of the pickaxe
+     * @param scale the scaling factor for the pickaxe
      */
     @Override
     public void draw(Graphics2D g2d, int x, int y, double angle, double scale) {
@@ -76,6 +105,7 @@ public class Pickaxe extends Tool {
         g2d.rotate(angle);
         g2d.scale(scale, scale);
 
+        //************* Set head color based on level *************//
         switch (level) {
             case 1:
                 headColor = new Color(102, 102, 102);
@@ -102,6 +132,7 @@ public class Pickaxe extends Tool {
                 headColor = new Color(102, 102, 102);
         }
 
+        //************* Draw Handle *************//
         g2d.setColor(new Color(135, 95, 69));
         g2d.fillRoundRect(-2, -55, 4, 75, 2, 2); 
         
@@ -109,6 +140,7 @@ public class Pickaxe extends Tool {
         g2d.setStroke(new BasicStroke(3));
         g2d.drawRoundRect(-2, -55, 4, 75, 2, 2);
 
+        //************* Draw Pickaxe Head *************//
         Path2D head = new Path2D.Double();
         head.moveTo(-14, -45);
         head.lineTo(10, -50);
@@ -127,6 +159,15 @@ public class Pickaxe extends Tool {
         g2d.setTransform(oldTransform);
     }
 
+    /**
+     * Draws the pickaxe at the specified position and angle with default scale
+     * Precondition: g2d is a valid Graphics2D object, x and y are valid coordinates, angle is a valid rotation angle
+     * Postcondition: Pickaxe is drawn on the Graphics2D context at the specified position and angle with default scale
+     * @param g2d the Graphics2D context to draw on
+     * @param x the x-coordinate to draw the pickaxe
+     * @param y the y-coordinate to draw the pickaxe
+     * @param angle the rotation angle of the pickaxe
+     */
     public void draw(Graphics2D g2d, int x, int y, double angle) {
         draw(g2d, x, y, angle, 0.9);
     }

@@ -5,7 +5,6 @@
  * @version 1.0
  * @since 2026-01-08
  */
-
 package game;
 
 import helpers.RandomGeneration;
@@ -27,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import objects.Player;
 import objects.Tools.Tool;
+import systems.BuildingSystem;
 import systems.CollisionSystem;
 import systems.HeadUpDisplay;
 import systems.ResourceSystem;
@@ -38,6 +38,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
     private final HeadUpDisplay headUpDisplay;
     private final ResourceSystem resourceSystem;
     private final ToolSystem toolSystem;
+    private final BuildingSystem buildingSystem;
 
     //************* World Constants *************//
     public static final int GRID_SIZE = 35;
@@ -57,14 +58,15 @@ public class BenumZombsGame extends JPanel implements ActionListener {
      * Constructor for BenumZombsGame
      * Precondition: playerName is a valid String
      * Postcondition: BenumZombsGame panel is created with player and HUD
-     * @param playerName
+     * @param playerName The name of the player
      */
     public BenumZombsGame(String playerName) {
         setFocusable(true);
         setBackground(new Color(105, 141, 65));
 
-        // Start Player, HUD, resources
+        //************* Systems Initialization and Player Spawn *************//
         toolSystem = new ToolSystem();
+        buildingSystem = new BuildingSystem();
         resourceSystem = new ResourceSystem();
         resourceSystem.spawnResources(25);
 
@@ -161,33 +163,63 @@ public class BenumZombsGame extends JPanel implements ActionListener {
      * Returns the Player instance
      * Precondition: N/A
      * Postcondition: returns the player
+     * @return the player instance
      */
     public Player getPlayer() {
         return player;
     }
 
     /**
+     * Returns the BuildingSystem instance
+     * Precondition: N/A
+     * Postcondition: returns the building system
+     * @return the building system instance
+     */
+    public BuildingSystem getBuildingSystem() {
+        return buildingSystem;
+    }
+
+/**
+     * Returns the ToolSystem instance
+     * Precondition: N/A
+     * Postcondition: returns the tool system
+     * @return the tool system instance
+     */
+    public ToolSystem getToolSystem() {
+        return this.toolSystem; 
+    }
+
+    /**
+     * Returns the ResourceSystem instance
+     * Precondition: N/A
+     * Postcondition: returns the resource system
+     * @return the resource system instance
+     */
+    public ResourceSystem getResourceSystem() {
+        return this.resourceSystem; 
+    }
+
+    /**
      * Handles key press and release events to update movement flags
      * Precondition: keyCode is a valid KeyEvent code, isPressed indicates key state
      * Postcondition: movement flags are updated based on key events
-     * @param keyCode
-     * @param isPressed
+     * @param keyCode    key code of the pressed/released key
+     * @param isPressed  true if key is pressed, false if released
      */
-    @SuppressWarnings("EnhancedSwitchMigration")
     private void handleKeys(int keyCode, boolean isPressed) {
         if (isPressed) {
-            if (keyCode == KeyEvent.VK_SPACE) {
+            if (keyCode == KeyEvent.VK_SPACE) { // Toggle space swing
                 player.toggleSpaceSwing();
             }
 
-            if (keyCode == KeyEvent.VK_B) {
+            if (keyCode == KeyEvent.VK_B) { // Open shop
                 Main.shopScreen.setGameInstance(BenumZombsGame.this);
                 Main.showScreen("SHOP");
                 System.out.println("BenumZombsGame.java - Shop Opened via 'B'");
                 return;
             }
 
-            if (keyCode == KeyEvent.VK_Q) {
+            if (keyCode == KeyEvent.VK_Q) { // Cycle tools
                 int current = toolSystem.getActiveSlotIndex();
                 for (int i = 1; i <= 4; i++) {
                     int nextSlot = (current + i) % 4;
@@ -199,11 +231,12 @@ public class BenumZombsGame extends JPanel implements ActionListener {
                 }
             }
 
-            if (keyCode == KeyEvent.VK_F) {
+            if (keyCode == KeyEvent.VK_F) { // Quick use potion
                 player.usePotion();
             }
         }
         
+        //************* Movement Keys *************//
         switch (keyCode) {
         case KeyEvent.VK_W, KeyEvent.VK_UP:
             up = isPressed;
@@ -225,7 +258,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
      * Handle player movement, HUD update, camera update, and repaint
      * Precondition: N/A
      * Postcondition: player is moved, HUD is updated, camera is updated, panel is repainted
-     * @param e
+     * @param e the action event triggering the update
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -257,11 +290,10 @@ public class BenumZombsGame extends JPanel implements ActionListener {
      * Draws the night overlay based on the time of day
      * Precondition: g2d is a valid Graphics2D object
      * Postcondition: night overlay is drawn on the screen
-     * @param g2d
+     * @param g2d the Graphics2D object used for drawing
      */
     private void drawNightOverlay(Graphics2D g2d) {
-        // Calculate darkness based on HUD time
-        float hudTime = headUpDisplay.getTime();
+        float hudTime = headUpDisplay.getTime(); // Calculate darkness based on HUD time
         float darkness = 1.0f - Math.abs(2.0f * hudTime - 1.0f);
         int alpha = (int) (darkness * 160);
 
@@ -273,37 +305,17 @@ public class BenumZombsGame extends JPanel implements ActionListener {
      * Returns the current wave count
      * Precondition: N/A
      * Postcondition: returns the wave count
-     * @return
+     * @return the current wave count
      */
     public int getWaveCount() {
         return waveCount;
     }
 
     /**
-     * Returns the ToolSystem instance
-     * Precondition: N/A
-     * Postcondition: returns the tool system
-     * @return
-     */
-    public ToolSystem getToolSystem() {
-        return this.toolSystem; 
-    }
-
-    /**
-     * Returns the ResourceSystem instance
-     * Precondition: N/A
-     * Postcondition: returns the resource system
-     * @return
-     */
-    public ResourceSystem getResourceSystem() {
-        return this.resourceSystem; 
-    }
-
-    /**
      * Paints the game panel including world, player, night overlay, and HUD
      * Precondition: g is a valid Graphics object
      * Postcondition: game elements are drawn on the panel
-     * @param g
+     * @param g the Graphics object used for drawing
      */
     @Override
     protected void paintComponent(Graphics g) {

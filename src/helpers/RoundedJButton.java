@@ -5,17 +5,19 @@
  * @version 1.0
  * @since 2026-01-06
  */
+
 package helpers;
 
 import java.awt.*;
 import javax.swing.*;
 
 public class RoundedJButton extends JButton{
+
     /**
      * Constructor for RoundedJButton
      * Precondition: label is a valid String
      * Postcondition: creates a RoundedJButton with the specified label
-     * @param label
+     * @param label the text to display on the button
      */
     public RoundedJButton(String label) {
         super(label);
@@ -28,14 +30,14 @@ public class RoundedJButton extends JButton{
      * Paints the RoundedJButton
      * Precondition: g is a valid Graphics object
      * Postcondition: paints the RoundedJButton with rounded corners
-     * @param g
+     * @param g the Graphics object to draw on
      */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        if (getModel().isArmed()){ //if clicked
+        if (getModel().isArmed()){ // if clicked
             g2.setColor(getBackground().darker());
         } else {
             g2.setColor(getBackground());

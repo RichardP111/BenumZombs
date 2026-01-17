@@ -12,8 +12,8 @@ public class TextFormatter {
      * Formats an integer value into a more readable string with 'k' for thousands and 'M' for millions and 'B' for billions
      * Precondition: value is a non-negative integer
      * Postcondition: returns a formatted string
-     * @param value
-     * @return
+     * @param value the integer value to format
+     * @return the formatted string
      */
     public static String formatValue(int value) {
         if (value >= 1000000000) {

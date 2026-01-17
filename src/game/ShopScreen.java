@@ -12,8 +12,6 @@ import helpers.FontManager;
 import helpers.RoundedJButton;
 import helpers.SoundManager;
 import helpers.TextFormatter;
-import objects.Tools.Tool;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -32,7 +30,7 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
+import objects.Tools.Tool;
 import systems.ResourceSystem;
 import systems.ToolSystem;
 
@@ -191,7 +189,7 @@ public class ShopScreen extends JPanel {
      * Sets the game instance associated with this settings screen
      * Precondition: game is a valid BenumZombsGame object or null
      * Postcondition: gameInstance is set to the provided game
-     * @param game
+     * @param game the BenumZombsGame instance
      */
     public void setGameInstance(BenumZombsGame game) {
         this.gameInstance = game;
@@ -200,7 +198,7 @@ public class ShopScreen extends JPanel {
 
     /**
      * Updates the layout of the components based on the current size of the panel
-     * Precondition: none
+     * Precondition: N/A
      * Postcondition: components are repositioned and resized based on screen size
      */
     private void updateLayout() {
@@ -227,7 +225,7 @@ public class ShopScreen extends JPanel {
      * Handles the purchase or upgrade of a tool in the specified slot
      * Precondition: slotIndex is a valid index for the tool system
      * Postcondition: tool in the specified slot is purchased or upgraded if sufficient resources are available
-     * @param slotIndex
+     * @param slotIndex the index of the tool slot to purchase or upgrade
      */
     private void handlePurchase(int slotIndex){
         if (gameInstance == null){
@@ -237,7 +235,7 @@ public class ShopScreen extends JPanel {
         ToolSystem toolSystem = gameInstance.getToolSystem();
         ResourceSystem resourceSystem = gameInstance.getResourceSystem();
 
-        // Determine which tool to purchase based on current tab
+        //************* Determine Tool Based on Current Tab *************//
         Tool tool;
         switch (currentTab) {
             case Armor:
@@ -251,22 +249,23 @@ public class ShopScreen extends JPanel {
                 break;
         }
 
+        //************* Purchase and Upgrade Logic *************//
         cost = tool.getUpgradeCost();
-        if (cost == -1){ // Tool is at max level
+        if (cost == -1){ // Max level
             System.out.println("ShopScreen.java - Tool max: " + tool.getToolName());
             return;
         }
 
         if (resourceSystem.getGoldCount() >= cost) {
             if (tool.isConsumable() && tool.getIsUnlocked()) {
-                System.out.println("ShopScreen.java - Tool is consumable and already unlocked: " + tool.getToolName());
+                System.out.println("ShopScreen.java - Can only buy one at a time: " + tool.getToolName());
                 return; 
             }
             resourceSystem.addGold(-cost);
             
             if (!tool.getIsUnlocked()) {
                 tool.setUnlocked(true); 
-                tool.onGet(gameInstance.getPlayer()); //Fill Shield for Armor
+                tool.onGet(gameInstance.getPlayer()); //Fill shield for armor
             } else if (!tool.isConsumable()) {
                 tool.upgrade(); 
                 tool.onGet(gameInstance.getPlayer());
@@ -275,20 +274,21 @@ public class ShopScreen extends JPanel {
             SoundManager.playSound("buttonClick.wav");
             repaint();
         } else {
-            System.out.println("ShopScreen.java - Not enough gold to purchase, need: " + cost);
+            System.out.println("ShopScreen.java - Not enough gold to buy, need: " + cost);
         }
     }
+
     /**
      * Draws a shop card for a given tool
      * Precondition: g2d is a valid Graphics2D object, tool is a valid Tool object or null
      * Postcondition: shop card is drawn on the screen
-     * @param g2d
-     * @param x
-     * @param y
-     * @param w
-     * @param h
-     * @param tool
-     * @param slot
+     * @param g2d the Graphics2D object to draw on
+     * @param x the x-coordinate of the top-left corner of the card
+     * @param y the y-coordinate of the top-left corner of the card
+     * @param w the width of the card
+     * @param h the height of the card
+     * @param tool the Tool object to display on the card
+     * @param slot the slot index of the tool
      */
     private void drawShopCard(Graphics2D g2d, int x, int y, int w, int h, Tool tool) {
         if (tool == null) {
@@ -328,7 +328,7 @@ public class ShopScreen extends JPanel {
         //************* Tool Info Text *************//
         g2d.setColor(Color.WHITE);
         g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 22f));
-        g2d.drawString(tool.getToolName(), iconX + iconBoxSize + 20, y + 35); // Tool name
+        g2d.drawString(tool.getToolName(), iconX + iconBoxSize + 20, y + 35); 
 
         g2d.setFont(FontManager.googleSansFlex.deriveFont(14f));
         g2d.setColor(new Color(150, 150, 150));
@@ -359,8 +359,9 @@ public class ShopScreen extends JPanel {
 
     /**
      * Updates the layout of the graphical boxes based on the current size of screen
-     * Precondition: none
+     * Precondition: N/A
      * Postcondition: background boxes are painted
+     * @param g the Graphics object to draw on
      */
     @Override
     protected void paintComponent(Graphics g) {
@@ -412,6 +413,7 @@ public class ShopScreen extends JPanel {
         g2d.setColor(new Color(20, 28, 13));
         g2d.fillRoundRect(contentX, contentY, contentW, contentH, 20, 20);
 
+        //************* Shop Cards *************//
         g2d.setColor(Color.WHITE);
         g2d.setFont(FontManager.googleSansFlex.deriveFont(16f));
     

@@ -42,6 +42,11 @@ public class StartMenu extends JPanel {
 
     private static String playerName = "Player";
 
+    /**
+     * Constructor for StartMenu
+     * Precondition: N/A
+     * Postcondition: StartMenu panel is created
+     */
     @SuppressWarnings("Convert2Lambda")
     public StartMenu() {
         setLayout(null);
@@ -225,8 +230,9 @@ public class StartMenu extends JPanel {
 
     /**
      * Paints the background graphical boxes
-     * Precondition: none
-     * Postcondition: background boxes are painted
+     * Precondition: N/A
+     * Postcondition: Background boxes are painted
+     * @param g the Graphics object to draw on
      */
     @Override
     protected void paintComponent(Graphics g) {
