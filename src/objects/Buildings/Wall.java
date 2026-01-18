@@ -8,9 +8,6 @@
 
 package objects.Buildings;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class Wall extends Building {
 
     /**
@@ -22,8 +19,26 @@ public class Wall extends Building {
      */
     public Wall(double x, double y) {
         super(x, y, 35, 35, "Wall", "wall.png");
-        this.cost = 10;
-        this.description = "";
+        this.woodCost = 2;
+        this.stoneCost = 0;
+        this.description = "Blocks enemies from reaching your towers.";
+
+        this.isLocked = true;
+
+        this.limits = 250;
+    }
+
+    /**
+     * Creates a copy of the Wall
+     * Precondition: N/A
+     * Postcondition: returns a new Wall object at specified coordinates
+     * @param x the x-coordinate of the new Wall
+     * @param y the y-coordinate of the new Wall
+     * @return a new Wall object
+     */
+    @Override
+    public Building createCopy(double x, double y) {
+        return new Wall(x, y);
     }
 
     /**
@@ -35,22 +50,6 @@ public class Wall extends Building {
     @Override
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * Draws the Wall
-     * Precondition: g2d is a valid Graphics2D object
-     * Postcondition: The Wall is drawn on the screen
-     * @param g2d the Graphics2D object used for drawing
-     */
-    @Override
-    public void draw(Graphics2D g2d) {
-        g2d.setColor(new Color(100, 65, 23)); 
-
-        g2d.fillRect((int)x, (int)y, width, height);
-        
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect((int)x, (int)y, width, height);
     }
 
     /**

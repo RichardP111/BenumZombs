@@ -8,9 +8,6 @@
 
 package objects.Buildings;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class BombTower extends Building {
 
     /**
@@ -22,8 +19,26 @@ public class BombTower extends Building {
      */
     public BombTower(double x, double y) {
         super(x, y, 35, 35, "Bomb Tower", "bombTower.png");
-        this.cost = 10;
-        this.description = "";
+        this.woodCost = 10;
+        this.stoneCost = 10;
+        this.description = "Large area of effect damage, very slow firing tower.";
+
+        this.isLocked = true;
+
+        this.limits = 6;
+    }
+
+    /**
+     * Creates a copy of the BombTower
+     * Precondition: N/A
+     * Postcondition: returns a new BombTower object at specified coordinates
+     * @param x the x-coordinate of the new BombTower
+     * @param y the y-coordinate of the new BombTower
+     * @return a new BombTower object
+     */
+    @Override
+    public Building createCopy(double x, double y) {
+        return new BombTower(x, y);
     }
 
     /**
@@ -35,22 +50,6 @@ public class BombTower extends Building {
     @Override
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * Draws the BombTower
-     * Precondition: g2d is a valid Graphics2D object
-     * Postcondition: The BombTower is drawn on the screen
-     * @param g2d the Graphics2D object used for drawing
-     */
-    @Override
-    public void draw(Graphics2D g2d) {
-        g2d.setColor(new Color(100, 65, 23)); 
-
-        g2d.fillRect((int)x, (int)y, width, height);
-        
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect((int)x, (int)y, width, height);
     }
 
     /**

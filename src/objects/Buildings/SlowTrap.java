@@ -8,9 +8,6 @@
 
 package objects.Buildings;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class SlowTrap extends Building {
 
     /**
@@ -22,8 +19,26 @@ public class SlowTrap extends Building {
      */
     public SlowTrap(double x, double y) {
         super(x, y, 35, 35, "Slow Trap", "slowTrap.png");
-        this.cost = 10;
-        this.description = "";
+        this.woodCost = 5;
+        this.stoneCost = 5;
+        this.description = "Slows enemies from entering your base.";
+
+        this.isLocked = true;
+
+        this.limits = 12;
+    }
+
+    /**
+     * Creates a copy of the SlowTrap
+     * Precondition: N/A
+     * Postcondition: returns a new SlowTrap object at specified coordinates
+     * @param x the x-coordinate of the new SlowTrap
+     * @param y the y-coordinate of the new SlowTrap
+     * @return a new SlowTrap object
+     */
+    @Override
+    public Building createCopy(double x, double y) {
+        return new SlowTrap(x, y);
     }
 
     /**
@@ -37,21 +52,6 @@ public class SlowTrap extends Building {
         return description;
     }
 
-    /**
-     * Draws the SlowTrap
-     * Precondition: g2d is a valid Graphics2D object
-     * Postcondition: The SlowTrap is drawn on the screen
-     * @param g2d the Graphics2D object used for drawing
-     */
-    @Override
-    public void draw(Graphics2D g2d) {
-        g2d.setColor(new Color(100, 65, 23)); 
-
-        g2d.fillRect((int)x, (int)y, width, height);
-        
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect((int)x, (int)y, width, height);
-    }
 
     /**
      * Updates the SlowTrap

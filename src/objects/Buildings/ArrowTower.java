@@ -8,9 +8,6 @@
 
 package objects.Buildings;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class ArrowTower extends Building {
 
     /**
@@ -22,8 +19,26 @@ public class ArrowTower extends Building {
      */
     public ArrowTower(double x, double y) {
         super(x, y, 35, 35, "Arrow Tower", "arrowTower.png");
-        this.cost = 10;
-        this.description = "Single target, fast firing tower";
+        this.woodCost = 5;
+        this.stoneCost = 5;
+        this.description = "Single target, fast firing tower.";
+
+        this.isLocked = true;
+
+        this.limits = 6;
+    }
+
+    /**
+     * Creates a copy of the ArrowTower
+     * Precondition: N/A
+     * Postcondition: returns a new ArrowTower object at specified coordinates
+     * @param x the x-coordinate of the new ArrowTower
+     * @param y the y-coordinate of the new ArrowTower
+     * @return a new ArrowTower object
+     */
+    @Override
+    public Building createCopy(double x, double y) {
+        return new ArrowTower(x, y);
     }
 
     /**
@@ -35,22 +50,6 @@ public class ArrowTower extends Building {
     @Override
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * Draws the ArrowTower
-     * Precondition: g2d is a valid Graphics2D object
-     * Postcondition: The ArrowTower is drawn on the screen
-     * @param g2d the Graphics2D object used for drawing
-     */
-    @Override
-    public void draw(Graphics2D g2d) {
-        g2d.setColor(new Color(100, 65, 23)); 
-
-        g2d.fillRect((int)x, (int)y, width, height);
-        
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect((int)x, (int)y, width, height);
     }
 
     /**

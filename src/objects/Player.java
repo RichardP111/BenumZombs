@@ -483,8 +483,8 @@ public class Player extends GameObject {
         //************* Player Name Label *************//
         g2d.setColor(Color.WHITE);
         g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD,17));
-        FontMetrics fm = g2d.getFontMetrics();
-        int nameX = screenX + (width - fm.stringWidth(name)) / 2;
+        FontMetrics fontMetrics = g2d.getFontMetrics();
+        int nameX = screenX + (width - fontMetrics.stringWidth(name)) / 2;
         g2d.drawString(name, nameX, screenY - 20);
 
         //************* Local Player Health *************//

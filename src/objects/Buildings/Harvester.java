@@ -8,9 +8,6 @@
 
 package objects.Buildings;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class Harvester extends Building {
 
     /**
@@ -22,8 +19,26 @@ public class Harvester extends Building {
      */
     public Harvester(double x, double y) {
         super(x, y, 35, 35, "Harvester", "harvester.png");
-        this.cost = 10;
-        this.description = "";
+        this.woodCost = 5;
+        this.stoneCost = 5;
+        this.description = "Harvests resources automatically, fuelled by gold. Hit with a pickaxe to collect.";
+
+        this.isLocked = true;
+
+        this.limits = 2;
+    }
+
+    /**
+     * Creates a copy of the Harvester
+     * Precondition: N/A
+     * Postcondition: returns a new Harvester object at specified coordinates
+     * @param x the x-coordinate of the new Harvester
+     * @param y the y-coordinate of the new Harvester
+     * @return a new Harvester object
+     */
+    @Override
+    public Building createCopy(double x, double y) {
+        return new Harvester(x, y);
     }
 
     /**
@@ -35,22 +50,6 @@ public class Harvester extends Building {
     @Override
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * Draws the Harvester
-     * Precondition: g2d is a valid Graphics2D object
-     * Postcondition: The Harvester is drawn on the screen
-     * @param g2d the Graphics2D object used for drawing
-     */
-    @Override
-    public void draw(Graphics2D g2d) {
-        g2d.setColor(new Color(100, 65, 23)); 
-
-        g2d.fillRect((int)x, (int)y, width, height);
-        
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect((int)x, (int)y, width, height);
     }
 
     /**

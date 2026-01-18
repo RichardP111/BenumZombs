@@ -113,7 +113,7 @@ public class ResourceSystem {
 
     /**
      * Adds wood to the resource count
-     * Precondition: amount is a positive integer
+     * Precondition: amount is a integer
      * Postcondition: Wood count is increased by amount
      * @param amount the amount of wood to add
      */
@@ -123,7 +123,7 @@ public class ResourceSystem {
 
     /**
      * Adds stone to the resource count
-     * Precondition: amount is a positive integer
+     * Precondition: amount is a integer
      * Postcondition: Stone count is increased by amount
      * @param amount the amount of stone to add
      */
@@ -133,7 +133,7 @@ public class ResourceSystem {
 
     /**
      * Adds gold to the resource count
-     * Precondition: amount is a positive integer
+     * Precondition: amount is a integer
      * Postcondition: Gold count is increased by amount
      * @param amount the amount of gold to add
      */
@@ -143,7 +143,7 @@ public class ResourceSystem {
 
     /**
      * Adds tokens to the resource count
-     * Precondition: amount is a positive integer
+     * Precondition: amount is a integer
      * Postcondition: Token count is increased by amount
      * @param amount the amount of tokens to add
      */

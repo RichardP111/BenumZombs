@@ -8,9 +8,6 @@
 
 package objects.Buildings;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class Door extends Building {
 
     /**
@@ -22,8 +19,26 @@ public class Door extends Building {
      */
     public Door(double x, double y) {
         super(x, y, 35, 35, "Door", "door.png");
-        this.cost = 10;
-        this.description = "";
+        this.woodCost = 5;
+        this.stoneCost = 5;
+        this.description = "Allows party members to enter your base.";
+
+        this.isLocked = true;
+
+        this.limits = 40;
+    }
+
+    /**
+     * Creates a copy of the Door
+     * Precondition: N/A
+     * Postcondition: returns a new Door object at specified coordinates
+     * @param x the x-coordinate of the new Door
+     * @param y the y-coordinate of the new Door
+     * @return a new Door object
+     */
+    @Override
+    public Building createCopy(double x, double y) {
+        return new Door(x, y);
     }
 
     /**
@@ -35,22 +50,6 @@ public class Door extends Building {
     @Override
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * Draws the Door
-     * Precondition: g2d is a valid Graphics2D object
-     * Postcondition: The Door is drawn on the screen
-     * @param g2d the Graphics2D object used for drawing
-     */
-    @Override
-    public void draw(Graphics2D g2d) {
-        g2d.setColor(new Color(100, 65, 23)); 
-
-        g2d.fillRect((int)x, (int)y, width, height);
-        
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect((int)x, (int)y, width, height);
     }
 
     /**

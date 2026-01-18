@@ -33,6 +33,66 @@ public abstract class GameObject {
         this.color = color;
     }
 
+    /**
+     * Gets the x-coordinate of the GameObject
+     * Precondition: N/A
+     * Postcondition: returns the x-coordinate
+     * @return the x-coordinate of the GameObject
+     */
+    public double getX() {
+        return x;
+    }
+
+    /**
+     * Gets the y-coordinate of the GameObject
+     * Precondition: N/A
+     * Postcondition: returns the y-coordinate
+     * @return the y-coordinate of the GameObject
+     */
+    public double getY() {
+        return y;
+    }
+
+    /**
+     * Gets the width of the GameObject
+     * Precondition: N/A
+     * Postcondition: returns the width
+     * @return the width of the GameObject
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Gets the height of the GameObject
+     * Precondition: N/A
+     * Postcondition: returns the height
+     * @return the height of the GameObject
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * Sets the x-coordinate of the GameObject
+     * Precondition: N/A
+     * Postcondition: x-coordinate is updated
+     * @param x the new x-coordinate
+     */
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    /**
+     * Sets the y-coordinate of the GameObject
+     * Precondition: N/A
+     * Postcondition: y-coordinate is updated
+     * @param y the new y-coordinate
+     */
+    public void setY(double y) {
+        this.y = y;
+    }
+
     public abstract void update();
     public abstract void draw(Graphics2D g2d);
 }

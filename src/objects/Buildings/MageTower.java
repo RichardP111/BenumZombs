@@ -8,9 +8,6 @@
 
 package objects.Buildings;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 public class MageTower extends Building {
 
     /**
@@ -22,8 +19,26 @@ public class MageTower extends Building {
      */
     public MageTower(double x, double y) {
         super(x, y, 35, 35, "Mage Tower", "mageTower.png");
-        this.cost = 10;
-        this.description = "";
+        this.woodCost = 15;
+        this.stoneCost = 15;
+        this.description = "Multiple projectile, short range, fast firing tower.";
+
+        this.isLocked = true;
+
+        this.limits = 6;
+    }
+
+    /**
+     * Creates a copy of the MageTower
+     * Precondition: N/A
+     * Postcondition: returns a new MageTower object at specified coordinates
+     * @param x the x-coordinate of the new MageTower
+     * @param y the y-coordinate of the new MageTower
+     * @return a new MageTower object
+     */
+    @Override
+    public Building createCopy(double x, double y) {
+        return new MageTower(x, y);
     }
 
     /**
@@ -35,22 +50,6 @@ public class MageTower extends Building {
     @Override
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * Draws the MageTower
-     * Precondition: g2d is a valid Graphics2D object
-     * Postcondition: The MageTower is drawn on the screen
-     * @param g2d the Graphics2D object used for drawing
-     */
-    @Override
-    public void draw(Graphics2D g2d) {
-        g2d.setColor(new Color(100, 65, 23)); 
-
-        g2d.fillRect((int)x, (int)y, width, height);
-        
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect((int)x, (int)y, width, height);
     }
 
     /**
