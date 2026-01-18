@@ -8,15 +8,24 @@
 
 package objects;
 
-import java.awt.Color;
+import game.BenumZombsGame;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class Projectile extends GameObject {
     private final double angle;
     private final double speed;
     private final double damage;
-    private int time;
+    private Image image;
+    private boolean active = true;
+
+    private final double startX;
+    private final double startY;
+    private static final double MAX_RANGE = BenumZombsGame.GRID_SIZE * 25;
 
     /**
      * Constructor for Projectile object
@@ -27,12 +36,42 @@ public class Projectile extends GameObject {
      * @param angle the angle at which the projectile is fired
      * @param damage the damage the projectile will inflict
      */
-    public Projectile(double x, double y, double angle, double damage) {
-        super(x, y, 10, 3, Color.WHITE);
+    public Projectile(double x, double y, double angle, double speed, int damage, Image imageName) {
+        super(x - 22, y - 22, 45, 45, null);
+        this.startX = x;
+        this.startY = y;
         this.angle = angle;
-        this.speed = 15.0;
+        this.speed = speed;
         this.damage = damage;
-        this.time = 100;
+        this.image = imageName;
+    }
+
+    /**
+     * Constructor for Projectile object with image loading
+     * Precondition: x and y are valid coordinates within the game window
+     * Postcondition: A Projectile object is created at the specified coordinates with given angle and damage
+     * @param x the x-coordinate of the projectile
+     * @param y the y-coordinate of the projectile
+     * @param angle the angle at which the projectile is fired
+     * @param damage the damage the projectile will inflict
+     * @param imageName the filename of the image representing the projectile
+     */
+    public Projectile(double x, double y, double angle, double speed, int damage, String imageName) {
+        super(x - 22, y - 22, 45, 45, null);
+        this.startX = x;
+        this.startY = y;
+        this.angle = angle;
+        this.speed = speed;
+        this.damage = damage;
+        this.image = null;
+        
+        try {
+            if (imageName != null) {
+                this.image = ImageIO.read(getClass().getResource("/assets/images/player/" + imageName)); 
+            }
+        } catch (IOException | IllegalArgumentException | NullPointerException e) {
+            System.out.println("Projectile.java - Error loading projectile image: " + imageName);
+        }
     }
 
     /**
@@ -42,20 +81,40 @@ public class Projectile extends GameObject {
      */
     @Override
     public void update() {
+        if (!active){
+            return;
+        }
+        
         x += Math.cos(angle) * speed;
         y += Math.sin(angle) * speed;
-        
-        time--;
+
+        double dx = x + (width / 2.0) - startX;
+        double dy = y + (height / 2.0) - startY;
+        double distance = Math.sqrt((dx * dx) + (dy * dy));
+
+        if (distance > MAX_RANGE) {
+            active = false;
+        }
     }
 
     /**
-     * Checks if the projectile's lifespan has ended
+     * Gets the projectile's active status
      * Precondition: N/A
-     * Postcondition: Returns true if the projectile's time has run out, false otherwise
-     * @return true if the projectile is dead, false otherwise
+     * Postcondition: The projectile's active status is returned
+     * @return the active status of the projectile
      */
-    public boolean isDead() {
-        return time <= 0;
+    public boolean getActive() {
+        return active;
+    }
+
+    /**
+     * Sets the projectile's active status
+     * Precondition: N/A
+     * Postcondition: The projectile's active status is updated
+     * @param active the new active status of the projectile
+     */
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     /**
@@ -76,16 +135,17 @@ public class Projectile extends GameObject {
      */
     @Override
     public void draw(Graphics2D g2d) {
+        if (!active || image == null){
+            return;
+        }
         AffineTransform old = g2d.getTransform();
-        g2d.translate(x, y);
-        g2d.rotate(angle);
-        
-        g2d.setColor(new Color(135, 95, 69)); 
-        g2d.fillRect(-10, -1, 20, 2);
-        
-        g2d.setColor(Color.LIGHT_GRAY);
-        g2d.fillPolygon(new int[]{10, 10, 14}, new int[]{-3, 3, 0}, 3);
-
+        g2d.translate(x + width / 2, y + height / 2);
+        g2d.rotate(angle + Math.PI / 2);
+        g2d.drawImage(image, -width / 2, -height / 2, width, height, null);
         g2d.setTransform(old);
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle((int)x, (int)y, width, height);
     }
 }

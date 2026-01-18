@@ -27,7 +27,7 @@ public class Door extends Building {
         this.maxHealth = 500;
         this.health = 500;
 
-        this.limits = 6;
+        this.limits = 40;
 
         loadSprites("door", false, false, false, null);
 

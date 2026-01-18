@@ -19,7 +19,7 @@ public class Bow extends Tool {
 
     private final int[] costs = {100, 400, 2000, 7000, 24000, 30000, 90000};
     private final double[] damageValues = {20, 40, 100, 300, 2400, 10000, 14000};
-    private final double[] attackSpeeds = {2, 2, 2, 2, 2, 2, 2};
+    private final double[] attackSpeeds = {30, 30, 30, 40, 40, 40, 60};
 
     /**
      * Constructor for Bow

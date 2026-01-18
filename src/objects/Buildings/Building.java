@@ -138,6 +138,16 @@ public abstract class Building extends GameObject {
     }
 
     /**
+     * Gets the projectile image of the Building
+     * Precondition: N/A
+     * Postcondition: returns the projectile image of the Building
+     * @return the projectile image of the Building
+     */
+    public BufferedImage getProjectileImage() {
+        return projectileSprite;
+    }
+
+    /**
      * Gets the name of the Building
      * Precondition: N/A
      * Postcondition: returns the name of the Building

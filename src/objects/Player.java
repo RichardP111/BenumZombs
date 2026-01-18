@@ -152,6 +152,45 @@ public class Player extends GameObject {
     }
 
     /**
+     * Gets the bounding rectangle of the player for collision detection
+     * Precondition: N/A
+     * Postcondition: A Rectangle object representing the player's bounds is returned
+     * @return a Rectangle representing the player's bounding box
+     */
+    public Rectangle getBounds(){
+        return new Rectangle((int)x, (int)y, width, height);
+    }
+
+    public Rectangle getToolBounds() {
+        Tool activeTool = toolSystem.getActiveTool();
+        if (activeTool == null){
+            return null;
+        }
+        Rectangle hitBox = new Rectangle((int)(x - 15), (int)(y - 15), 30, 30);
+        boolean swinging = spaceToggle || (isMouseHolding && isAnimating);
+        if (swinging) {
+            return hitBox;
+        }
+        return null;
+    }
+    
+    public int getToolDamage() {
+        Tool activeTool = toolSystem.getActiveTool();
+        int damage;
+
+        if (activeTool != null) {
+            damage = (int) activeTool.getDamage();
+        } else {
+            damage = 0;
+        }
+        return damage;
+    }
+    
+    public ArrayList<Projectile> getProjectiles() {
+        return projectiles;
+    }
+
+    /**
      * Moves the player based on input directions and world bounds
      * Precondition: up, down, left, right indicate movement directions; minX, maxX, minY, maxY define movement bounds; resourceSystem is valid for collision detection; buildingSystem is valid for collision detection
      * Postcondition: player position is updated within bounds
@@ -180,14 +219,14 @@ public class Player extends GameObject {
             }
         }  
         if (left && x > minX){
-            Rectangle nextYPos = new Rectangle((int)(x - SPEED), (int)y, width, height);
-            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)){
+            Rectangle nextXPos = new Rectangle((int)(x - SPEED), (int)y, width, height);
+            if (!CollisionSystem.checkResourceCollision(nextXPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextXPos, buildingSystem)){
                 x -= SPEED;
             }
         }
         if (right && x < maxX){
-            Rectangle nextYPos = new Rectangle((int)(x + SPEED), (int)y, width, height);
-            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)){
+            Rectangle nextXPos = new Rectangle((int)(x + SPEED), (int)y, width, height);
+            if (!CollisionSystem.checkResourceCollision(nextXPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextXPos, buildingSystem)){
                 x += SPEED;
             }
         }
@@ -289,10 +328,10 @@ public class Player extends GameObject {
             if (isMouseHolding || spaceToggle) {
                 long currentTime = System.currentTimeMillis();
                 
-                long cooldown = (long)(1000 / activeTool.getAttackSpeed());
+                long cooldown = (long)(10000 / activeTool.getAttackSpeed());
                 
                 if (currentTime - lastAttackTime > cooldown) {
-                    projectiles.add(new Projectile(getCenterX(), getCenterY(), baseAngle, activeTool.getDamage()));
+                    projectiles.add(new Projectile(getCenterX(), getCenterY(), baseAngle, activeTool.getAttackSpeed(), (int) activeTool.getDamage(), "arrow.png"));
                     lastAttackTime = currentTime;
                 }
             }
@@ -401,7 +440,7 @@ public class Player extends GameObject {
             Projectile p = projectiles.get(i);
             p.update();
             
-            if (p.isDead()) {
+            if (!p.getActive()) {
                 projectiles.remove(i);
             }
         }

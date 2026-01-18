@@ -34,6 +34,7 @@ import systems.CollisionSystem;
 import systems.HeadUpDisplay;
 import systems.ResourceSystem;
 import systems.ToolSystem;
+import systems.ZombieSystem;
 
 public class BenumZombsGame extends JPanel implements ActionListener{
     //************* Game Entities *************//
@@ -42,6 +43,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
     private final ResourceSystem resourceSystem;
     private final ToolSystem toolSystem;
     private final BuildingSystem buildingSystem;
+    private final ZombieSystem zombieSystem;
 
     //************* World Constants *************//
     public static final int GRID_SIZE = 35;
@@ -82,6 +84,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         buildingSystem = new BuildingSystem();
         resourceSystem = new ResourceSystem();
         resourceSystem.spawnResources(25);
+        zombieSystem = new ZombieSystem();
 
         Point spawn; //Make sure player does not spawn on resources
         while (true){
@@ -350,10 +353,18 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         headUpDisplay.update();
         resourceSystem.update();
 
-        float currentTime = headUpDisplay.getTime();    
-        if (currentTime < lastTime){
-            waveCount++;
+        float currentTime = headUpDisplay.getTime();
+        
+        if (buildingSystem.isGoldStashPlaced()) {
+            if (lastTime < 0.25f && currentTime >= 0.25f) {
+                waveCount++;
+                System.out.println("Night Started! Wave: " + waveCount);
+            }
+            zombieSystem.update(player, buildingSystem, currentTime, waveCount);
+        } else {
+            waveCount = 0; 
         }
+        
         lastTime = currentTime;
 
         updateCamera();
@@ -515,6 +526,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
 
         resourceSystem.draw(g2d); // Draw resources
         buildingSystem.draw(g2d); // Draw buildings
+        zombieSystem.draw(g2d); // Draw zombies
         player.drawProjectiles(g2d);
 
         //************* Draw Building Placement Ghost with Transparency Effects *************//
