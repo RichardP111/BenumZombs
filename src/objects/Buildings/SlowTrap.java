@@ -1,6 +1,6 @@
 /**
- * ArrowTower.java
- * The ArrowTower class for BenumZombs, defining arrow tower properties and behaviors
+ * SlowTrap.java
+ * The SlowTrap class for BenumZombs, defining slow trap properties and behaviors
  * @author Richard Pu   
  * @version 1.0
  * @since 2026-01-16
@@ -28,6 +28,8 @@ public class SlowTrap extends Building {
         this.health = 150;
 
         this.limits = 12;
+
+        loadSprites("slowTrap", false, false, false, null);
 
         this.upgradeGoldCosts = new int[]{100, 200, 400, 600, 800, 1000, 1500};
         this.upgradeWoodCosts = new int[]{25, 30, 40, 50, 70, 300, 800};

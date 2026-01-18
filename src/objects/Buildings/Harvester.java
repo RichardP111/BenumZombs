@@ -8,6 +8,8 @@
 
 package objects.Buildings;
 
+import systems.ResourceSystem;
+
 public class Harvester extends Building {
 
     /**
@@ -28,6 +30,8 @@ public class Harvester extends Building {
         this.health = 150;
 
         this.limits = 2;
+
+        loadSprites("harvester", false, true, true, null);
 
         this.upgradeGoldCosts = new int[]{100, 200, 600, 1200, 2000, 8000, 10000};
         this.upgradeWoodCosts = new int[]{25, 30, 40, 50, 70, 300, 600};
@@ -63,6 +67,11 @@ public class Harvester extends Building {
      * Precondition: N/A
      * Postcondition: The Harvester state is updated
      */
+    @Override
+    public void update(ResourceSystem resourceSystem) {
+        super.update(resourceSystem);
+    }
+
     @Override
     public void update() {}
 }

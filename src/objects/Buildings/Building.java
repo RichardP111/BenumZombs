@@ -10,28 +10,44 @@ package objects.Buildings;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import objects.GameObject;
+import systems.ResourceSystem;
 
 public abstract class Building extends GameObject {
     protected String name;
     protected String description;
     protected int level = 1;
-    protected int maxLevel = 7;
+    protected int maxLevel = 8;
 
+    //************* Start Settings *************//
     protected int woodCost;
     protected int stoneCost;
     protected boolean isLocked = true;
     protected int limits; // Limit for number of buildings of a type
 
+    //************* Upgrade Costs *************//
     protected int[] upgradeWoodCosts;
     protected int[] upgradeStoneCosts;
     protected int[] upgradeGoldCosts;
 
+    //************* Tower Health *************//
     protected int maxHealth;
     protected int health;
-    protected Image icon; 
+
+    //************* Tower Sprites *************//
+    protected BufferedImage[] baseSprites;
+    protected BufferedImage[] middleSprites;
+    protected BufferedImage[] topSprites;
+    protected BufferedImage[] otherSprites;
+    protected BufferedImage projectileSprite;
+
+    protected Image icon;
+    protected double rotation = 0.0;
+    protected float animation = 0.0f;
 
     /**
      * Constructor for Building
@@ -53,6 +69,11 @@ public abstract class Building extends GameObject {
         upgradeWoodCosts = new int[maxLevel];
         upgradeStoneCosts = new int[maxLevel];
         upgradeGoldCosts = new int[maxLevel];
+
+        baseSprites = new BufferedImage[maxLevel];
+        middleSprites = new BufferedImage[maxLevel];
+        topSprites = new BufferedImage[maxLevel];
+        otherSprites = new BufferedImage[maxLevel];
         
         //************* Load Building Icon *************//
         try {
@@ -60,7 +81,49 @@ public abstract class Building extends GameObject {
                 this.icon = ImageIO.read(getClass().getResource("/assets/images/buildings/toolbar/" + iconName));
             }
         } catch (IOException | IllegalArgumentException e) {
-            System.out.println("Error loading building icon: " + iconName);
+            System.out.println("Error loading toolbar icon: " + iconName);
+        }
+    }
+
+    /**
+     * Loads the sprites for the Building
+     * Precondition: N/A
+     * Postcondition: sprites are loaded for the Building
+     * @param name the base name of the building sprites
+     * @param hasMiddle whether the building has middle sprites
+     * @param hasHead whether the building has head sprites
+     * @param hasClaw whether the building has claw sprites
+     * @param projectileName the filename of the projectile sprite, or null if none
+     */
+    protected void loadSprites(String name, boolean hasMiddle, boolean hasHead, boolean hasClaw, String projectileName) {
+        try {
+            for (int i = 0; i < maxLevel; i++) {
+                int lvl = i + 1;
+                String basePath = "/assets/images/buildings/" + name + "/base_" + lvl + ".png";
+                baseSprites[i] = ImageIO.read(getClass().getResource(basePath));
+
+                if (hasMiddle) {
+                    String middlePath = "/assets/images/buildings/" + name + "/middle_" + lvl + ".png";
+                    middleSprites[i] = ImageIO.read(getClass().getResource(middlePath));
+                }
+
+                if (hasHead) {
+                    String topPath = "/assets/images/buildings/" + name + "/head_" + lvl + ".png";
+                    topSprites[i] = ImageIO.read(getClass().getResource(topPath));
+                }
+                
+                if (hasClaw) {
+                    String clawPath = "/assets/images/buildings/" + name + "/claw_" + lvl + ".png";
+                    otherSprites[i] = ImageIO.read(getClass().getResource(clawPath));
+                }
+
+                if (projectileName != null) {
+                    String projectilePath = "/assets/images/buildings/" + name + "/" + projectileName;
+                    projectileSprite = ImageIO.read(getClass().getResource(projectilePath));
+                }
+            }
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println("Error loading sprites for " + name + ": " + e.getMessage());
         }
     }
 
@@ -337,16 +400,69 @@ public abstract class Building extends GameObject {
      */
     @Override
     public void draw(Graphics2D g2d) {
-        if (icon != null) {
-            int drawOffset = 20;
+        int spriteIndex = level - 1;
+        if (spriteIndex < 0){
+            spriteIndex = 0;
+        } else if (spriteIndex >= maxLevel){
+            spriteIndex = maxLevel - 1;
+        }
 
-            int drawW = width + drawOffset;
-            int drawH = height + drawOffset;
+        int drawW = width;
+        int drawH = height;
+        int drawX = (int)x;
+        int drawY = (int)y;
+
+        if (baseSprites[spriteIndex] != null) {
+            g2d.drawImage(baseSprites[spriteIndex], drawX, drawY, drawW, drawH, null);
+        }
+
+        if (!this.name.equals("Melee Tower") && middleSprites[spriteIndex] != null) {
+            g2d.drawImage(middleSprites[spriteIndex], drawX, drawY, drawW, drawH, null);
+        }
+
+        if (otherSprites[spriteIndex] != null) {
+            BufferedImage claw = otherSprites[spriteIndex];
+            AffineTransform old = g2d.getTransform();
+
+            g2d.translate(x + width / 2.0, y + height / 2.0);
+            g2d.rotate(rotation); 
+            g2d.drawImage(claw, -drawW / 2, -drawH / 2, drawW, drawH, null);
+
+            g2d.setTransform(old);
+        }
+
+        if (topSprites[spriteIndex] != null) {
+            BufferedImage top = topSprites[spriteIndex];
+            AffineTransform old = g2d.getTransform();
             
-            int drawX = (int)x - (drawOffset / 2);
-            int drawY = (int)y - (drawOffset / 2);
+            g2d.translate(x + width / 2.0, y + height / 2.0);
 
-            g2d.drawImage(icon, drawX, drawY, drawW, drawH, null);
+            if (this.name.equals("Melee Tower") && middleSprites[spriteIndex] != null) {
+                double punchAmount = 20 * Math.abs(Math.sin(animation * 5));
+                g2d.rotate(rotation);
+                g2d.drawImage(middleSprites[spriteIndex], (int)(-drawW / 3 + punchAmount), -drawH / 2, drawW, drawH, null);
+            } else if (this.name.equals("Mage Tower") || this.name.equals("Bomb Tower")) {
+                double scale = (0.15 * Math.sin(animation)) + 0.5;
+                g2d.scale(scale, scale);
+                g2d.drawImage(top, -drawW / 2, -drawH / 2, drawW, drawH, null);
+            } else {
+                g2d.rotate(rotation);
+            }
+                        
+            g2d.drawImage(top, -drawW / 2, -drawH / 2, drawW, drawH, null);
+            g2d.setTransform(old);
+        }
+    }
+
+    /**
+     * Updates the Building state
+     * Precondition: N/A
+     * Postcondition: the Building state is updated
+     */
+    public void update(ResourceSystem resourceSystem) {
+        animation += 0.01f;
+        if (animation > 2){
+            animation = 0;
         }
     }
 

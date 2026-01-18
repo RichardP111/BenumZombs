@@ -346,6 +346,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         //************* Update Systems *************//
         player.update();
         player.updateSwing(resourceSystem);
+        buildingSystem.update(resourceSystem);
         headUpDisplay.update();
         resourceSystem.update();
 

@@ -8,6 +8,8 @@
 
 package objects.Buildings;
 
+import systems.ResourceSystem;
+
 public class CannonTower extends Building {
 
     /**
@@ -28,6 +30,8 @@ public class CannonTower extends Building {
         this.health = 150;
 
         this.limits = 6;
+
+        loadSprites("cannonTower", false, true, false, "cannonTower_projectile.png");
 
         this.upgradeGoldCosts = new int[]{100, 200, 600, 1200, 2000, 8000, 35000};
         this.upgradeWoodCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
@@ -63,6 +67,12 @@ public class CannonTower extends Building {
      * Precondition: N/A
      * Postcondition: The CannonTower state is updated
      */
+    @Override
+    public void update(ResourceSystem resourceSystem) {
+        super.update(resourceSystem);
+        this.rotation += 0.02; 
+    }
+
     @Override
     public void update() {}
 }

@@ -280,6 +280,17 @@ public class BuildingSystem {
     }
 
     /**
+     * Updates all placed buildings
+     * Precondition: N/A
+     * Postcondition: all placed buildings are updated
+     */
+    public void update(ResourceSystem resourceSystem) {
+        for (Building b : placedBuildings) {
+            b.update(resourceSystem);
+        }
+    }
+
+    /**
      * Draws all placed buildings
      * Precondition: g2d is not null
      * Postcondition: all placed buildings are drawn

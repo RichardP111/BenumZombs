@@ -8,7 +8,14 @@
 
 package objects.Buildings;
 
+import systems.ResourceSystem;
+
 public class GoldMine extends Building {
+
+    private final int[] goldProduction = {4, 6, 7, 10, 12, 15, 25, 53};
+
+    private int frames = 0;
+    private static final int GENERATION_INTERVAL = 60;
 
     /**
      * Constructor for GoldMine
@@ -27,7 +34,9 @@ public class GoldMine extends Building {
         this.maxHealth = 150;
         this.health = 150;
 
-        this.limits = 9;
+        this.limits = 8;
+
+        loadSprites("goldMine", false, true, false, null);
 
         this.upgradeGoldCosts = new int[]{200, 300, 600, 800, 2000, 8000, 30000};
         this.upgradeWoodCosts = new int[]{15, 25, 35, 45, 55, 700, 1600};
@@ -63,6 +72,28 @@ public class GoldMine extends Building {
      * Precondition: N/A
      * Postcondition: The GoldMine state is updated
      */
+    @Override
+    public void update(ResourceSystem resourceSystem) {
+        super.update(resourceSystem);
+        this.rotation += 0.02;
+
+        frames++;
+        if (frames >= GENERATION_INTERVAL) {
+            frames = 0;
+            
+            int amount = 0;
+            if (level <= goldProduction.length) {
+                amount = goldProduction[level - 1];
+            } else {
+                amount = goldProduction[goldProduction.length - 1]; 
+            }
+            
+            if (resourceSystem != null) {
+                resourceSystem.addGold(amount);
+            }
+        }
+    }
+
     @Override
     public void update() {}
 }
