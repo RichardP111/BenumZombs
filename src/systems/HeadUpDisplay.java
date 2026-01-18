@@ -9,6 +9,7 @@
 package systems;
 
 import game.BenumZombsGame;
+import game.Main;
 import helpers.FontManager;
 import helpers.SoundManager;
 import helpers.TextFormatter;
@@ -39,6 +40,9 @@ public class HeadUpDisplay {
     public Rectangle shopButtonBounds;
     private Image settingsIcon;
     private Image shopIcon;
+
+    private Rectangle upgradeButtonBounds;
+    private Rectangle sellButtonBounds;
 
     private final BenumZombsGame game;
     private final ToolSystem toolSystem;
@@ -71,6 +75,83 @@ public class HeadUpDisplay {
         } catch (IOException | IllegalArgumentException | NullPointerException e) {
             System.out.println("HeadUpDisplay.java - Your icons are very broken. Good luck!!!! :)))): " + e.getMessage());
         }
+    }
+
+    /**
+     * Handles mouse click events on the HUD
+     * Precondition: p is a valid Point object representing the mouse click location
+     * Postcondition: appropriate action is taken based on the clicked HUD element
+     * @param p the Point object representing the mouse click location 
+     * @return true if a HUD element was clicked and handled, false otherwise
+     */
+    public boolean handleMouseClick(Point p) {
+        BuildingSystem buildingSystem = game.getBuildingSystem();
+        Building building = buildingSystem.getSelectedBuilding();
+        ResourceSystem resourceSystem = game.getResourceSystem();
+
+        //************* Upgrade Button Handling *************//
+        if (resourceSystem != null && building != null) {
+
+            // Get stash level to determine upgrade eligibility
+            Building stash = buildingSystem.getActiveStash();
+            int stashLvl;
+            if (stash != null) {
+                stashLvl = stash.getLevel();
+            } else {
+                stashLvl = 1;
+            }
+
+            if (upgradeButtonBounds != null && upgradeButtonBounds.contains(p)) {
+                if (building.canUpgrade(stashLvl)) {
+                    int woodCost = building.getUpgradeWoodCost();
+                    int stoneCost = building.getUpgradeStoneCost();
+                    int goldCost = building.getUpgradeGoldCost();
+
+                    // Check if player has enough resources
+                    if (resourceSystem.canAfford(woodCost, stoneCost, goldCost)) { 
+                        resourceSystem.addWood(-woodCost);
+                        resourceSystem.addStone(-stoneCost);
+                        resourceSystem.addGold(-goldCost); 
+
+                        building.upgrade();
+                        SoundManager.playSound("buttonClick.wav");
+                        System.out.println("HeadUpDisplay.java - Upgraded Building: " + building.getName());
+                    }
+                }
+                return true;
+            }
+            
+            //************* Sell Button Handling *************//
+            if (sellButtonBounds != null && sellButtonBounds.contains(p)) {
+                if (building.canBeSold()) {
+                    resourceSystem.addWood(building.getWoodSellValue()); 
+                    resourceSystem.addStone(building.getStoneSellValue());
+                    buildingSystem.removeBuilding(building);
+                    SoundManager.playSound("buttonClick.wav");
+                    System.out.println("HeadUpDisplay.java - Sold Building: " + building.getName());
+                }
+                return true;
+            }
+        }
+
+        //************* Settings Button Handling *************//
+        if (settingsButtonBounds != null && settingsButtonBounds.contains(p)) { 
+            Main.settingsScreen.setGameInstance(game);
+            Main.showScreen("SETTINGS");
+            System.out.println("HeadUpDisplay.java - Opened Settings Screen");
+            return true;
+        }
+
+        //************* Shop Button Handling *************//
+        if (shopButtonBounds != null && shopButtonBounds.contains(p)) { 
+            Main.shopScreen.setGameInstance(game);
+            Main.showScreen("SHOP");
+            System.out.println("HeadUpDisplay.java - Opened Shop Screen");
+            return true;
+        }
+
+        //************* Toolbar Click Handling *************//
+        return handleToolbarClick(p);
     }
 
     /**
@@ -200,6 +281,14 @@ public class HeadUpDisplay {
         drawHealthBar(g2d, screenW, screenH);
         drawToolbars(g2d, screenW, screenH, toolSystem);
         drawActionButtons(g2d, screenW, screenH);
+
+        Building selected = game.getBuildingSystem().getSelectedBuilding();
+        if (selected != null) {
+            drawUpgradeBox(g2d, selected);
+        } else {
+            upgradeButtonBounds = null;
+            sellButtonBounds = null;
+        }
     }
 
     /**
@@ -473,6 +562,13 @@ public class HeadUpDisplay {
                     hoverSlotX = x;
                 }
             }
+
+            if (i < 10) { // Draw keybind numbers
+                    g2d.setColor(Color.WHITE);
+                    g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.TRUETYPE_FONT, 8f));
+                    String keyNum = String.valueOf(i);
+                    g2d.drawString(keyNum, x + slotSize - 10, buildingBarY + slotSize - 5);
+                }
             
         }
 
@@ -670,6 +766,143 @@ public class HeadUpDisplay {
             g2d.drawString(stoneCost + " Stone", textX + woodW + 5, textY);
         }
     }
+
+    /**
+     * Draws the upgrade box for a selected building
+     * Precondition: g2d is a valid Graphics2D object, building is a valid Building object
+     * Postcondition: upgrade box is drawn for the selected building
+     * @param g2d the Graphics2D object used for drawing
+     * @param building the Building object for which the upgrade box is drawn
+     */
+    private void drawUpgradeBox(Graphics2D g2d, Building building) {
+        double cameraX = (game.getWidth() / 2.0) - player.getCenterX();
+        double cameraY = (game.getHeight() / 2.0) - player.getCenterY();
+        int buildingScreenX = (int)(building.getX() + cameraX);
+        int buildingScreenY = (int)(building.getY() + cameraY);
+        
+        //************* Upgrade Box Size and Position *************//
+        int boxW = 400; 
+        int contentHeight = 170;
+        int boxH = contentHeight;
+        int boxX = buildingScreenX + (building.getWidth() / 2) - (boxW / 2);
+        int boxY = buildingScreenY - boxH - 20; 
+
+        g2d.setColor(new Color(0, 0, 0, 80));
+        g2d.fillRoundRect(boxX, boxY, boxW, boxH, 10, 10);
+
+        int textX = boxX + 10;
+        int textY = boxY + 30;
+        g2d.setColor(Color.WHITE); // Building name
+        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 23f));
+        g2d.drawString(building.getName(), textX, textY);
+
+        //************* Health Bar *************//
+        int barW = 90;
+        int barH = 30;
+        int barX = boxX + boxW - barW - 10;
+        int barY = boxY + 15;
+
+        int innerX = barX + 3, innerY = barY + 3;
+        int innerW = barW - 6, innerH = barH - 6;
+        
+        g2d.setColor(new Color(0, 0, 0, 80));
+        g2d.fillRoundRect(barX, barY, barW, barH, 10, 10);
+        
+        g2d.setColor(new Color(100, 161, 10));
+        double hpPercent = (double)building.getHealth() / building.getMaxHealth();
+        if (hpPercent < 0){
+            hpPercent = 0;
+        }
+        g2d.fillRoundRect(innerX, innerY, (int)(innerW * hpPercent), innerH, 10, 10);
+
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 12f));
+        g2d.drawString("HP", barX + 10, barY + 18);
+
+        //************ Tier Label *************//
+        int currentButtonY = textY + 25;
+        g2d.setColor(Color.LIGHT_GRAY  );
+        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 16f));
+        g2d.drawString("Tier " + building.getLevel() + " Building", textX, currentButtonY);
+        
+        //************* Building Control Buttons *************//
+        int buttonH = 35;
+        int buttonW = boxW - 20;
+        int buttonX = boxX + 10;
+        currentButtonY += 35;
+
+        upgradeButtonBounds = new Rectangle(buttonX, currentButtonY, buttonW, buttonH);
+
+        BuildingSystem buildingSystem = game.getBuildingSystem();
+        Building stash = buildingSystem.getActiveStash();
+            int stashLvl;
+            if (stash != null) {
+                stashLvl = stash.getLevel();
+            } else {
+                stashLvl = 1;
+            }
+        
+        //************* Upgrade Button *************//
+        if (building.getLevel() >= building.getMaxLevel()) { // If max level reached
+             g2d.setColor(new Color(53, 92, 27)); 
+             g2d.fillRoundRect(buttonX, currentButtonY, buttonW, buttonH, 10, 10);
+             g2d.setColor(new Color(131, 140, 124)); 
+             g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 12f));
+             g2d.drawString("Max Level", upgradeButtonBounds.x + 10, upgradeButtonBounds.y + 22);
+        } else if (!building.canUpgrade(stashLvl)) { // If stash level too low
+             g2d.setColor(new Color(53, 92, 27));
+             g2d.fillRoundRect(buttonX, currentButtonY, buttonW, buttonH, 10, 10);
+             g2d.setColor(new Color(131, 140, 124));
+             g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 12f));
+             g2d.drawString("Requires Stash Level " + (building.getLevel() + 1), upgradeButtonBounds.x + 7, upgradeButtonBounds.y + 22);
+        } else { // Normal upgrade
+             ResourceSystem resourceSystem = game.getResourceSystem();
+    
+             if (resourceSystem.canAfford(building.getUpgradeWoodCost(), building.getUpgradeStoneCost(), building.getUpgradeGoldCost())) {
+                g2d.setColor(new Color(99, 183, 32));
+             } else {
+                g2d.setColor(new Color(53, 92, 27));
+             }  
+             g2d.fillRoundRect(buttonX, currentButtonY, buttonW, buttonH, 10, 10);
+             
+             g2d.setColor(Color.WHITE);
+             g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 12f));
+
+             StringBuilder label = new StringBuilder("Upgrade: ");
+             if (building.getUpgradeWoodCost() > 0){
+                label.append(building.getUpgradeWoodCost()).append(" wood, ");
+             }
+             if (building.getUpgradeStoneCost() > 0){
+                label.append(building.getUpgradeStoneCost()).append(" stone, ");
+             }
+             if (building.getUpgradeGoldCost() > 0) {
+                label.append(building.getUpgradeGoldCost()).append(" gold");
+             }
+
+             g2d.drawString(label.toString(), upgradeButtonBounds.x + 10, upgradeButtonBounds.y + 22);
+        }
+
+        //************* Sell Button *************//
+        currentButtonY += buttonH + 5;
+        sellButtonBounds = new Rectangle(buttonX, currentButtonY, buttonW, buttonH);
+        
+        if (building.canBeSold()) {
+            g2d.setColor(new Color(179, 53, 60));
+            g2d.fillRoundRect(buttonX, currentButtonY, buttonW, buttonH, 10, 10);
+            
+            g2d.setColor(Color.WHITE);
+            String sellLabel = "Sell (" + building.getWoodSellValue() + " wood, " + building.getStoneSellValue() + " stone)";
+            g2d.drawString(sellLabel, sellButtonBounds.x + 10, sellButtonBounds.y + 22);
+        } else {
+            g2d.setColor(new Color(99, 53, 45));
+            g2d.fillRoundRect(buttonX, currentButtonY, buttonW, buttonH, 10, 10);
+            
+            g2d.setColor(new Color(136, 143, 123));
+            g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 12f));
+            g2d.drawString("Sell", sellButtonBounds.x + 10, sellButtonBounds.y + 22);
+        }
+    }
+
 
     /**
      * Wraps text into multiple lines based on maximum characters per line

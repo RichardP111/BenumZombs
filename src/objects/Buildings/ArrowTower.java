@@ -22,10 +22,16 @@ public class ArrowTower extends Building {
         this.woodCost = 5;
         this.stoneCost = 5;
         this.description = "Single target, fast firing tower.";
-
         this.isLocked = true;
 
+        this.maxHealth = 150;
+        this.health = 150;
+
         this.limits = 6;
+
+        this.upgradeGoldCosts = new int[]{100, 200, 600, 1200, 2000, 8000, 35000};
+        this.upgradeWoodCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
+        this.upgradeStoneCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
     }
 
     /**

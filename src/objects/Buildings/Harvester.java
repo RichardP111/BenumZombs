@@ -22,10 +22,16 @@ public class Harvester extends Building {
         this.woodCost = 5;
         this.stoneCost = 5;
         this.description = "Harvests resources automatically, fuelled by gold. Hit with a pickaxe to collect.";
-
         this.isLocked = true;
 
+        this.maxHealth = 150;
+        this.health = 150;
+
         this.limits = 2;
+
+        this.upgradeGoldCosts = new int[]{100, 200, 600, 1200, 2000, 8000, 10000};
+        this.upgradeWoodCosts = new int[]{25, 30, 40, 50, 70, 300, 600};
+        this.upgradeStoneCosts = new int[]{25, 30, 40, 50, 70, 300, 600};
     }
 
     /**

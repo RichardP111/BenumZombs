@@ -35,7 +35,7 @@ public class ResourceSystem {
 
         woodCount = 0;
         stoneCount = 0;
-        goldCount = 1000000;
+        goldCount = 0;
         tokenCount = 0;
     }
 
@@ -189,5 +189,26 @@ public class ResourceSystem {
      */
     public int getTokenCount() {
         return tokenCount;
+    }
+
+    /**
+     * Checks if the player can afford a cost in resources
+     * Precondition: woodCost, stoneCost, and goldCost are non-negative integers
+     * Postcondition: returns true if the player can afford the cost, false otherwise
+     * @param woodCost the wood cost to check
+     * @param stoneCost the stone cost to check
+     * @param goldCost the gold cost to check
+     * @return true if the player can afford the cost, false otherwise
+     */
+    public boolean canAfford(int woodCost, int stoneCost, int goldCost) {
+        return woodCount >= woodCost && stoneCount >= stoneCost && goldCount >= goldCost;
+    }
+
+    // Very super duper ultra classified level 99 clearance secret dev mode method to add resources because im too lazy to acutally play the game normally
+    public void devModeAddResources() {
+        woodCount = 99999999;
+        stoneCount = 99999999;
+        goldCount = 99999999;
+        tokenCount = 99999999;
     }
 }

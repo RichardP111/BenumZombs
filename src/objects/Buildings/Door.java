@@ -22,10 +22,16 @@ public class Door extends Building {
         this.woodCost = 5;
         this.stoneCost = 5;
         this.description = "Allows party members to enter your base.";
-
         this.isLocked = true;
 
-        this.limits = 40;
+        this.maxHealth = 500;
+        this.health = 500;
+
+        this.limits = 6;
+
+        this.upgradeGoldCosts = new int[]{0, 10, 50, 70, 150, 200, 400, 800};
+        this.upgradeWoodCosts = new int[]{5, 5, 0, 0, 0, 0, 0};
+        this.upgradeStoneCosts = new int[]{5, 5, 0, 0, 0, 0, 0};
     }
 
     /**

@@ -22,10 +22,16 @@ public class MeleeTower extends Building {
         this.woodCost = 10;
         this.stoneCost = 10;
         this.description = "High damage, single target, close-range directional tower.";
-
         this.isLocked = true;
 
+        this.maxHealth = 200;
+        this.health = 200;
+
         this.limits = 6;
+
+        this.upgradeGoldCosts = new int[]{100, 200, 600, 1200, 2000, 8000, 35000};
+        this.upgradeWoodCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
+        this.upgradeStoneCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
     }
 
     /**

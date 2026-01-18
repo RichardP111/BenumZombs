@@ -22,10 +22,16 @@ public class GoldMine extends Building {
         this.woodCost = 5;
         this.stoneCost = 5;
         this.description = "Generates gold every second for your party.";
-
         this.isLocked = true;
 
-        this.limits = 8;
+        this.maxHealth = 150;
+        this.health = 150;
+
+        this.limits = 9;
+
+        this.upgradeGoldCosts = new int[]{200, 300, 600, 800, 2000, 8000, 30000};
+        this.upgradeWoodCosts = new int[]{15, 25, 35, 45, 55, 700, 1600};
+        this.upgradeStoneCosts = new int[]{15, 25, 35, 45, 55, 700, 1600};
     }
 
     /**

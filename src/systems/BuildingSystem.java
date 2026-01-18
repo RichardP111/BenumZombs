@@ -32,6 +32,8 @@ public class BuildingSystem {
     private Building activeStash = null;
     private boolean goldStashPlaced = false;
 
+    private Building selectedBuilding = null;
+
     /**
      * Constructor for Building System
      * Precondition: N/A
@@ -117,6 +119,40 @@ public class BuildingSystem {
         if (building.isUnlocker()) {
             this.activeStash = building;
             onGoldStashPlaced();
+        }
+    }
+
+    public boolean selectBuildingAt(int worldX, int worldY) {
+        for (int i = placedBuildings.size() - 1; i >= 0; i--) {
+            Building building = placedBuildings.get(i);
+            Rectangle buildingRect = new Rectangle((int)building.getX(), (int)building.getY(), building.getWidth(), building.getHeight());
+            
+            if (buildingRect.contains(worldX, worldY)) {
+                selectedBuilding = building;
+                return true;
+            }
+        }
+        
+        selectedBuilding = null;
+        return false;
+    }
+    
+    public void deselect() {
+        selectedBuilding = null;
+    }
+    
+    public Building getSelectedBuilding() {
+        return selectedBuilding;
+    }
+    
+    public void removeBuilding(Building building) {
+        placedBuildings.remove(building);
+        if (building == selectedBuilding) {
+            selectedBuilding = null;
+        }
+        if (building == activeStash) {
+            activeStash = null;
+            goldStashPlaced = false;
         }
     }
 
@@ -231,6 +267,16 @@ public class BuildingSystem {
      */
     public Building getActiveStash() {
         return activeStash;
+    }
+
+    /**
+     * Gets the list of placed buildings
+     * Precondition: N/A
+     * Postcondition: returns the list of placed buildings
+     * @return the list of placed buildings
+     */
+    public ArrayList<Building> getPlacedBuildings() {
+        return placedBuildings;
     }
 
     /**

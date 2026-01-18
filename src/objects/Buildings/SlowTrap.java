@@ -22,10 +22,16 @@ public class SlowTrap extends Building {
         this.woodCost = 5;
         this.stoneCost = 5;
         this.description = "Slows enemies from entering your base.";
-
         this.isLocked = true;
 
+        this.maxHealth = 150;
+        this.health = 150;
+
         this.limits = 12;
+
+        this.upgradeGoldCosts = new int[]{100, 200, 400, 600, 800, 1000, 1500};
+        this.upgradeWoodCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
+        this.upgradeStoneCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
     }
 
     /**

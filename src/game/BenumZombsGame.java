@@ -8,6 +8,7 @@
 package game;
 
 import helpers.RandomGeneration;
+import helpers.SoundManager;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -51,7 +52,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
 
     //************* Placement Constants *************//
     private static final double MAX_PLACEMENT_DISTANCE = GRID_SIZE * 10;
-    private static final double MAX_STASH_RANGE = GRID_SIZE * 25;
+    private static final double MAX_STASH_RANGE = GRID_SIZE * 17;
     private static final int BORDER_ZONE_BLOCKS = GRID_SIZE * 5;
 
     private Building placementBuilding = null; 
@@ -87,7 +88,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
             spawn = RandomGeneration.getRandomLocation();
             Rectangle playerHitbox = new Rectangle(spawn.x, spawn.y, 50, 50);
             
-            if (!CollisionSystem.checkCollision(playerHitbox, resourceSystem)){
+            if (!CollisionSystem.checkResourceCollision(playerHitbox, resourceSystem)){
                 break; 
             }
         }
@@ -132,27 +133,21 @@ public class BenumZombsGame extends JPanel implements ActionListener{
             @Override
             public void mousePressed(MouseEvent e){
                 Point p = e.getPoint();
-                if (headUpDisplay.settingsButtonBounds != null && headUpDisplay.settingsButtonBounds.contains(p)){ // Clicked settings button
-                    Main.settingsScreen.setGameInstance(BenumZombsGame.this);
-                    Main.showScreen("SETTINGS");
-                    System.out.println("BenumZombsGame.java - Opening Settings Screen from Game.");
-                    return;
-                }
 
-                if (headUpDisplay.shopButtonBounds != null && headUpDisplay.shopButtonBounds.contains(p)){ // Clicked shop button
-                    Main.shopScreen.setGameInstance(BenumZombsGame.this);
-                    Main.showScreen("SHOP");
-                    System.out.println("BenumZombsGame.java - Opening Shop Screen from Game.");
-                    return;
-                }
-
-                if (headUpDisplay.handleToolbarClick(p)){ // Clicked inventory slot
+                if (headUpDisplay.handleMouseClick(p)){ // Clicked HUD
                 } else if (isPlacing && e.getButton() == MouseEvent.BUTTON1){ // Place building
                     placeBuilding();
                 } else if (isPlacing && e.getButton() == MouseEvent.BUTTON3){ // Cancel placement
                     cancelPlacement();
                 } else if (!isPlacing && e.getButton() == MouseEvent.BUTTON1){ // Start swinging
-                    player.setMouseHolding(true);
+                    int realWorldX = (int)(p.x - worldX);
+                    int realWorldY = (int)(p.y - worldY);
+                    
+                    boolean selected = buildingSystem.selectBuildingAt(realWorldX, realWorldY);
+                    
+                    if (!selected) {
+                        player.setMouseHolding(true);
+                    }
                 }
             }
 
@@ -288,6 +283,30 @@ public class BenumZombsGame extends JPanel implements ActionListener{
             if (keyCode == KeyEvent.VK_F){ // Quick use potion
                 player.usePotion();
             }
+
+            if (keyCode >= KeyEvent.VK_0 && keyCode <= KeyEvent.VK_9) { // Building hotkeys
+                int index = keyCode - KeyEvent.VK_0;
+                Building building = buildingSystem.getBuildingInSlot(index);
+                if (building != null && !building.isLocked()) {
+                    if (buildingSystem.isLimitReached(building)) {
+                        System.out.println("BenumZombsGame.java - Building Limit Reached");
+                        return;
+                    }
+                    if (!building.isUnlocker()) {
+                        if (resourceSystem.getWoodCount() < building.getWoodCost() || resourceSystem.getStoneCount() < building.getStoneCost()) {
+                            System.out.println("BenumZombsGame.java - Not Enough Resources");
+                            return;
+                        }
+                    }
+                    startPlacement(building);
+                    SoundManager.playSound("buttonClick.wav");
+                }
+            }
+
+            if (keyCode == KeyEvent.VK_F12){ // Super secret dev mode key
+                resourceSystem.devModeAddResources();
+                System.out.println("BenumZombsGame.java - Dev Mode activated");
+            }
         }
         
         //************* Movement Keys *************//
@@ -322,7 +341,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         int maxX = OFFSET + PLAY_AREA - BORDER_THICKNESS - player.getWidth();
         int maxY = OFFSET + PLAY_AREA - BORDER_THICKNESS - player.getHeight();
 
-        player.move(up, down, left, right, minX, maxX, minY, maxY, resourceSystem);
+        player.move(up, down, left, right, minX, maxX, minY, maxY, resourceSystem, buildingSystem);
         
         //************* Update Systems *************//
         player.update();
@@ -380,12 +399,11 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         }
 
         //************* Calculate real world position *************//
-        double screenWorldX = mouseX - worldX;
-        double screenWorldY = mouseY - worldY;
+        double cameraX = mouseX - worldX;
+        double cameraY = mouseY - worldY;
 
-        this.ghostX = (int) (Math.floor(screenWorldX / GRID_SIZE) * GRID_SIZE);
-        this.ghostY = (int) (Math.floor(screenWorldY / GRID_SIZE) * GRID_SIZE);
-
+        this.ghostX = (int) (Math.floor(cameraX / GRID_SIZE) * GRID_SIZE);
+        this.ghostY = (int) (Math.floor(cameraY / GRID_SIZE) * GRID_SIZE);
         Rectangle ghostRect = new Rectangle(ghostX, ghostY, placementBuilding.getWidth(), placementBuilding.getHeight());
         
         //************* Border Restrictions *************//
@@ -401,8 +419,8 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         //************* Collision Checks *************//
         Rectangle playerRect = new Rectangle((int)player.getX(), (int)player.getY(), player.getWidth(), player.getHeight());
 
-        boolean collidesResource = CollisionSystem.checkCollision(ghostRect, resourceSystem);
-        boolean collidesBuilding = buildingSystem.isOccupied(ghostRect);
+        boolean collidesResource = CollisionSystem.checkResourceCollision(ghostRect, resourceSystem);
+        boolean collidesBuilding = CollisionSystem.checkBuildingCollision(ghostRect, buildingSystem);
         boolean collidesPlayer = ghostRect.intersects(playerRect);
 
         //************* Range Checks *************//

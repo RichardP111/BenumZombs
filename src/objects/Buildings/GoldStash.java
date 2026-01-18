@@ -22,10 +22,16 @@ public class GoldStash extends Building {
         this.woodCost = 0;
         this.stoneCost = 0;
         this.description = "Establishes your base and holds your gold. Protect this!";
-
         this.isLocked = false;
 
+        this.maxHealth = 1500;
+        this.health = 1500;
+
         this.limits = 1;
+
+        this.upgradeGoldCosts = new int[]{5000, 10000, 16000, 20000, 32000, 10000, 40000};
+        this.upgradeWoodCosts = new int[]{0, 0, 0, 0, 0, 0, 0};
+        this.upgradeStoneCosts = new int[]{0, 0, 0, 0, 0, 0, 0};
     }
 
     /**
@@ -50,6 +56,17 @@ public class GoldStash extends Building {
     @Override
     public boolean isUnlocker() {
         return true;
+    }
+
+    /**
+     * Indicates that GoldStash cannot be sold
+     * Precondition: N/A
+     * Postcondition: returns false
+     * @return false, indicating GoldStash cannot be sold
+     */
+    @Override
+    public boolean canBeSold() {
+        return false; 
     }
 
     /**

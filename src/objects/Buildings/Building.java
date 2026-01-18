@@ -18,16 +18,20 @@ public abstract class Building extends GameObject {
     protected String name;
     protected String description;
     protected int level = 1;
+    protected int maxLevel = 7;
 
     protected int woodCost;
     protected int stoneCost;
     protected boolean isLocked = true;
+    protected int limits; // Limit for number of buildings of a type
+
+    protected int[] upgradeWoodCosts;
+    protected int[] upgradeStoneCosts;
+    protected int[] upgradeGoldCosts;
 
     protected int maxHealth;
     protected int health;
     protected Image icon; 
-
-    protected int limits; // Limit for number of buildings of a type
 
     /**
      * Constructor for Building
@@ -45,6 +49,10 @@ public abstract class Building extends GameObject {
         this.name = name;
         this.health = 100;
         this.maxHealth = 100;
+
+        upgradeWoodCosts = new int[maxLevel];
+        upgradeStoneCosts = new int[maxLevel];
+        upgradeGoldCosts = new int[maxLevel];
         
         //************* Load Building Icon *************//
         try {
@@ -84,6 +92,16 @@ public abstract class Building extends GameObject {
      */
     public int getLevel() { 
         return level; 
+    }
+
+    /**
+     * Gets the maximum level of the Building
+     * Precondition: N/A
+     * Postcondition: returns the maximum level of the Building
+     * @return the maximum level of the Building
+     */
+    public int getMaxLevel() { 
+        return maxLevel; 
     }
 
     /**
@@ -164,6 +182,151 @@ public abstract class Building extends GameObject {
      */
     public void setHeight(int h) {
         this.height = h;
+    }
+
+    /**
+     * Gets the current health of the Building
+     * Precondition: N/A
+     * Postcondition: returns the current health of the Building
+     * @return the current health of the Building
+     */
+    public int getHealth() { 
+        return health; 
+    }
+
+    /**
+     * Damages the Building by a specified amount
+     * Precondition: amount is a non-negative integer
+     * Postcondition: reduces the health of the Building by the specified amount
+     * @param amount the amount of damage to inflict
+     */
+    public int getMaxHealth() { 
+        return maxHealth; 
+    }
+
+    /**
+     * Upgrades the Building if not at max level
+     * Precondition: N/A
+     * Postcondition: upgrades the Building level and heals building
+     */
+    public void upgrade() {
+        if (level < maxLevel) {
+            level++;
+            this.maxHealth = (int)(this.maxHealth * 1.2);
+            this.health = this.maxHealth; 
+        }
+    }
+
+    /**
+     * Checks if the Building can be upgraded based on active stash level
+     * Precondition: activeStashLevel is a positive integer
+     * Postcondition: returns true if the Building can be upgraded, false otherwise
+     * @param activeStashLevel the level of the active Gold Stash
+     * @return true if the Building can be upgraded, false otherwise
+     */
+    public boolean canUpgrade(int activeStashLevel) {
+        if (level >= maxLevel){
+            return false;
+        }
+        
+        if (this.name.equals("Gold Stash")) {
+            return true;
+        }
+        
+        return level < activeStashLevel;
+    }
+
+    /**
+     * Gets the wood cost to upgrade the Building
+     * Precondition: N/A
+     * Postcondition: returns the wood cost to upgrade the Building
+     * @return the wood cost to upgrade the Building
+     */
+    public int getUpgradeWoodCost() {
+        if (level >= maxLevel){
+            return 0;
+        }
+        int index = level - 1;
+        if (index < upgradeWoodCosts.length){
+            return upgradeWoodCosts[index];
+        }
+        return woodCost * (level + 1);
+    }
+
+    /**
+     * Gets the stone cost to upgrade the Building
+     * Precondition: N/A
+     * Postcondition: returns the stone cost to upgrade the Building
+     * @return the stone cost to upgrade the Building
+     */
+    public int getUpgradeStoneCost() {
+        if (level >= maxLevel){
+            return 0;
+        }
+        int index = level - 1;
+        if (index < upgradeStoneCosts.length){
+            return upgradeStoneCosts[index];
+        }
+        return stoneCost * (level + 1);
+    }
+
+    /**
+     * Gets the gold cost to upgrade the Building
+     * Precondition: N/A
+     * Postcondition: returns the gold cost to upgrade the Building
+     * @return the gold cost to upgrade the Building
+     */
+    public int getUpgradeGoldCost() {
+        if (level >= maxLevel){
+            return 0;
+        }
+        int index = level - 1;
+        if (index < upgradeGoldCosts.length){
+            return upgradeGoldCosts[index];
+        }
+        return 0; 
+    }
+
+    /**
+     * Checks if the Building can be sold
+     * Precondition: N/A
+     * Postcondition: returns true if the Building can be sold, false otherwise
+     * @return true if the Building can be sold, false otherwise
+     */
+    public boolean canBeSold() {
+        return true; 
+    }
+
+    /**
+     * Gets the wood sell value of the Building (half of total cost)
+     * Precondition: N/A
+     * Postcondition: returns the sell value of the Building
+     * @return the sell value of the Building
+     */
+    public int getWoodSellValue() {
+        if (getUpgradeWoodCost() == 0) {
+            return upgradeWoodCosts[6] / 2;
+        } else if (getLevel() == 1) {
+            return woodCost / 2;
+        } else {
+            return getUpgradeWoodCost() / 2;
+        }
+    }
+
+    /**
+     * Gets the stone sell value of the Building (half of total cost)
+     * Precondition: N/A
+     * Postcondition: returns the sell value of the Building
+     * @return the sell value of the Building
+     */
+    public int getStoneSellValue() {
+        if (getUpgradeStoneCost() == 0) {
+            return upgradeStoneCosts[6] / 2;
+        } else if (getLevel() == 1) {
+            return stoneCost / 2;
+        } else {
+            return getUpgradeStoneCost() / 2;
+        }
     }
 
     /**

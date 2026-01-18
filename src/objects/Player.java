@@ -20,6 +20,7 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import objects.Tools.Armor;
 import objects.Tools.Tool;
+import systems.BuildingSystem;
 import systems.CollisionSystem;
 import systems.ResourceSystem;
 import systems.ToolSystem;
@@ -90,6 +91,7 @@ public class Player extends GameObject {
      * Postcondition: returns width
      * @return the width of the player
      */
+    @Override
     public int getWidth() { 
         return width; 
     }
@@ -100,6 +102,7 @@ public class Player extends GameObject {
      * Postcondition: returns height
      * @return the height of the player
      */
+    @Override
     public int getHeight() { 
         return height; 
     }
@@ -150,7 +153,7 @@ public class Player extends GameObject {
 
     /**
      * Moves the player based on input directions and world bounds
-     * Precondition: up, down, left, right indicate movement directions; minX, maxX, minY, maxY define movement bounds; resourceSystem is valid for collision detection 
+     * Precondition: up, down, left, right indicate movement directions; minX, maxX, minY, maxY define movement bounds; resourceSystem is valid for collision detection; buildingSystem is valid for collision detection
      * Postcondition: player position is updated within bounds
      * @param up whether the player is moving up
      * @param down whether the player is moving down
@@ -161,29 +164,30 @@ public class Player extends GameObject {
      * @param minY the minimum y-coordinate the player can move to
      * @param maxY the maximum y-coordinate the player can move to
      * @param resourceSystem the ResourceSystem for collision detection
+     * @param buildingSystem the BuildingSystem for collision detection
      */
-    public void move(boolean up, boolean down, boolean left, boolean right, int minX, int maxX, int minY, int maxY, ResourceSystem resourceSystem) {
+    public void move(boolean up, boolean down, boolean left, boolean right, int minX, int maxX, int minY, int maxY, ResourceSystem resourceSystem, BuildingSystem buildingSystem) {
         if (up && y > minY){
             Rectangle nextYPos = new Rectangle((int)x, (int)(y - SPEED), width, height);
-            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){ // Check collision before moving
+            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)){ // Check collision before moving
                 y -= SPEED;
             }
         }
         if (down && y < maxY){
             Rectangle nextYPos = new Rectangle((int)x, (int)(y + SPEED), width, height);
-            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
+            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)){
                 y += SPEED;
             }
         }  
         if (left && x > minX){
             Rectangle nextYPos = new Rectangle((int)(x - SPEED), (int)y, width, height);
-            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
+            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)){
                 x -= SPEED;
             }
         }
         if (right && x < maxX){
             Rectangle nextYPos = new Rectangle((int)(x + SPEED), (int)y, width, height);
-            if (!CollisionSystem.checkCollision(nextYPos, resourceSystem)){
+            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)){
                 x += SPEED;
             }
         }
@@ -351,7 +355,7 @@ public class Player extends GameObject {
 
         Rectangle hitBox = new Rectangle((int)(hitX - 15), (int)(hitY - 15), 30, 30);
 
-        String hitObject = CollisionSystem.checkHitCollision(hitBox, resourceSystem);
+        String hitObject = CollisionSystem.checkResourceHitCollision(hitBox, resourceSystem);
 
         if (hitObject != null){     
             int amount = 2;

@@ -22,10 +22,16 @@ public class Wall extends Building {
         this.woodCost = 2;
         this.stoneCost = 0;
         this.description = "Blocks enemies from reaching your towers.";
-
         this.isLocked = true;
 
+        this.maxHealth = 150;
+        this.health = 150;
+
         this.limits = 250;
+
+        this.upgradeGoldCosts = new int[]{0, 5, 30, 60, 80, 100, 250, 800};
+        this.upgradeWoodCosts = new int[]{2, 0, 0, 0, 0, 0, 0};
+        this.upgradeStoneCosts = new int[]{0, 2, 0, 0, 0, 0, 0};
     }
 
     /**
