@@ -26,8 +26,8 @@ public class Wall extends Building {
         this.description = "Blocks enemies from reaching your towers.";
         this.isLocked = true;
 
-        this.maxHealth = 150;
-        this.health = 150;
+        this.maxHealth = 150 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 250;
 

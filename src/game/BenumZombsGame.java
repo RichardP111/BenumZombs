@@ -79,6 +79,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
     public BenumZombsGame(String playerName) {
         setFocusable(true);
         setBackground(new Color(105, 141, 65));
+        setLayout(null);
 
         //************* Systems Initialization and Player Spawn *************//
         toolSystem = new ToolSystem();
@@ -136,8 +137,11 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e) {
-                Point p = e.getPoint();
+                if (headUpDisplay.isDeathScreenVisible()){
+                    return;
+                }
 
+                Point p = e.getPoint();
                 if (headUpDisplay.handleMouseClick(p)) { // Clicked HUD
                 } else if (isPlacing && e.getButton() == MouseEvent.BUTTON1) { // Place building
                     placeBuilding();
@@ -256,6 +260,9 @@ public class BenumZombsGame extends JPanel implements ActionListener {
      * @param isPressed  true if key is pressed, false if released
      */
     private void handleKeys(int keyCode, boolean isPressed) {
+        if (headUpDisplay.isDeathScreenVisible()){ // Ignore input if death screen is visible 
+            return;
+        }
         if (isPressed) {
             if (keyCode == KeyEvent.VK_SPACE) { // Toggle space swing
                 player.toggleSpaceSwing();
@@ -367,6 +374,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         }
         lastTime = currentTime;
 
+        checkDeathCondition();
         updateCamera();
         repaint();
     }
@@ -490,6 +498,73 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         if (resourceSystem.getWoodCount() < placementBuilding.getWoodCost() || resourceSystem.getStoneCount() < placementBuilding.getStoneCost()) {
             cancelPlacement();
         }
+    }
+
+    /**
+     * Checks if the player or stash is dead and shows the death screen if so
+     * Precondition: N/A
+     * Postcondition: death screen is shown if player or stash is dead
+     */
+    private void checkDeathCondition() {
+        if (headUpDisplay.isDeathScreenVisible()){
+            return;
+        }
+        
+        Building stash = buildingSystem.getActiveStash();
+        boolean stashAlive = (stash != null && stash.getHealth() > 0);
+        
+        if (player.isDead()) {
+            if (stashAlive) {
+                headUpDisplay.showDeathScreen("You got killed... but fear not, your fortress survives! Get back into action!");
+            } else {
+                headUpDisplay.showDeathScreen("Your stash has been destroyed after " + waveCount + " waves.");
+            }
+        }
+    }
+
+    /**
+     * Respawns the player at the stash or resets the game if no stash exists
+     * Precondition: N/A
+     * Postcondition: player is respawned or game is reset
+     */
+    public void respawnPlayer() {
+        Building stash = buildingSystem.getActiveStash();
+        boolean stashAlive = stash != null && stash.getHealth() > 0;
+
+        if (stashAlive) {
+            player.reset(stash.getX() + stash.getWidth()/2, stash.getY() + stash.getHeight()/2);
+            toolSystem.reset(); 
+        } else {            
+            resourceSystem.reset(true);
+            toolSystem.reset();
+            buildingSystem.reset();
+            zombieSystem.reset();
+            waveCount = 0;
+            
+            Point spawn;
+            while (true) {
+                spawn = RandomGeneration.getRandomLocation();
+                Rectangle test = new Rectangle(spawn.x, spawn.y, 50, 50);
+                if (!CollisionSystem.checkResourceCollision(test, resourceSystem)){
+                    player.reset(spawn.x, spawn.y);
+                    while (true) {
+                        if (CollisionSystem.checkBuildingCollision(test, buildingSystem)){
+                            player.setY(player.getY() + 30);
+                        } else {
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+        }
+        
+        headUpDisplay.hideDeathScreen();
+        up = false;
+        down = false;
+        left = false;
+        right = false;
     }
 
 

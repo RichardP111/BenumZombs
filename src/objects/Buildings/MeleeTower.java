@@ -33,14 +33,14 @@ public class MeleeTower extends Building {
         this.description = "High damage, single target, close-range directional tower.";
         this.isLocked = true;
 
-        this.maxHealth = 200;
-        this.health = 200;
+        this.maxHealth = 200 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 6;
 
-        this.attackCooldown = 500; 
-        this.range = 100;
-        this.damage = 25;
+        this.attackCooldown = 500;
+        this.range = 100 + (level * 20);
+        this.damage = 25 + (level * 15);
 
         loadSprites("meleeTower", true, true, false, null);
 

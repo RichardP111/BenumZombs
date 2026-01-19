@@ -204,6 +204,21 @@ public class ResourceSystem {
         return woodCount >= woodCost && stoneCount >= stoneCost && goldCount >= goldCost;
     }
 
+    /**
+     * Resets the resource counts
+     * Precondition: N/A
+     * Postcondition: Resource counts are reset
+     * @param keepGold true to keep gold count, false to reset it
+     */
+    public void reset(boolean keepGold) {
+        this.woodCount = 0;
+        this.stoneCount = 0;
+        this.tokenCount = 0;
+        if (!keepGold) {
+            this.goldCount = 0;
+        }
+    }
+
     // Very super duper ultra classified level 99 clearance secret dev mode method to add resources because im too lazy to acutally play the game normally
     public void devModeAddResources() {
         woodCount = 99999999;

@@ -150,4 +150,14 @@ public class ZombieSystem {
     public ArrayList<Zombie> getZombies() {
         return zombies; 
     }
+
+    /**
+     * Resets the ZombieSystem to its initial state
+     * Precondition: N/A
+     * Postcondition: All zombies are removed and wave spawn flag is reset
+     */
+    public void reset() {
+        zombies.clear();
+        waveSpawnedForNight = false;
+    }
 }

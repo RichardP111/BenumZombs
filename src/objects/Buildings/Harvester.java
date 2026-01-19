@@ -29,8 +29,8 @@ public class Harvester extends Building {
         this.description = "Harvests resources automatically, fuelled by gold. Hit with a pickaxe to collect.";
         this.isLocked = true;
 
-        this.maxHealth = 150;
-        this.health = 150;
+        this.maxHealth = 150 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 2;
 

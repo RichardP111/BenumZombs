@@ -11,6 +11,7 @@ package systems;
 import game.BenumZombsGame;
 import game.Main;
 import helpers.FontManager;
+import helpers.RoundedJButton;
 import helpers.SoundManager;
 import helpers.TextFormatter;
 import java.awt.BasicStroke;
@@ -22,6 +23,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +36,7 @@ import objects.Tools.Tool;
 public class HeadUpDisplay {
     private final Player player;
     private float time = 0.0f;
-    private final float dayLength = 0.001f; // Speed of day-night cycle  0.00005
+    private final float dayLength = 0.03f; // Speed of day-night cycle 00005
 
     public Rectangle settingsButtonBounds;
     public Rectangle shopButtonBounds;
@@ -45,6 +48,10 @@ public class HeadUpDisplay {
 
     private final BenumZombsGame game;
     private final ToolSystem toolSystem;
+
+    private boolean isDeathScreenVisible = false;
+    private String deathMessage = "";
+    private RoundedJButton respawnButton;
 
     /**
      * Constructor for HeadUpDisplay
@@ -60,6 +67,7 @@ public class HeadUpDisplay {
         this.toolSystem = toolSystem;
 
         loadIcons();
+        initializeRespawnButton();
     }
 
     /**
@@ -74,6 +82,30 @@ public class HeadUpDisplay {
         } catch (IOException | IllegalArgumentException | NullPointerException e) {
             System.out.println("HeadUpDisplay.java - Your icons are very broken. Good luck!!!! :)))): " + e.getMessage());
         }
+    }
+
+    /**
+     * Initializes the respawn button for the death screen
+     * Precondition: N/A
+     * Postcondition: respawn button is created and added to the game
+     */
+    @SuppressWarnings("Convert2Lambda")
+    private void initializeRespawnButton() {
+        respawnButton = new RoundedJButton("Respawn");
+        respawnButton.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 24f));
+        respawnButton.setBackground(new Color(103, 90, 166));
+        respawnButton.setForeground(Color.WHITE);
+        respawnButton.setFocusable(false); 
+        respawnButton.setVisible(false);   
+
+        respawnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.respawnPlayer(); 
+            }
+        });
+
+        game.add(respawnButton);
     }
 
     /**
@@ -289,6 +321,11 @@ public class HeadUpDisplay {
         } else {
             upgradeButtonBounds = null;
             sellButtonBounds = null;
+        }
+
+        //************* Draw Death Screen *************//
+        if (isDeathScreenVisible) {
+            drawDeathOverlay(g2d, screenW, screenH);
         }
     }
 
@@ -903,5 +940,81 @@ public class HeadUpDisplay {
             g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 12f));
             g2d.drawString("Sell", sellButtonBounds.x + 10, sellButtonBounds.y + 22);
         }
+    }
+
+    /**
+     * Draws the death overlay on the screen
+     * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
+     * Postcondition: death overlay is drawn on the screen
+     * @param g2d the Graphics2D object used for drawing
+     * @param screenW the width of the screen
+     * @param screenH the height of the screen
+     */
+    private void drawDeathOverlay(Graphics2D g2d, int screenW, int screenH) {
+        //************* Death Panel Size *************//
+        g2d.setColor(new Color(0, 0, 0, 180));
+        g2d.fillRect(0, 0, screenW, screenH);
+
+        int deathPanelW = screenW - 1000, deathPanelH = screenH - 1500;
+        int deathPanelX = screenW + 500;
+        int deathPanelY = (screenH - deathPanelH) / 2 - 100;
+
+        //************* Death Panel Background *************//
+        g2d.setColor(new Color(0, 0, 0, 200));
+        g2d.fillRoundRect(deathPanelX, deathPanelY, deathPanelW, deathPanelH, 20, 20);
+
+        //************* Death Panel Text *************//
+        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 20f));
+        g2d.setColor(Color.WHITE);
+        int titleW = g2d.getFontMetrics().stringWidth("You Died");
+        g2d.drawString("You Died", (screenW / 2) - (titleW / 2), deathPanelY + 60);        
+
+        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 16f));
+        g2d.setColor(Color.LIGHT_GRAY);
+        int messageW = g2d.getFontMetrics().stringWidth(deathMessage);
+        g2d.drawString(deathMessage, (screenW / 2) - (messageW / 2), deathPanelY + 100);
+
+        //************* Respawn Button *************//
+        int btnW = 200;
+        int btnH = 60;
+        if (respawnButton != null) {
+            respawnButton.setBounds(screenW/2 - btnW/2, screenH/2 + 10, btnW, btnH);
+            if (!respawnButton.isVisible()) {
+                respawnButton.setVisible(true);
+            }
+        }
+    }
+
+    /**
+     * Shows the death screen with a message
+     * Precondition: message is a valid String
+     * Postcondition: death screen is displayed with the provided message
+     * @param message the message to display on the death screen
+     */
+    public void showDeathScreen(String message) {
+        this.isDeathScreenVisible = true;
+        this.deathMessage = message;
+    }
+    
+    /**
+     * Hides the death screen
+     * Precondition: N/A
+     * Postcondition: death screen is hidden
+     */
+    public void hideDeathScreen() {
+        this.isDeathScreenVisible = false;
+        if (respawnButton != null) {
+            respawnButton.setVisible(false);
+        }
+    }
+    
+    /**
+     * Checks if the death screen is currently visible
+     * Precondition: N/A
+     * Postcondition: returns true if death screen is visible, false otherwise
+     * @return true if death screen is visible, false otherwise
+     */
+    public boolean isDeathScreenVisible() {
+        return isDeathScreenVisible;
     }
 }

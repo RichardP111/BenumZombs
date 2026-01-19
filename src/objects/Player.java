@@ -154,6 +154,16 @@ public class Player extends GameObject {
     }
 
     /**
+     * Checks if the player is dead
+     * Precondition: N/A
+     * Postcondition: returns true if current health is 0 or less
+     * @return true if the player is dead, false otherwise
+     */
+    public boolean isDead() {
+        return currentHealth <= 0;
+    }
+
+    /**
      * Gets the bounding rectangle of the player for collision detection
      * Precondition: N/A
      * Postcondition: A Rectangle object representing the player's bounds is returned
@@ -161,6 +171,20 @@ public class Player extends GameObject {
      */
     public Rectangle getBounds() {
         return new Rectangle((int)x, (int)y, width, height);
+    }
+
+    /**
+     * Resets the player's position and health
+     * Precondition: N/A
+     * Postcondition: Player's position is set to (x, y) and health is restored
+     * @param x the new x-coordinate of the player
+     * @param y the new y-coordinate of the player
+     */
+    public void reset(double x, double y) {
+        this.x = x;
+        this.y = y;
+        this.currentHealth = 1000;
+        this.projectiles.clear();
     }
 
     /**

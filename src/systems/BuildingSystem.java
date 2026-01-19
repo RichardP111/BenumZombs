@@ -205,9 +205,9 @@ public class BuildingSystem {
     public void onGoldStashPlaced() {
         goldStashPlaced = true;
         
-        for (int i = 0; i < slots.length; i++) {
-            if (slots[i] != null) {
-            slots[i].setLocked(false);
+        for (Building slot : slots) {
+            if (slot != null) {
+                slot.setLocked(false);
             }
         }
         System.out.println("BuildingSystem.java - Gold Stash Placed");
@@ -320,6 +320,25 @@ public class BuildingSystem {
      */
     public ArrayList<Projectile> getProjectiles() {
         return projectiles;
+    }
+
+    /**
+     * Resets the BuildingSystem to its initial state
+     * Precondition: N/A
+     * Postcondition: All placed buildings and projectiles are cleared, and building slots are locked
+     */
+    public void reset() {
+        placedBuildings.clear();
+        projectiles.clear();
+        activeStash = null;
+        goldStashPlaced = false;
+        selectedBuilding = null;
+        
+        for (Building slot : slots) {
+            if (slot != null) {
+                slot.setLocked(true);
+            }
+        }
     }
 
     /**

@@ -26,8 +26,8 @@ public class SlowTrap extends Building {
         this.description = "Slows enemies from entering your base.";
         this.isLocked = true;
 
-        this.maxHealth = 150;
-        this.health = 150;
+        this.maxHealth = 150 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 12;
 

@@ -26,8 +26,8 @@ public class GoldStash extends Building {
         this.description = "Establishes your base and holds your gold. Protect this!";
         this.isLocked = false;
 
-        this.maxHealth = 1500;
-        this.health = 1500;
+        this.maxHealth = 1500 + (level * 500);
+        this.health = maxHealth;
 
         this.limits = 1;
 

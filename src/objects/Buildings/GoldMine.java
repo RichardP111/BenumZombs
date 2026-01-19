@@ -36,8 +36,8 @@ public class GoldMine extends Building {
         this.description = "Generates gold every second for your party.";
         this.isLocked = true;
 
-        this.maxHealth = 150;
-        this.health = 150;
+        this.maxHealth = 150 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 8;
 

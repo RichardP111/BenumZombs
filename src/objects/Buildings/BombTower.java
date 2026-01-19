@@ -35,14 +35,14 @@ public class BombTower extends Building {
         this.description = "Large area of effect damage, very slow firing tower.";
         this.isLocked = true;
 
-        this.maxHealth = 150;
-        this.health = 150;
+        this.maxHealth = 150 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 6;
 
-        this.attackCooldown = 2000; 
-        this.range = 200;
-        this.damage = 60;
+        this.attackCooldown = 2000;
+        this.range = 200 + (level * 20);
+        this.damage = 60 + (level * 15);
 
         loadSprites("bombTower", false, true, false, "bombTower_projectile.png");
 

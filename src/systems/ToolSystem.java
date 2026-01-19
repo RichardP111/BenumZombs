@@ -8,10 +8,12 @@
 
 package systems;
 
+import java.util.ArrayList;
+
 import objects.Tools.*;
 
 public class ToolSystem {
-    private final Tool[] slots = new Tool[5];
+    private ArrayList<Tool> inventory;
     private int activeSlot = 0;
 
     /**
@@ -20,11 +22,12 @@ public class ToolSystem {
      * Postcondition: Tools are initialized in their respective slots
      */
     public ToolSystem() {
-        slots[0] = new Pickaxe(true);
-        slots[1] = new Spear(false);
-        slots[2] = new Bow(false);
-        slots[3] = new HealthPotion(false);
-        slots[4] = new Armor(false);
+        inventory = new ArrayList<>();
+        inventory.add(new Pickaxe(true));
+        inventory.add(new Spear(false));
+        inventory.add(new Bow(false));
+        inventory.add(new HealthPotion(false));
+        inventory.add(new Armor(false));
     }
 
     /**
@@ -34,8 +37,8 @@ public class ToolSystem {
      * @param slotIndex the index of the slot to set as active
      */
     public void setActiveSlot(int slotIndex) {
-        if (slotIndex >= 0 && slotIndex < slots.length) {
-            if (slots[slotIndex].getIsUnlocked()) {
+        if (slotIndex >= 0 && slotIndex < inventory.size()) {
+            if (inventory.get(slotIndex).getIsUnlocked()) {
                 activeSlot = slotIndex;
             }
         }
@@ -58,7 +61,7 @@ public class ToolSystem {
      * @return the active Tool
      */
     public Tool getActiveTool() {
-        return slots[activeSlot];
+        return inventory.get(activeSlot);
     }
 
     /**
@@ -69,9 +72,24 @@ public class ToolSystem {
      * @return the Tool in the specified slot, or null if invalid index
      */
     public Tool getToolInSlot(int slotIndex) {
-        if (slotIndex >= 0 && slotIndex < slots.length) {
-            return slots[slotIndex];
+        if (slotIndex >= 0 && slotIndex < inventory.size()) {
+            return inventory.get(slotIndex);
         }
         return null;
+    }
+
+    /**
+     * Resets the ToolSystem to its initial state
+     * Precondition: N/A
+     * Postcondition: Tool inventory is reset and active slot is set to 0
+     */
+    public void reset() {
+        inventory.clear();
+        inventory.add(new Pickaxe(true));
+        inventory.add(new Spear(false));
+        inventory.add(new Bow(false));
+        inventory.add(new HealthPotion(false));
+        inventory.add(new Armor(false));
+        activeSlot = 0;
     }
 }

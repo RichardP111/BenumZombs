@@ -32,14 +32,14 @@ public class ArrowTower extends Building {
         this.description = "Single target, fast firing tower.";
         this.isLocked = true;
 
-        this.maxHealth = 150;
-        this.health = 150;
+        this.maxHealth = 150 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 6;
 
         this.attackCooldown = 800;
-        this.range = 400;
-        this.damage = 30;
+        this.range = 400 + (level * 20);
+        this.damage = 30 + (level * 15);
 
         loadSprites("arrowTower", false, true, false, "arrowTower_projectile.png");
 

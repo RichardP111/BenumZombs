@@ -26,8 +26,8 @@ public class Door extends Building {
         this.description = "Allows party members to enter your base.";
         this.isLocked = true;
 
-        this.maxHealth = 500;
-        this.health = 500;
+        this.maxHealth = 500 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 40;
 

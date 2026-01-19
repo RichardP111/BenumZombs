@@ -34,15 +34,15 @@ public class MageTower extends Building {
         this.stoneCost = 15;
         this.description = "Multiple projectile, short range, fast firing tower.";
         this.isLocked = true;
-
-        this.maxHealth = 150;
-        this.health = 150;
+        
+        this.maxHealth = 150 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 6;
 
-        this.attackCooldown = 1200; 
-        this.range = 450;
-        this.damage = 35;
+        this.attackCooldown = 1200;
+        this.range = 450 + (level * 20);
+        this.damage = 35 + (level * 15);
 
         loadSprites("mageTower", false, true, false, "mageTower_projectile.png");
 

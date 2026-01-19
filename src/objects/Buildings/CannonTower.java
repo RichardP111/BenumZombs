@@ -31,15 +31,15 @@ public class CannonTower extends Building {
         this.stoneCost = 15;
         this.description = "Area of effect damage, slow firing tower.";
         this.isLocked = true;
-
-        this.maxHealth = 150;
-        this.health = 150;
+        
+        this.maxHealth = 150 + (level * 100);
+        this.health = maxHealth;
 
         this.limits = 6;
 
         this.attackCooldown = 1500;
-        this.range = 300;
-        this.damage = 80;
+        this.range = 300 + (level * 20);
+        this.damage = 80 + (level * 15);
 
         loadSprites("cannonTower", false, true, false, "cannonTower_projectile.png");
 
