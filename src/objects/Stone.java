@@ -34,7 +34,7 @@ public class Stone {
             try {
                 stoneImage = ImageIO.read(getClass().getResource("/assets/images/resources/stone.png"));
             } catch (IOException | IllegalArgumentException | NullPointerException e) {
-                System.out.println("Could not find stone image, enjoy a game without stones: " + e.getMessage());
+                System.out.println("Stone.java - Could not find stone image, enjoy a game without stones: " + e.getMessage());
             }
         }
     }
@@ -44,7 +44,7 @@ public class Stone {
      * Precondition: N/A
      * Postcondition: The stone's shake offset is set to initiate the animation
      */
-    public void playAnimation(){
+    public void playAnimation() {
         this.shakeOffset = 15;
     }
 
@@ -53,7 +53,7 @@ public class Stone {
      * Precondition: N/A
      * Postcondition: The stone's shake offset is updated
      */
-    public void update(){
+    public void update() {
         if (Math.abs(shakeOffset) > 0.5) {
             shakeOffset *= RECOVERY_RATE;
         } else {

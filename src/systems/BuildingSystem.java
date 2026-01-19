@@ -122,6 +122,14 @@ public class BuildingSystem {
         }
     }
 
+    /**
+     * Selects a building at the specified world coordinates
+     * Precondition: N/A
+     * Postcondition: selectedBuilding is set to the building at the coordinates, or null if none
+     * @param worldX the x-coordinate in the world
+     * @param worldY the y-coordinate in the world
+     * @return true if a building was selected, false otherwise
+     */
     public boolean selectBuildingAt(int worldX, int worldY) {
         for (int i = placedBuildings.size() - 1; i >= 0; i--) {
             Building building = placedBuildings.get(i);
@@ -137,22 +145,35 @@ public class BuildingSystem {
         return false;
     }
     
+    /**
+     * Deselects the currently selected building
+     * Precondition: N/A
+     * Postcondition: selectedBuilding is set to null
+     */
     public void deselect() {
         selectedBuilding = null;
     }
     
+    /**
+     * Gets the currently selected building
+     * Precondition: N/A
+     * Postcondition: returns the currently selected building, or null if none
+     * @return the currently selected building
+     */
     public Building getSelectedBuilding() {
         return selectedBuilding;
     }
     
+    /**
+     * Removes a building from the placed buildings list
+     * Precondition: building is not null
+     * Postcondition: building is removed from the placed buildings list
+     * @param building the Building to remove
+     */
     public void removeBuilding(Building building) {
         placedBuildings.remove(building);
         if (building == selectedBuilding) {
             selectedBuilding = null;
-        }
-        if (building == activeStash) {
-            activeStash = null;
-            goldStashPlaced = false;
         }
     }
 

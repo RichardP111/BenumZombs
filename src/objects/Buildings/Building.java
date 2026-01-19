@@ -19,6 +19,7 @@ import systems.ResourceSystem;
 
 public abstract class Building extends GameObject {
     protected String name;
+    protected String type;
     protected String description;
     protected int level = 1;
     protected int maxLevel = 8;
@@ -81,7 +82,7 @@ public abstract class Building extends GameObject {
                 this.icon = ImageIO.read(getClass().getResource("/assets/images/buildings/toolbar/" + iconName));
             }
         } catch (IOException | IllegalArgumentException e) {
-            System.out.println("Error loading toolbar icon: " + iconName);
+            System.out.println("Building.java - Error loading toolbar icon: " + iconName);
         }
     }
 
@@ -98,20 +99,24 @@ public abstract class Building extends GameObject {
     protected void loadSprites(String name, boolean hasMiddle, boolean hasHead, boolean hasClaw, String projectileName) {
         try {
             for (int i = 0; i < maxLevel; i++) {
+                //************* Load Base Sprite *************//
                 int lvl = i + 1;
                 String basePath = "/assets/images/buildings/" + name + "/base_" + lvl + ".png";
                 baseSprites[i] = ImageIO.read(getClass().getResource(basePath));
 
+                //************* Load Middle Sprites *************//
                 if (hasMiddle) {
                     String middlePath = "/assets/images/buildings/" + name + "/middle_" + lvl + ".png";
                     middleSprites[i] = ImageIO.read(getClass().getResource(middlePath));
                 }
 
+                //************* Load Top Sprites *************//
                 if (hasHead) {
                     String topPath = "/assets/images/buildings/" + name + "/head_" + lvl + ".png";
                     topSprites[i] = ImageIO.read(getClass().getResource(topPath));
                 }
                 
+                //************* Load Other Sprites *************//
                 if (hasClaw) {
                     String clawPath = "/assets/images/buildings/" + name + "/claw_" + lvl + ".png";
                     otherSprites[i] = ImageIO.read(getClass().getResource(clawPath));
@@ -123,7 +128,7 @@ public abstract class Building extends GameObject {
                 }
             }
         } catch (IOException | IllegalArgumentException e) {
-            System.out.println("Error loading sprites for " + name + ": " + e.getMessage());
+            System.out.println("Building.java - Error loading sprites for " + name + ": " + e.getMessage());
         }
     }
 
@@ -278,6 +283,26 @@ public abstract class Building extends GameObject {
     }
 
     /**
+     * Damages the Building by a specified amount
+     * Precondition: amount is a non-negative integer
+     * Postcondition: reduces the health of the Building by the specified amount
+     * @param amount the amount of damage to inflict
+     */
+    public void takeDamage(int amount) {
+        this.health -= amount;
+    }
+
+    /**
+     * Checks if the Building is destroyed
+     * Precondition: N/A
+     * Postcondition: returns true if the Building is destroyed, false otherwise
+     * @return true if the Building is destroyed, false otherwise
+     */
+    public boolean isDestroyed() {
+        return this.health <= 0;
+    }
+
+    /**
      * Upgrades the Building if not at max level
      * Precondition: N/A
      * Postcondition: upgrades the Building level and heals building
@@ -298,7 +323,7 @@ public abstract class Building extends GameObject {
      * @return true if the Building can be upgraded, false otherwise
      */
     public boolean canUpgrade(int activeStashLevel) {
-        if (level >= maxLevel){
+        if (level >= maxLevel) {
             return false;
         }
         
@@ -316,11 +341,11 @@ public abstract class Building extends GameObject {
      * @return the wood cost to upgrade the Building
      */
     public int getUpgradeWoodCost() {
-        if (level >= maxLevel){
+        if (level >= maxLevel) {
             return 0;
         }
         int index = level - 1;
-        if (index < upgradeWoodCosts.length){
+        if (index < upgradeWoodCosts.length) {
             return upgradeWoodCosts[index];
         }
         return woodCost * (level + 1);
@@ -333,11 +358,11 @@ public abstract class Building extends GameObject {
      * @return the stone cost to upgrade the Building
      */
     public int getUpgradeStoneCost() {
-        if (level >= maxLevel){
+        if (level >= maxLevel) {
             return 0;
         }
         int index = level - 1;
-        if (index < upgradeStoneCosts.length){
+        if (index < upgradeStoneCosts.length) {
             return upgradeStoneCosts[index];
         }
         return stoneCost * (level + 1);
@@ -350,11 +375,11 @@ public abstract class Building extends GameObject {
      * @return the gold cost to upgrade the Building
      */
     public int getUpgradeGoldCost() {
-        if (level >= maxLevel){
+        if (level >= maxLevel) {
             return 0;
         }
         int index = level - 1;
-        if (index < upgradeGoldCosts.length){
+        if (index < upgradeGoldCosts.length) {
             return upgradeGoldCosts[index];
         }
         return 0; 
@@ -411,9 +436,9 @@ public abstract class Building extends GameObject {
     @Override
     public void draw(Graphics2D g2d) {
         int spriteIndex = level - 1;
-        if (spriteIndex < 0){
+        if (spriteIndex < 0) {
             spriteIndex = 0;
-        } else if (spriteIndex >= maxLevel){
+        } else if (spriteIndex >= maxLevel) {
             spriteIndex = maxLevel - 1;
         }
 
@@ -422,31 +447,36 @@ public abstract class Building extends GameObject {
         int drawX = (int)x;
         int drawY = (int)y;
 
+        //************* Draw Base Sprite *************//
         if (baseSprites[spriteIndex] != null) {
             g2d.drawImage(baseSprites[spriteIndex], drawX, drawY, drawW, drawH, null);
         }
 
+        //************* Draw Melee Middle *************//
         if (!this.name.equals("Melee Tower") && middleSprites[spriteIndex] != null) {
             g2d.drawImage(middleSprites[spriteIndex], drawX, drawY, drawW, drawH, null);
         }
 
+        //************* Draw Speical Sprites *************//
         if (otherSprites[spriteIndex] != null) {
             BufferedImage claw = otherSprites[spriteIndex];
             AffineTransform old = g2d.getTransform();
 
-            g2d.translate(x + width / 2.0, y + height / 2.0);
+            g2d.translate(x + width / 2, y + height / 2);
             g2d.rotate(rotation); 
             g2d.drawImage(claw, -drawW / 2, -drawH / 2, drawW, drawH, null);
 
             g2d.setTransform(old);
         }
 
+        //************* Draw Top Sprites *************//
         if (topSprites[spriteIndex] != null) {
             BufferedImage top = topSprites[spriteIndex];
             AffineTransform old = g2d.getTransform();
             
-            g2d.translate(x + width / 2.0, y + height / 2.0);
+            g2d.translate(x + width / 2, y + height / 2);
 
+            //************* Special Animations *************//
             if (this.name.equals("Melee Tower") && middleSprites[spriteIndex] != null) {
                 double punchAmount = 20 * Math.abs(Math.sin(animation * 5));
                 g2d.rotate(rotation);
@@ -471,7 +501,7 @@ public abstract class Building extends GameObject {
      */
     public void update(ResourceSystem resourceSystem) {
         animation += 0.01f;
-        if (animation > 2){
+        if (animation > 2) {
             animation = 0;
         }
     }

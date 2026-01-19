@@ -49,7 +49,7 @@ public class Spear extends Tool {
      */
     @Override
     public int getUpgradeCost() {
-        if (level >= 7){
+        if (level >= 7) {
             return -1;
         }
         return costs[level];

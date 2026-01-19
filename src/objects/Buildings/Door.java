@@ -31,9 +31,9 @@ public class Door extends Building {
 
         loadSprites("door", false, false, false, null);
 
-        this.upgradeGoldCosts = new int[]{0, 10, 50, 70, 150, 200, 400, 800};
-        this.upgradeWoodCosts = new int[]{5, 5, 0, 0, 0, 0, 0};
-        this.upgradeStoneCosts = new int[]{5, 5, 0, 0, 0, 0, 0};
+        this.upgradeGoldCosts = new int[] {0, 10, 50, 70, 150, 200, 400, 800};
+        this.upgradeWoodCosts = new int[] {5, 5, 0, 0, 0, 0, 0};
+        this.upgradeStoneCosts = new int[] {5, 5, 0, 0, 0, 0, 0};
     }
 
     /**

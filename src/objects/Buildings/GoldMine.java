@@ -38,9 +38,9 @@ public class GoldMine extends Building {
 
         loadSprites("goldMine", false, true, false, null);
 
-        this.upgradeGoldCosts = new int[]{200, 300, 600, 800, 2000, 8000, 30000};
-        this.upgradeWoodCosts = new int[]{15, 25, 35, 45, 55, 700, 1600};
-        this.upgradeStoneCosts = new int[]{15, 25, 35, 45, 55, 700, 1600};
+        this.upgradeGoldCosts = new int[] {200, 300, 600, 800, 2000, 8000, 30000};
+        this.upgradeWoodCosts = new int[] {15, 25, 35, 45, 55, 700, 1600};
+        this.upgradeStoneCosts = new int[] {15, 25, 35, 45, 55, 700, 1600};
     }
 
     /**

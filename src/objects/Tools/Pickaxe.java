@@ -17,6 +17,7 @@ public class Pickaxe extends Tool {
 
     private final int[] costs = {0, 1000, 3000, 6000, 8000, 24000, 90000};
     private final double[] harvestValues = {1.5, 3.0, 3.0, 4.5, 4.5, 6.0, 9.0};
+    private final double[] damageValues = {20, 20, 20, 20, 20, 20, 20};
     private final double[] attackSpeeds = {3.33, 3.33, 3.51, 4.0, 5.0, 5.0, 5.0};
 
     /**
@@ -60,7 +61,7 @@ public class Pickaxe extends Tool {
      */
     @Override
     public int getUpgradeCost() {
-        if (level >= 7){
+        if (level >= 7) {
             return -1;
         }
         return costs[level]; 
@@ -72,6 +73,7 @@ public class Pickaxe extends Tool {
      * Postcondition: returns the harvest power of the pickaxe
      * @return the harvest power of the pickaxe
      */
+    @Override
     public double getHarvestPower() {
         return harvestValues[level - 1];
     }
@@ -85,6 +87,17 @@ public class Pickaxe extends Tool {
     @Override
     public double getAttackSpeed() {
         return attackSpeeds[level - 1];
+    }
+
+    /**
+     * Gets the damage of the pickaxe
+     * Precondition: N/A
+     * Postcondition: returns the damage of the pickaxe
+     * @return the damage of the pickaxe
+     */
+    @Override
+    public double getDamage() {
+        return damageValues[level - 1];
     }
 
     /**

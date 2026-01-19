@@ -19,6 +19,7 @@ public class RandomGeneration {
     private static final Random random = new Random();
     private static final double SPAWN_RADIUS = BenumZombsGame.GRID_SIZE * 30;
 
+    //************* Game Boundaries *************//
     private static final int MIN_X = BenumZombsGame.OFFSET + BenumZombsGame.BORDER_THICKNESS;
     private static final int MAX_X = BenumZombsGame.PLAY_AREA - BenumZombsGame.BORDER_THICKNESS - 100;
     private static final int MIN_Y = BenumZombsGame.OFFSET + BenumZombsGame.BORDER_THICKNESS;
@@ -49,6 +50,7 @@ public class RandomGeneration {
         Building stash = buildingSystem.getActiveStash();
         int centerX, centerY;
         
+        //************* Determine Base Location *************//
         if (stash != null) {
             centerX = (int) (stash.getX() + stash.getWidth() / 2);
             centerY = (int) (stash.getY() + stash.getHeight() / 2);
@@ -57,27 +59,27 @@ public class RandomGeneration {
             centerY = (MIN_Y + MAX_Y) / 2;
         }
 
+        //************* Generate Random Point Around Base *************//
         double angle = Math.random() * Math.PI * 2;
         double radius = SPAWN_RADIUS + (Math.random() * 100 - 100);
 
         int randomX = (int) (centerX + radius * Math.cos(angle));
         int randomY = (int) (centerY + radius * Math.sin(angle));
-        if (randomX < MIN_X){
+
+        //************* Stay Within Game Boundaries *************//
+        if (randomX < MIN_X) {
             randomX = MIN_X + 50;
         }
-        if (randomX > MAX_X){
+        if (randomX > MAX_X) {
             randomX = MAX_X - 50;
         }
-        if (randomY < MIN_Y){
+        if (randomY < MIN_Y) {
             randomY = MIN_Y + 50;
         }
-        if (randomY > MAX_Y){
+        if (randomY > MAX_Y) {
             randomY = MAX_Y - 50;
         }
+        
         return new Point(randomX, randomY);
-    }
-
-    public static int getMinX() {
-        return MIN_X;
     }
 }

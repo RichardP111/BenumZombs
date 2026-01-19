@@ -29,7 +29,7 @@ public class ResourceSystem {
      * Precondition: N/A
      * Postcondition: ResourceSystem object is created
      */
-    public ResourceSystem(){
+    public ResourceSystem() {
         trees = new ArrayList<>();
         stones = new ArrayList<>();
 
@@ -45,13 +45,13 @@ public class ResourceSystem {
      * Postcondition: Resources are spawned on the map
      * @param count the number of resources to spawn
      */
-    public void spawnResources( int count){
+    public void spawnResources( int count) {
         Random random = new Random();
 
-        for (int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             Point point = RandomGeneration.getRandomLocation();
 
-            if (random.nextFloat() < 0.5){ //50% chance for tree or stone
+            if (random.nextFloat() < 0.5) { //50% chance for tree or stone
                 trees.add(new Tree(point.x, point.y));
             } else {
                 stones.add(new Stone(point.x, point.y));
@@ -82,11 +82,11 @@ public class ResourceSystem {
      * Postcondition: Resources are drawn on the screen
      * @param g2d the Graphics2D object used for drawing
      */
-    public void draw(Graphics2D g2d){
-        for (int i = 0; i < trees.size(); i++){
+    public void draw(Graphics2D g2d) {
+        for (int i = 0; i < trees.size(); i++) {
             trees.get(i).draw(g2d);
         }
-        for (int i = 0; i < stones.size(); i++){
+        for (int i = 0; i < stones.size(); i++) {
             stones.get(i).draw(g2d);
         }
     }

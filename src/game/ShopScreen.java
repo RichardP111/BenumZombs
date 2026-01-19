@@ -227,8 +227,8 @@ public class ShopScreen extends JPanel {
      * Postcondition: tool in the specified slot is purchased or upgraded if sufficient resources are available
      * @param slotIndex the index of the tool slot to purchase or upgrade
      */
-    private void handlePurchase(int slotIndex){
-        if (gameInstance == null){
+    private void handlePurchase(int slotIndex) {
+        if (gameInstance == null) {
             return;
         }
 
@@ -251,7 +251,7 @@ public class ShopScreen extends JPanel {
 
         //************* Purchase and Upgrade Logic *************//
         cost = tool.getUpgradeCost();
-        if (cost == -1){ // Max level
+        if (cost == -1) { // Max level
             System.out.println("ShopScreen.java - Tool max: " + tool.getToolName());
             return;
         }
@@ -321,7 +321,7 @@ public class ShopScreen extends JPanel {
 
         tool.setLevel(displayLevel);
 
-        tool.draw(g2d, iconX + (iconBoxSize / 3), (int)(iconY + iconBoxSize - (iconBoxSize * 0.25)), 0.8, (iconBoxSize / 80.0) * 0.75);
+        tool.draw(g2d, iconX + (iconBoxSize / 3), (int)(iconY + iconBoxSize - (iconBoxSize * 0.25)), 0.8, (iconBoxSize / 80) * 0.75);
 
         tool.setLevel(originalLevel);
 
@@ -350,9 +350,9 @@ public class ShopScreen extends JPanel {
         g2d.setColor(Color.WHITE);
         g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 18f));
 
-        if (cost != -1){ 
+        if (cost != -1) { 
             g2d.drawString(String.valueOf(cost), x + w - 75, y + 32);
-        } else{
+        } else {
             g2d.drawString("MAX", x + w - 75, y + 32);
         }
     }

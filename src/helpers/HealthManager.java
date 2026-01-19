@@ -41,6 +41,7 @@ public class HealthManager {
         g2d.setColor(new Color(0, 0, 0, 160));
         g2d.fillRoundRect(barX, barY, barW, barH, 4, 4);
 
+        //************* Draw Filled Percentage *************//
         double percent = Math.max(0, current / max);
         g2d.setColor(barColor);
         g2d.fillRoundRect(barX, barY, (int)(barW * percent), barH, 4, 4);

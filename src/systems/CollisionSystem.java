@@ -11,8 +11,10 @@ package systems;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import objects.Buildings.Building;
+import objects.Player;
 import objects.Stone;
 import objects.Tree;
+import objects.Zombie;
 
 public class CollisionSystem {
     /**
@@ -105,8 +107,9 @@ public class CollisionSystem {
         for (int i = 0; i < buildings.size(); i++) {
             Building building = buildings.get(i);
             
+            // Check if the building is non-solid
             if (building.getName().equals("Door") || building.getName().equals("Slow Trap")) {
-                break;
+                continue;
             }
 
             Rectangle buildingRect = new Rectangle((int)building.getX(), (int)building.getY(), building.getWidth(), building.getHeight());
@@ -115,5 +118,36 @@ public class CollisionSystem {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks for collisions between a bounding box and zombies
+     * Precondition: box is a valid Rectangle, zombieSystem is a valid ZombieSystem
+     * Postcondition: returns true if a collision is detected, false otherwise
+     * @param box the bounding box to check for collisions
+     * @param zombieSystem the zombie system containing zombies
+     * @return true if a collision is detected, false otherwise
+     */
+    public static boolean checkZombieCollision(Rectangle box, ZombieSystem zombieSystem) {
+        for (int i = 0; i < zombieSystem.getZombies().size(); i++) {
+            Zombie zombie = zombieSystem.getZombies().get(i);
+            if (zombie.getBounds().intersects(box)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks for collisions between a bounding box and the player
+     * Precondition: box is a valid Rectangle, player is a valid Player
+     * Postcondition: returns true if a collision is detected, false otherwise
+     * @param box the bounding box to check for collisions
+     * @param player the player object
+     * @return true if a collision is detected, false otherwise
+     */
+    public static boolean checkPlayerCollision(Rectangle box, Player player) {
+        Rectangle playerRect = player.getBounds();
+        return box.intersects(playerRect);
     }
 }

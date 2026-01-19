@@ -31,9 +31,9 @@ public class SlowTrap extends Building {
 
         loadSprites("slowTrap", false, false, false, null);
 
-        this.upgradeGoldCosts = new int[]{100, 200, 400, 600, 800, 1000, 1500};
-        this.upgradeWoodCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
-        this.upgradeStoneCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
+        this.upgradeGoldCosts = new int[] {100, 200, 400, 600, 800, 1000, 1500};
+        this.upgradeWoodCosts = new int[] {25, 30, 40, 50, 70, 300, 800};
+        this.upgradeStoneCosts = new int[] {25, 30, 40, 50, 70, 300, 800};
     }
 
     /**

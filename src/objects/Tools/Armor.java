@@ -50,7 +50,7 @@ public class Armor extends Tool {
      */
     @Override
     public int getUpgradeCost() {
-        if (level >= 10){
+        if (level >= 10) {
             return -1;
         }
         return costs[level];
@@ -63,7 +63,7 @@ public class Armor extends Tool {
      * @return the bonus HP provided by the armor
      */
     public int getBonusHP() {
-        if (!isUnlocked){
+        if (!isUnlocked) {
             return 0;
         }
         return bonusHP[level - 1];

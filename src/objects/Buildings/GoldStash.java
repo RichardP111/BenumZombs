@@ -31,9 +31,9 @@ public class GoldStash extends Building {
 
         loadSprites("goldStash", false, false, false, null);
 
-        this.upgradeGoldCosts = new int[]{5000, 10000, 16000, 20000, 32000, 10000, 40000};
-        this.upgradeWoodCosts = new int[]{0, 0, 0, 0, 0, 0, 0};
-        this.upgradeStoneCosts = new int[]{0, 0, 0, 0, 0, 0, 0};
+        this.upgradeGoldCosts = new int[] {5000, 10000, 16000, 20000, 32000, 10000, 40000};
+        this.upgradeWoodCosts = new int[] {0, 0, 0, 0, 0, 0, 0};
+        this.upgradeStoneCosts = new int[] {0, 0, 0, 0, 0, 0, 0};
     }
 
     /**

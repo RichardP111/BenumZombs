@@ -22,7 +22,7 @@ public class FontManager {
      * Postcondition: googleSansFlex is loaded
      */
     public static void loadGoogleSansFlex() {
-        try{
+        try {
             InputStream is = FontManager.class.getResourceAsStream("/assets/fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf");
             googleSansFlex = Font.createFont(Font.TRUETYPE_FONT, is);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();

@@ -25,7 +25,6 @@ import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.imageio.ImageIO;
 import objects.Buildings.Building;
 import objects.Player;
@@ -198,31 +197,32 @@ public class HeadUpDisplay {
         Rectangle buildingBarRect = new Rectangle(buildingBarX, buildingBarY, buildingBarW, slotSize);
         boolean clickedBuildingBar = buildingBarRect.contains(p);
 
+        //************* Building Bar Click Handling *************//
         if (clickedBuildingBar) {
             BuildingSystem buildingSystem = game.getBuildingSystem();
             ResourceSystem resourceSystem = game.getResourceSystem();
 
             if (buildingSystem != null) {
-                for (int i = 0; i < 11; i++) {
+                for (int i = 0; i < 11; i++) { //slots 1-11
                     int x = buildingBarX + i * (slotSize + slotPadding);
                     Rectangle slotBounds = new Rectangle(x, buildingBarY, slotSize, slotSize);
                     
-                    if (slotBounds.contains(p)) {
+                    if (slotBounds.contains(p)) { // Clicked this building slot
                         Building building = buildingSystem.getBuildingInSlot(i);
                         if (building != null && !building.isLocked()) {
                             
-                            if (building.isUnlocker() && buildingSystem.isGoldStashPlaced()) {
+                            if (building.isUnlocker() && buildingSystem.isGoldStashPlaced()) { // Only one Gold Stash allowed
                                 System.out.println("HeadUpDisplay.java - Gold Stash already placed");
                                 return true;
                             }
 
-                            if (buildingSystem.isLimitReached(building)) {
+                            if (buildingSystem.isLimitReached(building)) { // Building limit reached
                                 System.out.println("HeadUpDisplay.java - Building Limit Reached");
                                 return true;
                             }
 
                             if (!building.isUnlocker()) {
-                                if (resourceSystem.getWoodCount() < building.getWoodCost() || resourceSystem.getStoneCount() < building.getStoneCost()) {
+                                if (resourceSystem.getWoodCount() < building.getWoodCost() || resourceSystem.getStoneCount() < building.getStoneCost()) { // Check resources
                                     System.out.println("HeadUpDisplay.java - Not enough resources");
                                     return true;
                                 }
@@ -246,7 +246,7 @@ public class HeadUpDisplay {
      */
     public void update() {
         time += dayLength;
-        if (time > 1.0f){
+        if (time > 1.0f) {
             time = 0.0f;
         }
     }
@@ -282,6 +282,7 @@ public class HeadUpDisplay {
         drawToolbars(g2d, screenW, screenH, toolSystem);
         drawActionButtons(g2d, screenW, screenH);
 
+        //************* Draw Upgrade/Sell Box *************//
         Building selected = game.getBuildingSystem().getSelectedBuilding();
         if (selected != null) {
             drawUpgradeBox(g2d, selected);
@@ -502,7 +503,7 @@ public class HeadUpDisplay {
         int hoverSlotX = 0;
 
         //************* Tool Bar Slots and Tools *************//
-        for (int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             int x = toolBarX + i * (slotSize + slotPadding);
             Rectangle slotRect = new Rectangle(x, toolBarY, slotSize, slotSize);
             boolean isHovered = (mousePos != null && slotRect.contains(mousePos));
@@ -517,7 +518,7 @@ public class HeadUpDisplay {
             }
             g2d.fillRoundRect(x, toolBarY, slotSize, slotSize, 10, 10);
             
-            if (isUnlocked){  // Draw tool icon if unlocked
+            if (isUnlocked) {  // Draw tool icon if unlocked
                 tool.draw(g2d, x + slotSize / 2 - 10, toolBarY + slotSize / 2 + 10, 0.8, 0.5);
 
                 if (isHovered) { // Open info box on hover
@@ -534,7 +535,7 @@ public class HeadUpDisplay {
         BuildingSystem buildingSystem = game.getBuildingSystem();
 
         //************* Building Bar Slots *************//
-        for (int i = 0; i < 11; i++){
+        for (int i = 0; i < 11; i++) {
             int x = buildingBarX + i * (slotSize + slotPadding);
             Rectangle slotRect = new Rectangle(x, buildingBarY, slotSize, slotSize);
             boolean isHovered = (mousePos != null && slotRect.contains(mousePos));
@@ -542,7 +543,7 @@ public class HeadUpDisplay {
             Building building = buildingSystem.getBuildingInSlot(i);
             boolean isLocked = building.isLocked();
 
-            if (isHovered && !isLocked){ //Hover effect
+            if (isHovered && !isLocked) { //Hover effect
                 g2d.setColor(new Color(0, 0, 0, 55));
             } else {
                 g2d.setColor(new Color(0, 0, 0, 30));
@@ -639,7 +640,7 @@ public class HeadUpDisplay {
             lines.add("Tier " + tool.getLevel() + " Item");
         }
 
-        lines.addAll(wrapText(tool.getDescription(), 30)); 
+        lines.addAll(TextFormatter.wrapText(tool.getDescription(), 30)); 
 
         //************* Tool Info Box Size and Position *************//
         int boxW = 220;
@@ -684,7 +685,7 @@ public class HeadUpDisplay {
         ResourceSystem resourceSystem = game.getResourceSystem();
 
         //************* Building Info Box Bounds *************//
-        ArrayList<String> description = wrapText(building.getDescription(), 30);
+        ArrayList<String> description = TextFormatter.wrapText(building.getDescription(), 30);
         int boxW = 240; 
         int boxH = 85 + (description.size() * 18); 
         int boxX = slotX + (slotSize / 2) - (boxW / 2); 
@@ -745,7 +746,7 @@ public class HeadUpDisplay {
             int stoneCost = building.getStoneCost();
             
             //************* Wood Cost Text *************//
-            if (resourceSystem.getWoodCount() < woodCost && !building.isLocked()){
+            if (resourceSystem.getWoodCount() < woodCost && !building.isLocked()) {
                 g2d.setColor(new Color(197, 82, 59));
             } else {
                 g2d.setColor(Color.LIGHT_GRAY);
@@ -757,7 +758,7 @@ public class HeadUpDisplay {
             int woodW = g2d.getFontMetrics().stringWidth(woodText);
 
             //************* Stone Cost Text *************//
-            if (resourceSystem.getStoneCount() < stoneCost && !building.isLocked()){
+            if (resourceSystem.getStoneCount() < stoneCost && !building.isLocked()) {
                 g2d.setColor(new Color(197, 82, 59));
             } else {
                 g2d.setColor(Color.LIGHT_GRAY); 
@@ -775,8 +776,8 @@ public class HeadUpDisplay {
      * @param building the Building object for which the upgrade box is drawn
      */
     private void drawUpgradeBox(Graphics2D g2d, Building building) {
-        double cameraX = (game.getWidth() / 2.0) - player.getCenterX();
-        double cameraY = (game.getHeight() / 2.0) - player.getCenterY();
+        double cameraX = (game.getWidth() / 2) - player.getCenterX();
+        double cameraY = (game.getHeight() / 2) - player.getCenterY();
         int buildingScreenX = (int)(building.getX() + cameraX);
         int buildingScreenY = (int)(building.getY() + cameraY);
         
@@ -810,7 +811,7 @@ public class HeadUpDisplay {
         
         g2d.setColor(new Color(100, 161, 10));
         double hpPercent = (double)building.getHealth() / building.getMaxHealth();
-        if (hpPercent < 0){
+        if (hpPercent < 0) {
             hpPercent = 0;
         }
         g2d.fillRoundRect(innerX, innerY, (int)(innerW * hpPercent), innerH, 10, 10);
@@ -858,21 +859,22 @@ public class HeadUpDisplay {
         } else { // Normal upgrade
              ResourceSystem resourceSystem = game.getResourceSystem();
     
-             if (resourceSystem.canAfford(building.getUpgradeWoodCost(), building.getUpgradeStoneCost(), building.getUpgradeGoldCost())) {
+             if (resourceSystem.canAfford(building.getUpgradeWoodCost(), building.getUpgradeStoneCost(), building.getUpgradeGoldCost())) { // Adjust button color based on affordability
                 g2d.setColor(new Color(99, 183, 32));
              } else {
                 g2d.setColor(new Color(53, 92, 27));
-             }  
+             }
              g2d.fillRoundRect(buttonX, currentButtonY, buttonW, buttonH, 10, 10);
              
              g2d.setColor(Color.WHITE);
              g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 12f));
 
+             //************* Upgrade Cost Label *************//
              StringBuilder label = new StringBuilder("Upgrade: ");
-             if (building.getUpgradeWoodCost() > 0){
+             if (building.getUpgradeWoodCost() > 0) {
                 label.append(building.getUpgradeWoodCost()).append(" wood, ");
              }
-             if (building.getUpgradeStoneCost() > 0){
+             if (building.getUpgradeStoneCost() > 0) {
                 label.append(building.getUpgradeStoneCost()).append(" stone, ");
              }
              if (building.getUpgradeGoldCost() > 0) {
@@ -886,14 +888,14 @@ public class HeadUpDisplay {
         currentButtonY += buttonH + 5;
         sellButtonBounds = new Rectangle(buttonX, currentButtonY, buttonW, buttonH);
         
-        if (building.canBeSold()) {
+        if (building.canBeSold()) { // If building can be sold
             g2d.setColor(new Color(179, 53, 60));
             g2d.fillRoundRect(buttonX, currentButtonY, buttonW, buttonH, 10, 10);
             
             g2d.setColor(Color.WHITE);
             String sellLabel = "Sell (" + building.getWoodSellValue() + " wood, " + building.getStoneSellValue() + " stone)";
             g2d.drawString(sellLabel, sellButtonBounds.x + 10, sellButtonBounds.y + 22);
-        } else {
+        } else { //For Gold Stash
             g2d.setColor(new Color(99, 53, 45));
             g2d.fillRoundRect(buttonX, currentButtonY, buttonW, buttonH, 10, 10);
             
@@ -901,29 +903,5 @@ public class HeadUpDisplay {
             g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 12f));
             g2d.drawString("Sell", sellButtonBounds.x + 10, sellButtonBounds.y + 22);
         }
-    }
-
-
-    /**
-     * Wraps text into multiple lines based on maximum characters per line
-     * Precondition: text is a valid String, maxCharacters is a positive integer
-     * Postcondition: returns an ArrayList of wrapped text lines
-     * @param input the input text to be wrapped
-     * @param n the maximum number of characters per line
-     * @return an ArrayList of wrapped text lines
-     */
-    private ArrayList<String> wrapText(String input, int n) {      
-        // Based on https://www.baeldung.com/java-wrap-string-number-characters-word-wise 
-        StringBuilder stringBuilder = new StringBuilder(input);
-        int index = 0;
-        while(stringBuilder.length() > index + n) {
-            index = stringBuilder.lastIndexOf(" ", index + n);    
-            stringBuilder.replace(index, index + 1, "\n");
-            index++; 
-        }
-        
-        ArrayList<String> lines = new ArrayList<>();
-        lines.addAll(Arrays.asList(stringBuilder.toString().split("\n")));
-        return lines;
     }
 }

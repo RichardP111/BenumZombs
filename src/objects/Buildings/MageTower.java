@@ -33,9 +33,9 @@ public class MageTower extends Building {
 
         loadSprites("mageTower", false, true, false, "mageTower_projectile.png");
 
-        this.upgradeGoldCosts = new int[]{100, 200, 600, 1200, 2000, 8000, 35000};
-        this.upgradeWoodCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
-        this.upgradeStoneCosts = new int[]{25, 30, 40, 50, 70, 300, 800};
+        this.upgradeGoldCosts = new int[] {100, 200, 600, 1200, 2000, 8000, 35000};
+        this.upgradeWoodCosts = new int[] {25, 30, 40, 50, 70, 300, 800};
+        this.upgradeStoneCosts = new int[] {25, 30, 40, 50, 70, 300, 800};
     }
 
     /**

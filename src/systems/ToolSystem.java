@@ -19,7 +19,7 @@ public class ToolSystem {
      * Precondition: N/A
      * Postcondition: Tools are initialized in their respective slots
      */
-    public ToolSystem(){
+    public ToolSystem() {
         slots[0] = new Pickaxe(true);
         slots[1] = new Spear(false);
         slots[2] = new Bow(false);
@@ -33,9 +33,9 @@ public class ToolSystem {
      * Postcondition: activeSlot is updated to slotIndex if the tool is unlocked
      * @param slotIndex the index of the slot to set as active
      */
-    public void setActiveSlot(int slotIndex){
-        if (slotIndex >= 0 && slotIndex < slots.length){
-            if (slots[slotIndex].getIsUnlocked()){
+    public void setActiveSlot(int slotIndex) {
+        if (slotIndex >= 0 && slotIndex < slots.length) {
+            if (slots[slotIndex].getIsUnlocked()) {
                 activeSlot = slotIndex;
             }
         }
@@ -57,7 +57,7 @@ public class ToolSystem {
      * Postcondition: returns the active Tool
      * @return the active Tool
      */
-    public Tool getActiveTool(){
+    public Tool getActiveTool() {
         return slots[activeSlot];
     }
 
@@ -68,10 +68,10 @@ public class ToolSystem {
      * @param slotIndex the index of the slot to get the tool from
      * @return the Tool in the specified slot, or null if invalid index
      */
-    public Tool getToolInSlot(int slotIndex){
-        if (slotIndex >= 0 && slotIndex < slots.length){
+    public Tool getToolInSlot(int slotIndex) {
+        if (slotIndex >= 0 && slotIndex < slots.length) {
             return slots[slotIndex];
         }
         return null;
-    }   
+    }
 }

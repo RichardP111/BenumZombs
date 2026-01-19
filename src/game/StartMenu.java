@@ -205,7 +205,7 @@ public class StartMenu extends JPanel {
      * Postcondition: player's name is returned
      * @return
      */
-    public static String getPlayerName(){
+    public static String getPlayerName() {
         return playerName;
     }
 

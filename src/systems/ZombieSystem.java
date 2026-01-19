@@ -21,30 +21,44 @@ public class ZombieSystem {
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private boolean waveSpawnedForNight = false;
 
-    public void update(Player player, BuildingSystem buildingSystem, float timeOfDay, int waveCount) {
+    /**
+     * Updates the state of all zombies in the system
+     * Precondition: N/A
+     * Postcondition: All zombies are updated based on player actions and game state
+     * @param player the player object
+     * @param buildingSystem the building system
+     * @param resourceSystem the resource system
+     * @param timeOfDay the current time of day in the game
+     * @param waveCount the current wave count
+     */
+    public void update(Player player, BuildingSystem buildingSystem, ResourceSystem resourceSystem, float timeOfDay, int waveCount) {
         boolean isNight = (timeOfDay >= 0.25f && timeOfDay <= 0.75f);
         if (!isNight) {
             waveSpawnedForNight = false;
         }
-        
+
+        //************* Spawn Waves *************//
         if (buildingSystem.isGoldStashPlaced() && isNight && !waveSpawnedForNight) {
             spawnWave(waveCount, buildingSystem);
             waveSpawnedForNight = true;
             System.out.println("ZombieSystem.java - Spawned wave " + waveCount);
         }
 
+        //************* Update Zombies *************//
         Rectangle playerTool = player.getToolBounds();
         int toolDamage = player.getToolDamage();
         ArrayList<Projectile> projectiles = player.getProjectiles();
 
         for (int i = 0; i < zombies.size(); i++) {
             Zombie zombie = zombies.get(i);
-            zombie.update(player, buildingSystem);
+            zombie.update(player, buildingSystem, resourceSystem);
 
+            //************* Handle Player Tool Damage *************//
             if (playerTool != null && zombie.getBounds().intersects(playerTool)) {
                 zombie.takeDamage(toolDamage, true); 
             }
 
+            //************* Handle Projectile Damage *************//
             for (int j = 0; j < projectiles.size(); j++) {
                 Projectile projectile = projectiles.get(j);
                 if (projectile.getActive() && zombie.getBounds().intersects(projectile.getBounds())) {
@@ -53,6 +67,7 @@ public class ZombieSystem {
                 }
             }
 
+            //************* Remove Dead Zombies *************//
             if (zombie.isDead()) {
                 zombies.remove(i);
                 i--;
@@ -60,26 +75,47 @@ public class ZombieSystem {
         }
     }
 
+    /**
+     * Spawns a wave of zombies based on the current wave count
+     * Precondition: N/A
+     * Postcondition: A new wave of zombies is spawned and added to the system
+     * @param waveCount the current wave count
+     * @param buildingSystem the building system
+     */
     private void spawnWave(int waveCount, BuildingSystem buildingSystem) {
         int tier = ((waveCount - 1) / 10) + 1;
         int level = ((waveCount - 1) % 10) + 1;
 
-        if (tier > 6){
+        if (tier > 6) { // Cap tier at 6
             tier = 6;
         }
 
-        int zombieCount = 10 + (waveCount * 2);
+        int zombieCount = 10 + (waveCount * 2); // Increase zombie count with each wave
         for (int i = 0; i < zombieCount; i++) {
             Point spawnPoint = RandomGeneration.getRandomBaseLocation(buildingSystem);
             zombies.add(new Zombie(spawnPoint.x, spawnPoint.y, tier, level));
         }
     }
 
+    /**
+     * Draws all zombies in the system
+     * Precondition: N/A
+     * Postcondition: All zombies are drawn to the provided Graphics2D context
+     * @param g2d the Graphics2D context to draw on
+     */
     public void draw(Graphics2D g2d) {
         for (Zombie z : zombies) {
             z.draw(g2d);
         }
     }
     
-    public ArrayList<Zombie> getZombies() { return zombies; }
+    /**
+     * Gets the list of zombies in the system
+     * Precondition: N/A
+     * Postcondition: The list of zombies is returned
+     * @return the list of zombies
+     */
+    public ArrayList<Zombie> getZombies() {
+        return zombies; 
+    }
 }

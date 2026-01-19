@@ -11,7 +11,7 @@ package helpers;
 import java.awt.*;
 import javax.swing.*;
 
-public class RoundedJButton extends JButton{
+public class RoundedJButton extends JButton {
 
     /**
      * Constructor for RoundedJButton
@@ -37,7 +37,7 @@ public class RoundedJButton extends JButton{
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        if (getModel().isArmed()){ // if clicked
+        if (getModel().isArmed()) { // if clicked
             g2.setColor(getBackground().darker());
         } else {
             g2.setColor(getBackground());

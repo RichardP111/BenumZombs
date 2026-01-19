@@ -31,11 +31,12 @@ public class Player extends GameObject {
     private static final double SPEED = 5; //player speed
     private final String name;
 
-    private static final int MAX_HEALTH = 100;
-    private int currentHealth = 100;
+    private static final int MAX_HEALTH = 200;
+    private int currentHealth = 200;
     private int shieldHealth = 0;
-    private long lastRegenTime = 0;
-    private static final int REGEN_DELAY = 100;
+    private long lastDamageTime = 0;
+    private int regenCounter = 0;
+    private static final int REGEN_DELAY = 10000;
 
     //************* Player Systems and States *************//
     private final ToolSystem toolSystem;
@@ -48,6 +49,7 @@ public class Player extends GameObject {
     private float swingTimer = 0f;
     private final float swingSpeed = 0.30f;
 
+    //************* Player Projectiles *************//
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
     private long lastAttackTime = 0;
 
@@ -157,23 +159,40 @@ public class Player extends GameObject {
      * Postcondition: A Rectangle object representing the player's bounds is returned
      * @return a Rectangle representing the player's bounding box
      */
-    public Rectangle getBounds(){
+    public Rectangle getBounds() {
         return new Rectangle((int)x, (int)y, width, height);
     }
 
+    /**
+     * Gets the bounding rectangle of the player's active tool for hit detection
+     * Precondition: N/A
+     * Postcondition: returns Rectangle of active tool's hitbox if swinging, else null
+     * @return the Rectangle representing the active tool's hitbox, or null if not swinging
+     */
     public Rectangle getToolBounds() {
         Tool activeTool = toolSystem.getActiveTool();
-        if (activeTool == null){
-            return null;
+        if (activeTool == null) { return null; }
+        
+        boolean swinging = false;
+        if (spaceToggle) { swinging = true; }
+        if (isMouseHolding) {
+            if (isAnimating) {
+                swinging = true; 
+            }
         }
-        Rectangle hitBox = new Rectangle((int)(x - 15), (int)(y - 15), 30, 30);
-        boolean swinging = spaceToggle || (isMouseHolding && isAnimating);
+        
         if (swinging) {
-            return hitBox;
+            return activeTool.getHitbox(x, y, baseAngle);
         }
         return null;
     }
     
+    /**
+     * Gets the damage of the player's active tool
+     * Precondition: N/A
+     * Postcondition: returns damage value of active tool, or 0 if no tool equipped
+     * @return the damage value of the active tool
+     */
     public int getToolDamage() {
         Tool activeTool = toolSystem.getActiveTool();
         int damage;
@@ -186,6 +205,12 @@ public class Player extends GameObject {
         return damage;
     }
     
+    /**
+     * Gets the list of projectiles fired by the player
+     * Precondition: N/A
+     * Postcondition: returns list of active projectiles
+     * @return the list of projectiles
+     */
     public ArrayList<Projectile> getProjectiles() {
         return projectiles;
     }
@@ -206,27 +231,27 @@ public class Player extends GameObject {
      * @param buildingSystem the BuildingSystem for collision detection
      */
     public void move(boolean up, boolean down, boolean left, boolean right, int minX, int maxX, int minY, int maxY, ResourceSystem resourceSystem, BuildingSystem buildingSystem) {
-        if (up && y > minY){
+        if (up && y > minY) {
             Rectangle nextYPos = new Rectangle((int)x, (int)(y - SPEED), width, height);
-            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)){ // Check collision before moving
+            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)) { // Check collision before moving
                 y -= SPEED;
             }
         }
-        if (down && y < maxY){
+        if (down && y < maxY) {
             Rectangle nextYPos = new Rectangle((int)x, (int)(y + SPEED), width, height);
-            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)){
+            if (!CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem)) {
                 y += SPEED;
             }
-        }  
-        if (left && x > minX){
+        } 
+        if (left && x > minX) {
             Rectangle nextXPos = new Rectangle((int)(x - SPEED), (int)y, width, height);
-            if (!CollisionSystem.checkResourceCollision(nextXPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextXPos, buildingSystem)){
+            if (!CollisionSystem.checkResourceCollision(nextXPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextXPos, buildingSystem)) {
                 x -= SPEED;
             }
         }
-        if (right && x < maxX){
+        if (right && x < maxX) {
             Rectangle nextXPos = new Rectangle((int)(x + SPEED), (int)y, width, height);
-            if (!CollisionSystem.checkResourceCollision(nextXPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextXPos, buildingSystem)){
+            if (!CollisionSystem.checkResourceCollision(nextXPos, resourceSystem) && !CollisionSystem.checkSolidBuildingCollision(nextXPos, buildingSystem)) {
                 x += SPEED;
             }
         }
@@ -250,6 +275,7 @@ public class Player extends GameObject {
         } else {
             currentHealth = Math.max(0, currentHealth - amount);
         }
+        lastDamageTime = System.currentTimeMillis();
     }
 
     /**
@@ -360,7 +386,7 @@ public class Player extends GameObject {
                     isAnimating = false;
                 }
             }
-        }     
+        } 
     }
 
     /**
@@ -382,32 +408,27 @@ public class Player extends GameObject {
      * @param resourceSystem the ResourceSystem for hit detection
      * @param currentAngle the angle of the player's tool swing
      */
-    public void checkHit(ResourceSystem resourceSystem, double currentAngle){
+    public void checkHit(ResourceSystem resourceSystem, double currentAngle) {
         Tool activeTool = toolSystem.getActiveTool();
 
-        if (activeTool != null && !activeTool.canHarvest()) {
+        if (activeTool == null || !activeTool.canHarvest()) {
             return;
         }
 
         double hitX = getCenterX() + Math.cos(currentAngle) * 65; // calculate hit position
         double hitY = getCenterY() + Math.sin(currentAngle) * 65;
 
-        Rectangle hitBox = new Rectangle((int)(hitX - 15), (int)(hitY - 15), 30, 30);
+        String hitObject = CollisionSystem.checkResourceHitCollision(activeTool.getHitbox(hitX, hitY, baseAngle), resourceSystem);
 
-        String hitObject = CollisionSystem.checkResourceHitCollision(hitBox, resourceSystem);
+        if (hitObject != null) {     
+            int amount = (int) activeTool.getHarvestPower();
 
-        if (hitObject != null){     
-            int amount = 2;
-            if (activeTool != null) {
-                //amount = activeTool.getHarvestPower();  /////////////////////////////////////////////////////////
-            }
-
-            if (hitObject.equals("tree")){
+            if (hitObject.equals("tree")) {
                 resourceSystem.addWood(amount);
-            } else if (hitObject.equals("stone")){
+            } else if (hitObject.equals("stone")) {
                 resourceSystem.addStone(amount);
             }
-        }   
+        }
     }
 
     /**
@@ -418,20 +439,27 @@ public class Player extends GameObject {
     @Override
     public void update() {
         //************* Shield Regeneration *************//
+        long now = System.currentTimeMillis();
+
         Armor armor = (Armor) toolSystem.getToolInSlot(4); 
         if (armor != null && armor.getIsUnlocked()) {
             int maxShield = armor.getBonusHP();
-            if (System.currentTimeMillis() - lastRegenTime > REGEN_DELAY) {
-                if (shieldHealth < maxShield) {
-                    if (maxShield <= 1000) {
-                        shieldHealth = Math.min(maxShield, shieldHealth + 5);
-                    } else if (maxShield <= 10000) {
-                        shieldHealth = Math.min(maxShield, shieldHealth + 50);
-                    } else {
-                        shieldHealth = Math.min(maxShield, shieldHealth + 500);
+            if (now - lastDamageTime > REGEN_DELAY) {
+                regenCounter++;
+                if (regenCounter >= 10) {
+                    if (shieldHealth < maxShield) {
+                        if (maxShield <= 1000) {
+                            shieldHealth = Math.min(maxShield, shieldHealth + 5);
+                        } else if (maxShield <= 10000) {
+                            shieldHealth = Math.min(maxShield, shieldHealth + 50);
+                        } else {
+                            shieldHealth = Math.min(maxShield, shieldHealth + 500);
+                        }
                     }
-                    lastRegenTime = System.currentTimeMillis();
+                    regenCounter = 0;
                 }
+            } else {
+                regenCounter = 0;
             }
         }
 
@@ -460,8 +488,8 @@ public class Player extends GameObject {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         //************* Player Rotation *************//
-        double centerX = screenX + width / 2.0;
-        double centerY = screenY + height / 2.0;
+        double centerX = screenX + width / 2;
+        double centerY = screenY + height / 2;
 
         baseAngle = Math.atan2(mouseY - centerY, mouseX - centerX);
 
@@ -486,7 +514,7 @@ public class Player extends GameObject {
         double angleToLeftHand = Math.atan2(leftHandY - rightHandY, leftHandX - rightHandX);
 
         Tool activeTool = toolSystem.getActiveTool();
-        if (activeTool != null){
+        if (activeTool != null) {
             int drawX, drawY;
             double drawAngle;
 

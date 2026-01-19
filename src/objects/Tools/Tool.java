@@ -9,6 +9,7 @@
 package objects.Tools;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import objects.Player;
 
 public abstract class Tool {
@@ -135,6 +136,37 @@ public abstract class Tool {
      * @return the damage of the tool
      */
     public double getDamage() {
+        return 0;
+    }
+
+    /**
+     * Gets the hitbox of the tool based on player position and angle
+     * Precondition: playerX and playerY are the player's coordinates, angle is the direction the player is facing
+     * Postcondition: returns the hitbox rectangle of the tool
+     * @param playerX the x-coordinate of the player
+     * @param playerY the y-coordinate of the player
+     * @param angle the angle the player is facing
+     * @return the hitbox rectangle of the tool
+     */
+    public Rectangle getHitbox(double playerX, double playerY, double angle) {
+        double cx = playerX + 25;
+        double cy = playerY + 25;
+        
+        double reach = 35; 
+        
+        int hitX = (int) (cx + Math.cos(angle) * reach);
+        int hitY = (int) (cy + Math.sin(angle) * reach);
+        
+        return new Rectangle(hitX - 30, hitY - 30, 60, 60);
+    }
+
+    /**
+     * Gets the harvest power of the tool
+     * Precondition: N/A
+     * Postcondition: returns 0 for non-harvesting tools
+     * @return the harvest power of the tool
+     */
+    public double getHarvestPower() {
         return 0;
     }
 

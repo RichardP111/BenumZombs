@@ -34,7 +34,7 @@ public class Tree {
             try {
                 treeImage = ImageIO.read(getClass().getResource("/assets/images/resources/tree.png"));
             } catch (IOException | IllegalArgumentException | NullPointerException e) {
-                System.out.println("Could not find tree image, enjoy a game without trees: " + e.getMessage());
+                System.out.println("Tree.java - Could not find tree image, enjoy a game without trees: " + e.getMessage());
             }
         }
     }
@@ -44,7 +44,7 @@ public class Tree {
      * Precondition: N/A
      * Postcondition: The tree's shake offset is set to initiate the animation
      */
-    public void playAnimation(){
+    public void playAnimation() {
         this.shakeOffset = 15;
     }
 
@@ -53,7 +53,7 @@ public class Tree {
      * Precondition: N/A
      * Postcondition: The tree's shake offset is updated
      */
-    public void update(){
+    public void update() {
         if (Math.abs(shakeOffset) > 0.5) {
             shakeOffset *= RECOVERY_RATE;
         } else {

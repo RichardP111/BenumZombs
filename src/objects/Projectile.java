@@ -65,6 +65,7 @@ public class Projectile extends GameObject {
         this.damage = damage;
         this.image = null;
         
+        //************* Load Projectile Image *************//
         try {
             if (imageName != null) {
                 this.image = ImageIO.read(getClass().getResource("/assets/images/player/" + imageName)); 
@@ -81,16 +82,18 @@ public class Projectile extends GameObject {
      */
     @Override
     public void update() {
-        if (!active){
+        if (!active) {
             return;
         }
         
+        //************* Update Projectile Position *************//
         x += Math.cos(angle) * speed;
         y += Math.sin(angle) * speed;
 
-        double dx = x + (width / 2.0) - startX;
-        double dy = y + (height / 2.0) - startY;
-        double distance = Math.sqrt((dx * dx) + (dy * dy));
+        //************* Projectile Range *************//
+        double dx = x + (width / 2) - startX;
+        double dy = y + (height / 2) - startY;
+        double distance = Math.sqrt((dx * dx) + (dy * dy)); 
 
         if (distance > MAX_RANGE) {
             active = false;
@@ -135,7 +138,7 @@ public class Projectile extends GameObject {
      */
     @Override
     public void draw(Graphics2D g2d) {
-        if (!active || image == null){
+        if (!active || image == null) {
             return;
         }
         AffineTransform old = g2d.getTransform();
@@ -145,6 +148,12 @@ public class Projectile extends GameObject {
         g2d.setTransform(old);
     }
 
+    /**
+     * Gets the bounding rectangle of the projectile for hit detection
+     * Precondition: N/A
+     * Postcondition: returns Rectangle of projectile's hitbox
+     * @return the Rectangle representing the projectile's hitbox
+     */
     public Rectangle getBounds() {
         return new Rectangle((int)x, (int)y, width, height);
     }

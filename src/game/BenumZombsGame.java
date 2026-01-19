@@ -36,7 +36,7 @@ import systems.ResourceSystem;
 import systems.ToolSystem;
 import systems.ZombieSystem;
 
-public class BenumZombsGame extends JPanel implements ActionListener{
+public class BenumZombsGame extends JPanel implements ActionListener {
     //************* Game Entities *************//
     private final Player player;
     private final HeadUpDisplay headUpDisplay;
@@ -75,7 +75,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Postcondition: BenumZombsGame panel is created with player and HUD
      * @param playerName The name of the player
      */
-    public BenumZombsGame(String playerName){
+    public BenumZombsGame(String playerName) {
         setFocusable(true);
         setBackground(new Color(105, 141, 65));
 
@@ -87,11 +87,11 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         zombieSystem = new ZombieSystem();
 
         Point spawn; //Make sure player does not spawn on resources
-        while (true){
+        while (true) {
             spawn = RandomGeneration.getRandomLocation();
             Rectangle playerHitbox = new Rectangle(spawn.x, spawn.y, 50, 50);
             
-            if (!CollisionSystem.checkResourceCollision(playerHitbox, resourceSystem)){
+            if (!CollisionSystem.checkResourceCollision(playerHitbox, resourceSystem)) {
                 break; 
             }
         }
@@ -103,46 +103,46 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         updateCamera();
 
         //************* Key Listeners *************//
-        addKeyListener(new KeyAdapter(){
+        addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent e){
+            public void keyPressed(KeyEvent e) {
                 handleKeys(e.getKeyCode(), true);
             }
             @Override
-            public void keyReleased(KeyEvent e){
+            public void keyReleased(KeyEvent e) {
                 handleKeys(e.getKeyCode(), false);
             }
         });
 
         //************* Mouse Listeners *************//
-        addMouseMotionListener(new MouseMotionAdapter(){
+        addMouseMotionListener(new MouseMotionAdapter() {
             @Override
-            public void mouseMoved(MouseEvent e){
-                if (isPlacing){
+            public void mouseMoved(MouseEvent e) {
+                if (isPlacing) {
                     updateBuildingPosition(e.getX(), e.getY());
                 }
                 repaint();
             }
             @Override
-            public void mouseDragged(MouseEvent e){
-                if (isPlacing){
+            public void mouseDragged(MouseEvent e) {
+                if (isPlacing) {
                     updateBuildingPosition(e.getX(), e.getY());
                 }
                 repaint();
             }
         });
 
-        addMouseListener(new MouseListener(){
+        addMouseListener(new MouseListener() {
             @Override
-            public void mousePressed(MouseEvent e){
+            public void mousePressed(MouseEvent e) {
                 Point p = e.getPoint();
 
-                if (headUpDisplay.handleMouseClick(p)){ // Clicked HUD
-                } else if (isPlacing && e.getButton() == MouseEvent.BUTTON1){ // Place building
+                if (headUpDisplay.handleMouseClick(p)) { // Clicked HUD
+                } else if (isPlacing && e.getButton() == MouseEvent.BUTTON1) { // Place building
                     placeBuilding();
-                } else if (isPlacing && e.getButton() == MouseEvent.BUTTON3){ // Cancel placement
+                } else if (isPlacing && e.getButton() == MouseEvent.BUTTON3) { // Cancel placement
                     cancelPlacement();
-                } else if (!isPlacing && e.getButton() == MouseEvent.BUTTON1){ // Start swinging
+                } else if (!isPlacing && e.getButton() == MouseEvent.BUTTON1) { // Start swinging
                     int realWorldX = (int)(p.x - worldX);
                     int realWorldY = (int)(p.y - worldY);
                     
@@ -155,17 +155,17 @@ public class BenumZombsGame extends JPanel implements ActionListener{
             }
 
             @Override
-            public void mouseReleased(MouseEvent e){
-                if (e.getButton() == MouseEvent.BUTTON1){ // Stop swinging
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) { // Stop swinging
                     player.setMouseHolding(false);
                 }
             }
             @Override
-            public void mouseClicked(MouseEvent e){}
+            public void mouseClicked(MouseEvent e) {}
             @Override
-            public void mouseEntered(MouseEvent e){}
+            public void mouseEntered(MouseEvent e) {}
             @Override
-            public void mouseExited(MouseEvent e){}
+            public void mouseExited(MouseEvent e) {}
         });
 
         gameTimer = new Timer(16, this);
@@ -177,7 +177,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Precondition: N/A
      * Postcondition: worldX and worldY are updated to center on player
      */
-    private void updateCamera(){
+    private void updateCamera() {
         worldX = (getWidth() / 2) - player.getCenterX();
         worldY = (getHeight() / 2) - player.getCenterY();
     }
@@ -188,7 +188,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Postcondition: returns the player
      * @return the player instance
      */
-    public Player getPlayer(){
+    public Player getPlayer() {
         return player;
     }
 
@@ -198,7 +198,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Postcondition: returns the building system
      * @return the building system instance
      */
-    public BuildingSystem getBuildingSystem(){
+    public BuildingSystem getBuildingSystem() {
         return buildingSystem;
     }
 
@@ -208,7 +208,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Postcondition: returns the tool system
      * @return the tool system instance
      */
-    public ToolSystem getToolSystem(){
+    public ToolSystem getToolSystem() {
         return this.toolSystem; 
     }
 
@@ -218,7 +218,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Postcondition: returns the resource system
      * @return the resource system instance
      */
-    public ResourceSystem getResourceSystem(){
+    public ResourceSystem getResourceSystem() {
         return this.resourceSystem; 
     }
 
@@ -228,7 +228,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Postcondition: returns the wave count
      * @return the current wave count
      */
-    public int getWaveCount(){
+    public int getWaveCount() {
         return waveCount;
     }
 
@@ -238,9 +238,9 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Postcondition: night overlay is drawn on the screen
      * @param g2d the Graphics2D object used for drawing
      */
-    private void drawNightOverlay(Graphics2D g2d){
+    private void drawNightOverlay(Graphics2D g2d) {
         float hudTime = headUpDisplay.getTime(); // Calculate darkness based on HUD time
-        float darkness = 1.0f - Math.abs(2.0f * hudTime - 1.0f);
+        float darkness = 1f - Math.abs(2f * hudTime - 1f);
         int alpha = (int) (darkness * 160);
 
         g2d.setColor(new Color(0, 0, 20, alpha));
@@ -254,36 +254,36 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * @param keyCode    key code of the pressed/released key
      * @param isPressed  true if key is pressed, false if released
      */
-    private void handleKeys(int keyCode, boolean isPressed){
-        if (isPressed){
-            if (keyCode == KeyEvent.VK_SPACE){ // Toggle space swing
+    private void handleKeys(int keyCode, boolean isPressed) {
+        if (isPressed) {
+            if (keyCode == KeyEvent.VK_SPACE) { // Toggle space swing
                 player.toggleSpaceSwing();
             }
 
-            if (keyCode == KeyEvent.VK_ESCAPE){ // Cancel placement
+            if (keyCode == KeyEvent.VK_ESCAPE) { // Cancel placement
                 cancelPlacement();
             }
 
-            if (keyCode == KeyEvent.VK_B){ // Open shop
+            if (keyCode == KeyEvent.VK_B) { // Open shop
                 Main.shopScreen.setGameInstance(BenumZombsGame.this);
                 Main.showScreen("SHOP");
                 System.out.println("BenumZombsGame.java - Shop Opened via 'B'");
                 return;
             }
 
-            if (keyCode == KeyEvent.VK_Q){ // Cycle tools
+            if (keyCode == KeyEvent.VK_Q) { // Cycle tools
                 int current = toolSystem.getActiveSlotIndex();
-                for (int i = 1; i <= 4; i++){
+                for (int i = 1; i <= 4; i++) {
                     int nextSlot = (current + i) % 4;
                     Tool nextTool = toolSystem.getToolInSlot(nextSlot);
-                    if (nextTool != null && nextTool.getIsUnlocked()){
+                    if (nextTool != null && nextTool.getIsUnlocked()) {
                         toolSystem.setActiveSlot(nextSlot);
                         break; 
                     }
                 }
             }
 
-            if (keyCode == KeyEvent.VK_F){ // Quick use potion
+            if (keyCode == KeyEvent.VK_F) { // Quick use potion
                 player.usePotion();
             }
 
@@ -306,14 +306,14 @@ public class BenumZombsGame extends JPanel implements ActionListener{
                 }
             }
 
-            if (keyCode == KeyEvent.VK_F12){ // Super secret dev mode key
+            if (keyCode == KeyEvent.VK_F12) { // Super secret dev mode key
                 resourceSystem.devModeAddResources();
                 System.out.println("BenumZombsGame.java - Dev Mode activated");
             }
         }
         
         //************* Movement Keys *************//
-        switch (keyCode){
+        switch (keyCode) {
         case KeyEvent.VK_W, KeyEvent.VK_UP:
             up = isPressed;
             break;
@@ -337,7 +337,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * @param e the action event triggering the update
      */
     @Override
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
         //************* Moveable Area *************//
         int minX = OFFSET + BORDER_THICKNESS;
         int minY = OFFSET + BORDER_THICKNESS;
@@ -353,18 +353,17 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         headUpDisplay.update();
         resourceSystem.update();
 
+        //************* Update Waves and Zombies *************//
         float currentTime = headUpDisplay.getTime();
-        
         if (buildingSystem.isGoldStashPlaced()) {
             if (lastTime < 0.25f && currentTime >= 0.25f) {
                 waveCount++;
-                System.out.println("Night Started! Wave: " + waveCount);
+                System.out.println("BenumZombsGame.java - Wave: " + waveCount);
             }
-            zombieSystem.update(player, buildingSystem, currentTime, waveCount);
+            zombieSystem.update(player, buildingSystem, resourceSystem, currentTime, waveCount);
         } else {
             waveCount = 0; 
         }
-        
         lastTime = currentTime;
 
         updateCamera();
@@ -377,12 +376,12 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Postcondition: building placement mode is initiated
      * @param building the building to be placed
      */
-    public void startPlacement(Building building){
+    public void startPlacement(Building building) {
         this.placementBuilding = building;
         this.isPlacing = true;
         
         Point mouse = getMousePosition();
-        if (mouse != null){
+        if (mouse != null) {
             updateBuildingPosition(mouse.x, mouse.y);
         }
     }
@@ -392,7 +391,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Precondition: N/A
      * Postcondition: building placement mode is cancelled
      */
-    private void cancelPlacement(){
+    private void cancelPlacement() {
         this.isPlacing = false;
         this.placementBuilding = null;
         repaint();
@@ -405,8 +404,8 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * @param mouseX the x-coordinate of the mouse
      * @param mouseY the y-coordinate of the mouse
      */
-    private void updateBuildingPosition(int mouseX, int mouseY){
-        if (placementBuilding == null){
+    private void updateBuildingPosition(int mouseX, int mouseY) {
+        if (placementBuilding == null) {
             return;
         }
 
@@ -429,32 +428,31 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         boolean insideBounds = (ghostX >= minX && ghostX + placementBuilding.getWidth() <= maxX && ghostY >= minY && ghostY + placementBuilding.getHeight() <= maxY);
 
         //************* Collision Checks *************//
-        Rectangle playerRect = new Rectangle((int)player.getX(), (int)player.getY(), player.getWidth(), player.getHeight());
-
         boolean collidesResource = CollisionSystem.checkResourceCollision(ghostRect, resourceSystem);
         boolean collidesBuilding = CollisionSystem.checkBuildingCollision(ghostRect, buildingSystem);
-        boolean collidesPlayer = ghostRect.intersects(playerRect);
+        boolean collidesZombie = CollisionSystem.checkZombieCollision(ghostRect, zombieSystem);
+        boolean collidesPlayer = CollisionSystem.checkPlayerCollision(ghostRect, player);
 
         //************* Range Checks *************//
         // Distance from player
-        double buildingCenterX = ghostX + (placementBuilding.getWidth() / 2.0);
-        double buildingCenterY = ghostY + (placementBuilding.getHeight() / 2.0);
+        double buildingCenterX = ghostX + (placementBuilding.getWidth() / 2);
+        double buildingCenterY = ghostY + (placementBuilding.getHeight() / 2);
         double distance = Math.sqrt(Math.pow(buildingCenterX - player.getCenterX(), 2) + Math.pow(buildingCenterY - player.getCenterY(), 2));
         boolean inPlayerRange = distance <= MAX_PLACEMENT_DISTANCE;
 
         //Distance from Stash
         boolean inStashRange = true;
         Building stash = buildingSystem.getActiveStash();
-        if (stash != null && !placementBuilding.isUnlocker()){
-            double sCenterX = stash.getX() + (stash.getWidth() / 2.0);
-            double sCenterY = stash.getY() + (stash.getHeight() / 2.0);
+        if (stash != null && !placementBuilding.isUnlocker()) {
+            double sCenterX = stash.getX() + (stash.getWidth() / 2);
+            double sCenterY = stash.getY() + (stash.getHeight() / 2);
             double distanceStash = Math.sqrt(Math.pow(buildingCenterX - sCenterX, 2) + Math.pow(buildingCenterY - sCenterY, 2));
             inStashRange = distanceStash <= MAX_STASH_RANGE;
         }
 
         boolean limitReached = buildingSystem.isLimitReached(placementBuilding); // Check building number limit
 
-        this.isPlacementValid = insideBounds && !collidesResource && !collidesBuilding && !collidesPlayer && inPlayerRange && inStashRange && !limitReached; // Final result
+        this.isPlacementValid = insideBounds && !collidesResource && !collidesBuilding && !collidesPlayer && !collidesZombie && inPlayerRange && inStashRange && !limitReached; // Final result
     }
 
     /**
@@ -462,8 +460,8 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * Precondition: isPlacementValid is true, placementBuilding is not null
      * Postcondition: building is placed, resources are deducted, placement mode is updated
      */
-    private void placeBuilding(){
-        if (!isPlacementValid || placementBuilding == null){
+    private void placeBuilding() {
+        if (!isPlacementValid || placementBuilding == null) {
             System.out.println("BenumZombsGame.java - Invalid placement attempted");
             return;
         }
@@ -478,12 +476,12 @@ public class BenumZombsGame extends JPanel implements ActionListener{
 
         //************* Check for Limit, Gold Stash, and Resources *************//
         boolean limitReached = buildingSystem.isLimitReached(placementBuilding);
-        if (placementBuilding.isUnlocker() || limitReached){
+        if (placementBuilding.isUnlocker() || limitReached) {
             cancelPlacement();
             return;
         }
         
-        if (resourceSystem.getWoodCount() < placementBuilding.getWoodCost() || resourceSystem.getStoneCount() < placementBuilding.getStoneCost()){
+        if (resourceSystem.getWoodCount() < placementBuilding.getWoodCost() || resourceSystem.getStoneCount() < placementBuilding.getStoneCost()) {
             cancelPlacement();
         }
     }
@@ -496,7 +494,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
      * @param g the Graphics object used for drawing
      */
     @Override
-    protected void paintComponent(Graphics g){
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -509,10 +507,10 @@ public class BenumZombsGame extends JPanel implements ActionListener{
 
         g2d.setColor(new Color(85, 113, 58, 170));
         g2d.setStroke(new BasicStroke(3.2f));
-        for(int i = 0; i <= WORLD_AREA; i += GRID_SIZE){
+        for(int i = 0; i <= WORLD_AREA; i += GRID_SIZE) {
             g2d.drawLine(i, 0, i, WORLD_AREA);
         }
-        for(int j = 0; j <= WORLD_AREA; j += GRID_SIZE){ 
+        for(int j = 0; j <= WORLD_AREA; j += GRID_SIZE) { 
             g2d.drawLine(0, j, WORLD_AREA, j); 
         }
 
@@ -530,11 +528,11 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         player.drawProjectiles(g2d);
 
         //************* Draw Building Placement Ghost with Transparency Effects *************//
-        if (isPlacing && placementBuilding != null){
+        if (isPlacing && placementBuilding != null) {
             
             Building ghost = buildingSystem.createBuilding(placementBuilding, ghostX, ghostY);
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-            if (isPlacementValid){
+            if (isPlacementValid) {
                 ghost.draw(g2d);
             } else {
                 ghost.draw(g2d);
@@ -553,7 +551,7 @@ public class BenumZombsGame extends JPanel implements ActionListener{
         double screenCenterY = getHeight() / 2 - player.getHeight() / 2;
         
         Point mousePos = getMousePosition(); // Mouse position for player rotation
-        if (mousePos != null){
+        if (mousePos != null) {
             player.drawAt(g2d, (int)screenCenterX, (int)screenCenterY, mousePos.x, mousePos.y);
         } else {
             player.drawAt(g2d, (int)screenCenterX, (int)screenCenterY, getWidth()/2, getHeight()/2);

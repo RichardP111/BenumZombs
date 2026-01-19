@@ -111,7 +111,7 @@ public class SettingsScreen extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SoundManager.isSoundOn = !SoundManager.isSoundOn;
-                if (SoundManager.isSoundOn){
+                if (SoundManager.isSoundOn) {
                     soundToggleButton.setText("Sound Effects: ON");
                     soundToggleButton.setBackground(new Color(60, 80, 40));
                 } else {

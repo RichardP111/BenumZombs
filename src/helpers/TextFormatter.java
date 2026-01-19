@@ -7,6 +7,9 @@
  */
 package helpers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class TextFormatter { 
     /**
      * Formats an integer value into a more readable string with 'k' for thousands and 'M' for millions and 'B' for billions
@@ -25,5 +28,28 @@ public class TextFormatter {
         } else {
             return String.valueOf(value);
         }
+    }
+
+    /**
+     * Wraps text into multiple lines based on maximum characters per line
+     * Precondition: text is a valid String, maxCharacters is a positive integer
+     * Postcondition: returns an ArrayList of wrapped text lines
+     * @param input the input text to be wrapped
+     * @param n the maximum number of characters per line
+     * @return an ArrayList of wrapped text lines
+     */
+    public static ArrayList<String> wrapText(String input, int n) {      
+        // Based on https://www.baeldung.com/java-wrap-string-number-characters-word-wise 
+        StringBuilder stringBuilder = new StringBuilder(input);
+        int index = 0;
+        while(stringBuilder.length() > index + n) {
+            index = stringBuilder.lastIndexOf(" ", index + n);    
+            stringBuilder.replace(index, index + 1, "\n");
+            index++; 
+        }
+        
+        ArrayList<String> lines = new ArrayList<>();
+        lines.addAll(Arrays.asList(stringBuilder.toString().split("\n")));
+        return lines;
     }
 }
