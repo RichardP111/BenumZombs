@@ -58,6 +58,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
     private static final int BORDER_ZONE_BLOCKS = GRID_SIZE * 5;
 
     private Building placementBuilding = null; 
+    private Building ghostBuilding = null;
     private boolean isPlacing = false;
     private int ghostX, ghostY;
     private boolean isPlacementValid = false;
@@ -379,6 +380,8 @@ public class BenumZombsGame extends JPanel implements ActionListener {
     public void startPlacement(Building building) {
         this.placementBuilding = building;
         this.isPlacing = true;
+
+        this.ghostBuilding = buildingSystem.createBuilding(building, 0, 0);
         
         Point mouse = getMousePosition();
         if (mouse != null) {
@@ -415,7 +418,9 @@ public class BenumZombsGame extends JPanel implements ActionListener {
 
         this.ghostX = (int) (Math.floor(cameraX / GRID_SIZE) * GRID_SIZE);
         this.ghostY = (int) (Math.floor(cameraY / GRID_SIZE) * GRID_SIZE);
-        Rectangle ghostRect = new Rectangle(ghostX, ghostY, placementBuilding.getWidth(), placementBuilding.getHeight());
+
+        ghostBuilding.setX(ghostX);
+        ghostBuilding.setY(ghostY);
         
         //************* Border Restrictions *************//
         int playStart = OFFSET + BORDER_THICKNESS;
@@ -425,7 +430,8 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         int maxX = playEnd - BORDER_ZONE_BLOCKS;
         int maxY = playEnd - BORDER_ZONE_BLOCKS;
         
-        boolean insideBounds = (ghostX >= minX && ghostX + placementBuilding.getWidth() <= maxX && ghostY >= minY && ghostY + placementBuilding.getHeight() <= maxY);
+        boolean insideBounds = (ghostX >= minX && ghostX + ghostBuilding.getWidth() <= maxX && ghostY >= minY && ghostY + ghostBuilding.getHeight() <= maxY);
+        Rectangle ghostRect = new Rectangle(ghostX, ghostY, ghostBuilding.getWidth(), ghostBuilding.getHeight());
 
         //************* Collision Checks *************//
         boolean collidesResource = CollisionSystem.checkResourceCollision(ghostRect, resourceSystem);

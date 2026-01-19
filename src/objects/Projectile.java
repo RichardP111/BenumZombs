@@ -39,7 +39,7 @@ public class Projectile extends GameObject {
      * @param damageRadius the radius of damage the projectile will inflict
      */
     public Projectile(double x, double y, double angle, double speed, int damage, int damageRadius, Image imageName) {
-        super(x - 10, y - 10, 20, 20, null);
+        super(x - 10, y - 10, 20, 20, null, null);
         this.startX = x;
         this.startY = y;
         this.angle = angle;
@@ -60,7 +60,7 @@ public class Projectile extends GameObject {
      * @param imageName the filename of the image representing the projectile
      */
     public Projectile(double x, double y, double angle, double speed, int damage, int damageRadius, String imageName) {
-        super(x - 22, y - 22, 45, 45, null);
+        super(x - 22, y - 22, 45, 45, null, null);
         this.startX = x;
         this.startY = y;
         this.angle = angle;

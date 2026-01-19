@@ -79,7 +79,7 @@ public abstract class Building extends GameObject {
      * @param iconName the filename of the building's icon image
      */
     public Building(double x, double y, int width, int height, String name, String iconName) {
-        super(x, y, width, height, null); 
+        super(x, y, width, height, null, null); 
         this.name = name;
         this.health = 100;
         this.maxHealth = 100;

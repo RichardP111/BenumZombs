@@ -9,11 +9,13 @@
 package objects;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public abstract class GameObject {
     protected double x, y;
     protected int width, height;
     protected Color color;
+    protected BufferedImage sprite;
 
     /**
      * Constructor for GameObject
@@ -24,13 +26,16 @@ public abstract class GameObject {
      * @param width the width of the game object
      * @param height the height of the game object
      * @param color the color of the game object
+     * @param sprite the sprite image of the game object
      */
-    public GameObject(double x, double y, int width, int height, Color color) {
+
+    public GameObject(double x, double y, int width, int height, Color color, BufferedImage sprite) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.color = color;
+        this.sprite = sprite;
     }
 
     /**
@@ -91,6 +96,26 @@ public abstract class GameObject {
      */
     public void setY(double y) {
         this.y = y;
+    }
+
+    /**
+     * Sets the width of the GameObject
+     * Precondition: N/A
+     * Postcondition: width is updated
+     * @param width the new width
+     */
+    public void setWidth(int width) { 
+        this.width = width; 
+    }
+
+    /**
+     * Sets the height of the GameObject
+     * Precondition: N/A
+     * Postcondition: height is updated
+     * @param height the new height
+     */
+    public void setHeight(int height) { 
+        this.height = height; 
     }
 
     public abstract void update();

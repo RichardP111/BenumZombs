@@ -49,7 +49,7 @@ public class Zombie extends GameObject {
      * @param level the level of the Zombie
      */
     public Zombie(double x, double y, int tier, int level) {
-        super(x, y, 35, 35, null);
+        super(x, y, 35, 35, null, null);
 
         this.maxHealth = 100 + (tier * 50) + (level * 20);
         this.currentHealth = this.maxHealth;

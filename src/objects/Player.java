@@ -62,7 +62,7 @@ public class Player extends GameObject {
      * @param name the name of the player
      */
     public Player(double x, double y, String name, ToolSystem toolSystem) {
-        super(x, y, 50, 50, new Color(252, 200, 117));
+        super(x, y, 50, 50, new Color(252, 200, 117), null);
         this.name = name;
         this.toolSystem = toolSystem;
     }
