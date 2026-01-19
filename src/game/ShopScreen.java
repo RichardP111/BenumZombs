@@ -132,7 +132,6 @@ public class ShopScreen extends JPanel {
                     for (int i = 0; i < weaponCardBounds.length; i++) {
                         if (weaponCardBounds[i] != null && weaponCardBounds[i].contains(p)) {
                             handlePurchase(i);
-                            SoundManager.playSound("buttonClick.wav");
                             System.out.println("ShopScreen.java - Clicked on weapon card in Shop Screen: " + i);
                             return;
                         }
@@ -143,7 +142,6 @@ public class ShopScreen extends JPanel {
                     for (int i = 0; i < armorCardBounds.length; i++) {
                         if (armorCardBounds[i] != null && armorCardBounds[i].contains(p)) {
                             handlePurchase(i);
-                            SoundManager.playSound("buttonClick.wav");
                             System.out.println("ShopScreen.java - Clicked on armor card in Shop Screen: " + i);
                             return;
                         }
@@ -154,7 +152,6 @@ public class ShopScreen extends JPanel {
                     for (int i = 0; i < utilityCardBounds.length; i++) {
                         if (utilityCardBounds[i] != null && utilityCardBounds[i].contains(p)) {
                             handlePurchase(i);
-                            SoundManager.playSound("buttonClick.wav");
                             System.out.println("ShopScreen.java - Clicked on utility card in Shop Screen: " + i);
                             return;
                         }
@@ -271,7 +268,7 @@ public class ShopScreen extends JPanel {
                 tool.onGet(gameInstance.getPlayer());
             }
             
-            SoundManager.playSound("buttonClick.wav");
+            SoundManager.playSound("purchaseSound.wav");
             repaint();
         } else {
             System.out.println("ShopScreen.java - Not enough gold to buy, need: " + cost);

@@ -51,7 +51,7 @@ public class ResourceSystem {
         for (int i = 0; i < count; i++) {
             Point point = RandomGeneration.getRandomLocation();
 
-            if (random.nextFloat() < 0.5) { //50% chance for tree or stone
+            if (random.nextFloat() < 0.5) { // 50% chance for tree or stone
                 trees.add(new Tree(point.x, point.y));
             } else {
                 stones.add(new Stone(point.x, point.y));

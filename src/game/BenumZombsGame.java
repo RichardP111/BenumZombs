@@ -488,6 +488,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         //************* Place Building *************//
         Building newBuilding = buildingSystem.createBuilding(placementBuilding, ghostX, ghostY);
         buildingSystem.placeBuilding(newBuilding);
+        SoundManager.playSound("placeBuilding.wav");
 
         //************* Check for Limit, Gold Stash, and Resources *************//
         boolean limitReached = buildingSystem.isLimitReached(placementBuilding);

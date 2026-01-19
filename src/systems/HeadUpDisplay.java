@@ -36,7 +36,7 @@ import objects.Tools.Tool;
 public class HeadUpDisplay {
     private final Player player;
     private float time = 0.0f;
-    private final float dayLength = 0.001f; // Speed of day-night cycle 00005
+    private final float dayLength = 0.0005f; // Speed of day-night cycle 00005
 
     public Rectangle settingsButtonBounds;
     public Rectangle shopButtonBounds;
@@ -52,6 +52,9 @@ public class HeadUpDisplay {
     private boolean isDeathScreenVisible = false;
     private String deathMessage = "";
     private RoundedJButton respawnButton;
+
+    private int tutorialStep = 0;
+    private boolean tutorialActive = true;
 
     /**
      * Constructor for HeadUpDisplay
@@ -104,6 +107,7 @@ public class HeadUpDisplay {
         respawnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                SoundManager.playSound("buttonClick.wav");
                 game.respawnPlayer(); 
             }
         });
@@ -146,7 +150,7 @@ public class HeadUpDisplay {
                         resourceSystem.addGold(-goldCost); 
 
                         building.upgrade();
-                        SoundManager.playSound("buttonClick.wav");
+                        SoundManager.playSound("upgradeSound.wav");
                         System.out.println("HeadUpDisplay.java - Upgraded Building: " + building.getName());
                     }
                 }
@@ -159,7 +163,7 @@ public class HeadUpDisplay {
                     resourceSystem.addWood(building.getWoodSellValue()); 
                     resourceSystem.addStone(building.getStoneSellValue());
                     buildingSystem.removeBuilding(building);
-                    SoundManager.playSound("buttonClick.wav");
+                    SoundManager.playSound("sellSound.wav");
                     System.out.println("HeadUpDisplay.java - Sold Building: " + building.getName());
                 }
                 return true;
@@ -170,6 +174,7 @@ public class HeadUpDisplay {
         if (settingsButtonBounds != null && settingsButtonBounds.contains(point)) { 
             Main.settingsScreen.setGameInstance(game);
             Main.showScreen("SETTINGS");
+            SoundManager.playSound("buttonClick.wav");
             System.out.println("HeadUpDisplay.java - Opened Settings Screen");
             return true;
         }
@@ -178,6 +183,7 @@ public class HeadUpDisplay {
         if (shopButtonBounds != null && shopButtonBounds.contains(point)) { 
             Main.shopScreen.setGameInstance(game);
             Main.showScreen("SHOP");
+            SoundManager.playSound("buttonClick.wav");
             System.out.println("HeadUpDisplay.java - Opened Shop Screen");
             return true;
         }
@@ -1007,6 +1013,7 @@ public class HeadUpDisplay {
      * @param message the message to display on the death screen
      */
     public void showDeathScreen(String message) {
+        SoundManager.playSound("deathSound.wav");
         this.isDeathScreenVisible = true;
         this.deathMessage = message;
     }
