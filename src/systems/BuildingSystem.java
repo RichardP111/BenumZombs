@@ -12,6 +12,7 @@ import game.BenumZombsGame;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import objects.Projectile;
 import objects.Buildings.ArrowTower;
 import objects.Buildings.BombTower;
 import objects.Buildings.Building;
@@ -28,6 +29,7 @@ import objects.Buildings.Wall;
 public class BuildingSystem {
     private final Building[] slots = new Building[11];
     private final ArrayList<Building> placedBuildings = new ArrayList<>();
+    private final ArrayList<Projectile> projectiles = new ArrayList<>();
 
     private Building activeStash = null;
     private boolean goldStashPlaced = false;
@@ -203,9 +205,9 @@ public class BuildingSystem {
     public void onGoldStashPlaced() {
         goldStashPlaced = true;
         
-        for (Building slot : slots) {
-            if (slot != null) {
-                slot.setLocked(false);
+        for (int i = 0; i < slots.length; i++) {
+            if (slots[i] != null) {
+            slots[i].setLocked(false);
             }
         }
         System.out.println("BuildingSystem.java - Gold Stash Placed");
@@ -301,19 +303,50 @@ public class BuildingSystem {
     }
 
     /**
+     * Adds a projectile to the projectile list
+     * Precondition: projectile is not null
+     * Postcondition: projectile is added to the projectile list
+     * @param projectile the Projectile to add
+     */
+    public void addProjectile(Projectile projectile) {
+        projectiles.add(projectile);
+    }
+    
+    /**
+     * Gets the list of active projectiles
+     * Precondition: N/A
+     * Postcondition: returns the list of active projectiles
+     * @return the list of active projectiles
+     */
+    public ArrayList<Projectile> getProjectiles() {
+        return projectiles;
+    }
+
+    /**
      * Updates all placed buildings
      * Precondition: N/A
      * Postcondition: all placed buildings are updated
      */
-    public void update(ResourceSystem resourceSystem) {
+    public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem) {
+        //************* Update Placed Buildings *************//
         for (int i = 0; i < placedBuildings.size(); i++) {
             Building building = placedBuildings.get(i);
-            building.update(resourceSystem);
+            building.update(resourceSystem, zombieSystem, this);
 
             //************* Remove Destroyed Buildings *************//
             if (building.getHealth() <= 0) {
                 removeBuilding(building);
                 i--; 
+            }
+        }
+
+        //************* Update Projectiles *************//
+        for (int i = 0; i < projectiles.size(); i++) {
+            Projectile p = projectiles.get(i);
+            p.update();
+            if (!p.getActive()) {
+                projectiles.remove(i);
+                i--;
             }
         }
     }
@@ -330,6 +363,12 @@ public class BuildingSystem {
             building.draw(g2d);
 
             building.drawHealthBar(g2d);
+        }
+
+        //************* Draw Projectiles *************//
+        for (int i = 0; i < projectiles.size(); i++) {
+            Projectile projectile = projectiles.get(i);
+            projectile.draw(g2d);
         }
     }
 }

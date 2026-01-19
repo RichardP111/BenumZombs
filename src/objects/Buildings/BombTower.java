@@ -8,9 +8,18 @@
 
 package objects.Buildings;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import objects.Projectile;
+import objects.Zombie;
+import systems.BuildingSystem;
 import systems.ResourceSystem;
+import systems.ZombieSystem;
 
 public class BombTower extends Building {
+    private double pulse = 0.5;
+    private static final double BASE_SCALE = 0.5;
+    private static final double MAX_SCALE = 0.6;
 
     /**
      * Constructor for BombTower
@@ -30,6 +39,10 @@ public class BombTower extends Building {
         this.health = 150;
 
         this.limits = 6;
+
+        this.attackCooldown = 2000; 
+        this.range = 200;
+        this.damage = 60;
 
         loadSprites("bombTower", false, true, false, "bombTower_projectile.png");
 
@@ -68,8 +81,55 @@ public class BombTower extends Building {
      * Postcondition: The BombTower state is updated
      */
     @Override
-    public void update(ResourceSystem resourceSystem) {
-        super.update(resourceSystem);
+    public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem, BuildingSystem buildingSystem) {
+        super.update(resourceSystem, zombieSystem, buildingSystem);
+        //************* Update pulse effect *************//
+        if (pulse > BASE_SCALE) {
+            pulse -= 0.01; 
+            if (pulse < BASE_SCALE) {
+                pulse = BASE_SCALE;
+            }
+        }
+
+        Zombie target = findClosestZombie(zombieSystem);
+        if (target != null) {
+            //************* Attack if in range *************//
+            long now = System.currentTimeMillis();
+            if (now - lastAttackTime > attackCooldown) {
+                double dx = (target.getX() + target.getWidth()/2) - (x + width/2);
+                double dy = (target.getY() + target.getHeight()/2) - (y + height/2);
+                double angle = Math.atan2(dy, dx);
+                
+                Projectile p = new Projectile(x + width/2, y + height/2, angle, 0.5, damage, 120, projectileSprite);
+                buildingSystem.addProjectile(p);
+                
+                pulse = MAX_SCALE;
+                lastAttackTime = now;
+            }
+        }
+    }
+
+    /**
+     * Draws the BombTower
+     * Precondition: N/A
+     * Postcondition: The BombTower is drawn on the screen
+     * @param g2d the Graphics2D object to draw on
+     */
+    @Override
+    public void draw(Graphics2D g2d) {
+        //************* Draw base *************//
+        if (baseSprites != null) {
+            g2d.drawImage(baseSprites[level-1], (int)x, (int)y, width, height, null);
+        }
+        
+        //************* Draw top *************//
+        if (topSprites != null) {
+            AffineTransform old = g2d.getTransform(); // Save the current transform
+            g2d.translate(x + width/2, y + height/2);
+            g2d.scale(pulse, pulse);
+            g2d.drawImage(topSprites[level-1], -width/2, -height/2, width, height, null);
+            g2d.setTransform(old); // Restore the original transform
+        }
     }
 
     @Override

@@ -31,8 +31,8 @@ public class Player extends GameObject {
     private static final double SPEED = 5; //player speed
     private final String name;
 
-    private static final int MAX_HEALTH = 200;
-    private int currentHealth = 200;
+    private static final int MAX_HEALTH = 1000;
+    private int currentHealth = 1000;
     private int shieldHealth = 0;
     private long lastDamageTime = 0;
     private int regenCounter = 0;
@@ -357,7 +357,7 @@ public class Player extends GameObject {
                 long cooldown = (long)(10000 / activeTool.getAttackSpeed());
                 
                 if (currentTime - lastAttackTime > cooldown) {
-                    projectiles.add(new Projectile(getCenterX(), getCenterY(), baseAngle, activeTool.getAttackSpeed(), (int) activeTool.getDamage(), "arrow.png"));
+                    projectiles.add(new Projectile(getCenterX(), getCenterY(), baseAngle, activeTool.getAttackSpeed(), (int) activeTool.getDamage(), 2,  "arrow.png"));
                     lastAttackTime = currentTime;
                 }
             }
@@ -421,12 +421,12 @@ public class Player extends GameObject {
         String hitObject = CollisionSystem.checkResourceHitCollision(activeTool.getHitbox(hitX, hitY, baseAngle), resourceSystem);
 
         if (hitObject != null) {     
-            int amount = (int) activeTool.getHarvestPower();
+            double amount = activeTool.getHarvestPower();
 
             if (hitObject.equals("tree")) {
-                resourceSystem.addWood(amount);
+                resourceSystem.addWood((int) amount);
             } else if (hitObject.equals("stone")) {
-                resourceSystem.addStone(amount);
+                resourceSystem.addStone((int) amount);
             }
         }
     }

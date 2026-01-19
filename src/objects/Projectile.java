@@ -23,9 +23,10 @@ public class Projectile extends GameObject {
     private Image image;
     private boolean active = true;
 
-    private final double startX;
-    private final double startY;
+    private final double startX, startY;
     private static final double MAX_RANGE = BenumZombsGame.GRID_SIZE * 25;
+
+    private int damageRadius = 0;
 
     /**
      * Constructor for Projectile object
@@ -35,14 +36,16 @@ public class Projectile extends GameObject {
      * @param y the y-coordinate of the projectile
      * @param angle the angle at which the projectile is fired
      * @param damage the damage the projectile will inflict
+     * @param damageRadius the radius of damage the projectile will inflict
      */
-    public Projectile(double x, double y, double angle, double speed, int damage, Image imageName) {
-        super(x - 22, y - 22, 45, 45, null);
+    public Projectile(double x, double y, double angle, double speed, int damage, int damageRadius, Image imageName) {
+        super(x - 10, y - 10, 20, 20, null);
         this.startX = x;
         this.startY = y;
         this.angle = angle;
         this.speed = speed;
         this.damage = damage;
+        this.damageRadius = damageRadius;
         this.image = imageName;
     }
 
@@ -56,14 +59,14 @@ public class Projectile extends GameObject {
      * @param damage the damage the projectile will inflict
      * @param imageName the filename of the image representing the projectile
      */
-    public Projectile(double x, double y, double angle, double speed, int damage, String imageName) {
+    public Projectile(double x, double y, double angle, double speed, int damage, int damageRadius, String imageName) {
         super(x - 22, y - 22, 45, 45, null);
         this.startX = x;
         this.startY = y;
         this.angle = angle;
         this.speed = speed;
         this.damage = damage;
-        this.image = null;
+        this.damageRadius = 0;
         
         //************* Load Projectile Image *************//
         try {
@@ -131,6 +134,16 @@ public class Projectile extends GameObject {
     }
 
     /**
+     * Gets the damage radius of the projectile
+     * Precondition: N/A
+     * Postcondition: The damage radius of the projectile is returned
+     * @return the damage radius of the projectile
+     */
+    public double getDamageRadius() {
+        return damageRadius;
+    }
+
+    /**
      * Draws the projectile on the provided Graphics2D context
      * Precondition: g2d is a valid Graphics2D object
      * Postcondition: The projectile is drawn at its current position and angle
@@ -143,7 +156,7 @@ public class Projectile extends GameObject {
         }
         AffineTransform old = g2d.getTransform();
         g2d.translate(x + width / 2, y + height / 2);
-        g2d.rotate(angle + Math.PI / 2);
+        g2d.rotate(angle+ Math.PI / 2);
         g2d.drawImage(image, -width / 2, -height / 2, width, height, null);
         g2d.setTransform(old);
     }

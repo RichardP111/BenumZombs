@@ -47,7 +47,9 @@ public class ZombieSystem {
         //************* Update Zombies *************//
         Rectangle playerTool = player.getToolBounds();
         int toolDamage = player.getToolDamage();
-        ArrayList<Projectile> projectiles = player.getProjectiles();
+        ArrayList<Projectile> allProjectiles = player.getProjectiles();
+        allProjectiles.addAll(player.getProjectiles());
+        allProjectiles.addAll(buildingSystem.getProjectiles());
 
         for (int i = 0; i < zombies.size(); i++) {
             Zombie zombie = zombies.get(i);
@@ -59,10 +61,13 @@ public class ZombieSystem {
             }
 
             //************* Handle Projectile Damage *************//
-            for (int j = 0; j < projectiles.size(); j++) {
-                Projectile projectile = projectiles.get(j);
+            for (int j = 0; j < allProjectiles.size(); j++) {
+                Projectile projectile = allProjectiles.get(j);
                 if (projectile.getActive() && zombie.getBounds().intersects(projectile.getBounds())) {
-                    zombie.takeDamage((int) projectile.getDamage(), true); 
+                    zombie.takeDamage((int) projectile.getDamage(), projectile.getDamageRadius() == 0); 
+                    if (projectile.getDamageRadius() > 0) {
+                        applyAreaDamage(projectile.getX() + projectile.getWidth()/2, projectile.getY() + projectile.getHeight()/2, projectile.getDamageRadius(), projectile.getDamage());
+                    }
                     projectile.setActive(false);
                 }
             }
@@ -104,6 +109,23 @@ public class ZombieSystem {
             }
             zombies.add(new Zombie(spawnPoint.x, spawnPoint.y, tier, level));
         
+        }
+    }
+
+    /**
+     * Applies area damage to zombies within a certain radius
+     * @param cx the x-coordinate of the center of the damage area
+     * @param cy the y-coordinate of the center of the damage area
+     * @param radius the radius of the damage area
+     * @param damage the amount of damage to apply
+     */
+    private void applyAreaDamage(double cx, double cy, double radius, double damage) {
+        for (int i = 0; i < zombies.size(); i++) {
+            Zombie zombie = zombies.get(i);
+            double dist = Math.hypot(zombie.getX() + zombie.getWidth()/2 - cx, zombie.getY() + zombie.getHeight()/2 - cy);
+            if (dist <= radius) {
+                zombie.takeDamage( (int) damage, false);
+            }
         }
     }
 

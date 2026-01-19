@@ -8,9 +8,14 @@
 
 package objects.Buildings;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import systems.ResourceSystem;
+import systems.ZombieSystem;
+import systems.BuildingSystem;
 
 public class GoldMine extends Building {
+    private double spinAngle = 0.0;
 
     private final int[] goldProduction = {4, 6, 7, 10, 12, 15, 25, 53};
 
@@ -73,10 +78,11 @@ public class GoldMine extends Building {
      * Postcondition: The GoldMine state is updated
      */
     @Override
-    public void update(ResourceSystem resourceSystem) {
-        super.update(resourceSystem);
-        this.rotation += 0.02;
+    public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem, BuildingSystem buildingSystem) {
+        super.update(resourceSystem, zombieSystem, buildingSystem);
+        spinAngle += 0.02; // Rotate the top part
 
+        //************* Generate gold over time *************//
         frames++;
         if (frames >= GENERATION_INTERVAL) {
             frames = 0;
@@ -91,6 +97,29 @@ public class GoldMine extends Building {
             if (resourceSystem != null) {
                 resourceSystem.addGold(amount);
             }
+        }
+    }
+
+    /**
+     * Draws the GoldMine
+     * Precondition: N/A
+     * Postcondition: The GoldMine is drawn on the screen
+     * @param g2d the Graphics2D object to draw on
+     */
+    @Override
+    public void draw(Graphics2D g2d) {
+        //************* Draw base *************//
+        if (baseSprites != null && level - 1 < baseSprites.length) {
+            g2d.drawImage(baseSprites[level-1], (int)x, (int)y, width, height, null);
+        }
+        
+        //************* Draw top *************//
+        if (topSprites != null && level - 1 < topSprites.length) {
+            AffineTransform old = g2d.getTransform(); // Save the current transform
+            g2d.translate(x + width / 2, y + height / 2);
+            g2d.rotate(spinAngle);
+            g2d.drawImage(topSprites[level-1], -width / 2, -height / 2, width, height, null);
+            g2d.setTransform(old); // Restore the original transform
         }
     }
 

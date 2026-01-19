@@ -8,7 +8,13 @@
 
 package objects.Buildings;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import objects.Projectile;
+import objects.Zombie;
+import systems.BuildingSystem;
 import systems.ResourceSystem;
+import systems.ZombieSystem;
 
 public class CannonTower extends Building {
 
@@ -30,6 +36,10 @@ public class CannonTower extends Building {
         this.health = 150;
 
         this.limits = 6;
+
+        this.attackCooldown = 1500;
+        this.range = 300;
+        this.damage = 80;
 
         loadSprites("cannonTower", false, true, false, "cannonTower_projectile.png");
 
@@ -68,9 +78,46 @@ public class CannonTower extends Building {
      * Postcondition: The CannonTower state is updated
      */
     @Override
-    public void update(ResourceSystem resourceSystem) {
-        super.update(resourceSystem);
-        this.rotation += 0.02; 
+    public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem, BuildingSystem buildingSystem) {
+        super.update(resourceSystem, zombieSystem, buildingSystem);
+        Zombie target = findClosestZombie(zombieSystem);
+        if (target != null) {
+            //************* Aim at target *************//
+            double dx = (target.getX() + target.getWidth()/2) - (x + width/2);
+            double dy = (target.getY() + target.getHeight()/2) - (y + height/2);
+            headRotation = Math.atan2(dy, dx);
+            
+            //************* Attack if in range *************//
+            long now = System.currentTimeMillis();
+            if (now - lastAttackTime > attackCooldown) {
+                Projectile p = new Projectile(x + width/2, y + height/2, headRotation, 0.8, damage, 0, projectileSprite);
+                buildingSystem.addProjectile(p);
+                lastAttackTime = now;
+            }
+        }
+    }
+
+    /**
+     * Draws the CannonTower
+     * Precondition: N/A
+     * Postcondition: The CannonTower is drawn on the screen
+     * @param g2d the Graphics2D object to draw on
+     */
+    @Override
+    public void draw(Graphics2D g2d) {
+        //************* Draw base *************//
+        if (baseSprites != null) {
+            g2d.drawImage(baseSprites[level-1], (int)x, (int)y, width, height, null);
+        }
+
+        //************* Draw top *************//
+        if (topSprites != null) {
+            AffineTransform old = g2d.getTransform(); // Save the current transform
+            g2d.translate(x + width/2, y + height/2);
+            g2d.rotate(headRotation);
+            g2d.drawImage(topSprites[level-1], -width/2, -height/2, width, height, null);
+            g2d.setTransform(old); // Restore the original transform
+        }
     }
 
     @Override

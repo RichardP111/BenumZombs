@@ -8,6 +8,9 @@
 
 package objects.Buildings;
 
+import java.awt.Graphics2D;
+import systems.BuildingSystem;
+import systems.ZombieSystem;
 import systems.ResourceSystem;
 
 public class Harvester extends Building {
@@ -68,8 +71,21 @@ public class Harvester extends Building {
      * Postcondition: The Harvester state is updated
      */
     @Override
-    public void update(ResourceSystem resourceSystem) {
-        super.update(resourceSystem);
+    public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem, BuildingSystem buildingSystem) {
+        super.update(resourceSystem, zombieSystem, buildingSystem);
+    }
+
+    /**
+     * Draws the Harvester
+     * Precondition: N/A
+     * Postcondition: The Harvester is drawn on the screen
+     * @param g2d the Graphics2D object to draw on
+     */
+    @Override
+    public void draw(Graphics2D g2d) {
+        if (baseSprites != null) {
+            g2d.drawImage(baseSprites[level-1], (int)x, (int)y, width, height, null);
+        }
     }
 
     @Override

@@ -53,7 +53,7 @@ public class Zombie extends GameObject {
 
         this.maxHealth = 100 + (tier * 50) + (level * 20);
         this.currentHealth = this.maxHealth;
-        this.damage = (int) (1 + (tier * 0.2) + (level * 0.05));
+        this.damage = (int) (10 + (tier * 5) + (level * 2));
         this.speed = 2;
 
         //************* Set Tier Color *************//
@@ -114,8 +114,8 @@ public class Zombie extends GameObject {
         } else {
             Building stash = buildingSystem.getActiveStash();
             if (stash != null) {
-                destX = stash.getX() + stash.getWidth()/2.0 - width/2.0;
-                destY = stash.getY() + stash.getHeight()/2.0 - height/2.0;
+                destX = stash.getX() + stash.getWidth() / 2 - width / 2;
+                destY = stash.getY() + stash.getHeight() / 2 - height / 2;
             } else {
                 destX = player.getX();
                 destY = player.getY();
@@ -163,7 +163,7 @@ public class Zombie extends GameObject {
             }
         }
         if (CollisionSystem.checkPlayerCollision(zombieBounds, player)) {
-             player.takeDamage(damage); 
+            player.takeDamage(damage); 
         }
     }
 

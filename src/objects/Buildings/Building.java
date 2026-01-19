@@ -10,7 +10,6 @@ package objects.Buildings;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -20,7 +19,10 @@ import helpers.HealthManager;
 import java.awt.Color;
 import java.awt.Rectangle;
 import objects.GameObject;
+import objects.Zombie;
+import systems.BuildingSystem;
 import systems.ResourceSystem;
+import systems.ZombieSystem;
 
 public abstract class Building extends GameObject {
     protected String name;
@@ -48,6 +50,13 @@ public abstract class Building extends GameObject {
     protected static final long REGEN_DELAY = 3000;
     protected int regenCounter = 0;
 
+    //************* Attack Properties *************//
+    protected long lastAttackTime = 0;
+    protected long attackCooldown = 1000;
+    protected int damage = 20;
+    protected double range = 300;
+    protected double headRotation = 0.0;
+
     //************* Tower Sprites *************//
     protected BufferedImage[] baseSprites;
     protected BufferedImage[] middleSprites;
@@ -56,7 +65,6 @@ public abstract class Building extends GameObject {
     protected BufferedImage projectileSprite;
 
     protected Image icon;
-    protected double rotation = 0.0;
     protected float animation = 0.0f;
 
     /**
@@ -450,70 +458,25 @@ public abstract class Building extends GameObject {
     }
 
     /**
-     * Draws the Building
-     * Precondition: g2d is not null
-     * Postcondition: the Building is drawn on the Graphics2D object
-     * @param g2d the Graphics2D object to draw on
+     * Finds the closest zombie within range
+     * Precondition: zombieSystem is not null
+     * Postcondition: returns the closest zombie within range, or null if none found
+     * @param zombieSystem the ZombieSystem to search for zombies
+     * @return the closest zombie within range, or null if none found
      */
-    @Override
-    public void draw(Graphics2D g2d) {
-        int spriteIndex = level - 1;
-        if (spriteIndex < 0) {
-            spriteIndex = 0;
-        } else if (spriteIndex >= maxLevel) {
-            spriteIndex = maxLevel - 1;
-        }
-
-        int drawW = width;
-        int drawH = height;
-        int drawX = (int)x;
-        int drawY = (int)y;
-
-        //************* Draw Base Sprite *************//
-        if (baseSprites[spriteIndex] != null) {
-            g2d.drawImage(baseSprites[spriteIndex], drawX, drawY, drawW, drawH, null);
-        }
-
-        //************* Draw Melee Middle *************//
-        if (!this.name.equals("Melee Tower") && middleSprites[spriteIndex] != null) {
-            g2d.drawImage(middleSprites[spriteIndex], drawX, drawY, drawW, drawH, null);
-        }
-
-        //************* Draw Speical Sprites *************//
-        if (otherSprites[spriteIndex] != null) {
-            BufferedImage claw = otherSprites[spriteIndex];
-            AffineTransform old = g2d.getTransform();
-
-            g2d.translate(x + width / 2, y + height / 2);
-            g2d.rotate(rotation); 
-            g2d.drawImage(claw, -drawW / 2, -drawH / 2, drawW, drawH, null);
-
-            g2d.setTransform(old);
-        }
-
-        //************* Draw Top Sprites *************//
-        if (topSprites[spriteIndex] != null) {
-            BufferedImage top = topSprites[spriteIndex];
-            AffineTransform old = g2d.getTransform();
-            
-            g2d.translate(x + width / 2, y + height / 2);
-
-            //************* Special Animations *************//
-            if (this.name.equals("Melee Tower") && middleSprites[spriteIndex] != null) {
-                double punchAmount = 20 * Math.abs(Math.sin(animation * 5));
-                g2d.rotate(rotation);
-                g2d.drawImage(middleSprites[spriteIndex], (int)(-drawW / 3 + punchAmount), -drawH / 2, drawW, drawH, null);
-            } else if (this.name.equals("Mage Tower") || this.name.equals("Bomb Tower")) {
-                double scale = (0.15 * Math.sin(animation)) + 0.5;
-                g2d.scale(scale, scale);
-                g2d.drawImage(top, -drawW / 2, -drawH / 2, drawW, drawH, null);
-            } else {
-                g2d.rotate(rotation);
+    protected Zombie findClosestZombie(ZombieSystem zombieSystem) {
+        Zombie closest = null;
+        double minDist = range;
+        
+        for (int i = 0; i < zombieSystem.getZombies().size(); i++) {
+            Zombie zombie = zombieSystem.getZombies().get(i);
+            double dist = Math.hypot(zombie.getX() - x, zombie.getY() - y);
+            if (dist < minDist) {
+                minDist = dist;
+                closest = zombie;
             }
-                        
-            g2d.drawImage(top, -drawW / 2, -drawH / 2, drawW, drawH, null);
-            g2d.setTransform(old);
         }
+        return closest;
     }
 
     /**
@@ -521,7 +484,7 @@ public abstract class Building extends GameObject {
      * Precondition: N/A
      * Postcondition: the Building state is updated
      */
-    public void update(ResourceSystem resourceSystem) {
+    public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem, BuildingSystem buildingSystem) {
         //************* Update Animation *************//
         animation += 0.01f;
         if (animation > 2) {
@@ -529,18 +492,16 @@ public abstract class Building extends GameObject {
         }
 
         //************* Regenerate Health *************//
-        if (health < maxHealth) {
-            if (health > 0) {
-                long now = System.currentTimeMillis();
-                if (now - lastDamageTime > REGEN_DELAY) {
-                    regenCounter++;
-                    if (regenCounter > 5) {
-                        health = health + 2;
-                        if (health > maxHealth) {
-                            health = maxHealth;
-                        }
-                        regenCounter = 0;
+        if (health < maxHealth && health > 0) {
+            long now = System.currentTimeMillis();
+            if (now - lastDamageTime > REGEN_DELAY) {
+                regenCounter++;
+                if (regenCounter > 5) {
+                    health += 2;
+                    if (health > maxHealth) {
+                        health = maxHealth;
                     }
+                    regenCounter = 0;
                 }
             }
         }
@@ -552,10 +513,12 @@ public abstract class Building extends GameObject {
      * Postcondition: returns the hitbox of the Building
      * @return the hitbox of the Building
      */
-    public Rectangle getHitbox(){
+    public Rectangle getHitbox() {
         return new Rectangle((int)x, (int)y, width, height); 
     }
     
+    @Override
+    public abstract void draw(Graphics2D g2d);
     public abstract String getDescription();
     public abstract Building createCopy(double x, double y);
 }

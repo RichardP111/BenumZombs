@@ -8,6 +8,8 @@
 
 package objects.Buildings;
 
+import java.awt.Graphics2D;
+
 public class SlowTrap extends Building {
 
     /**
@@ -58,6 +60,20 @@ public class SlowTrap extends Building {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Draws the SlowTrap
+     * Precondition: N/A
+     * Postcondition: The SlowTrap is drawn on the screen
+     * @param g2d the Graphics2D object to draw on
+     */
+    @Override
+    public void draw(Graphics2D g2d) {
+        //************* Draw base *************//
+        if (baseSprites != null) {
+            g2d.drawImage(baseSprites[level-1], (int)x, (int)y, width, height, null);
+        }
     }
 
 

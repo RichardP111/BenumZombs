@@ -8,6 +8,8 @@
 
 package objects.Buildings;
 
+import java.awt.Graphics2D;
+
 public class Wall extends Building {
 
     /**
@@ -58,6 +60,20 @@ public class Wall extends Building {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Draws the Wall
+     * Precondition: N/A
+     * Postcondition: The Wall is drawn on the screen
+     * @param g2d the Graphics2D object to draw on
+     */
+    @Override
+    public void draw(Graphics2D g2d) {
+        //************* Draw base *************//
+        if (baseSprites != null) {
+            g2d.drawImage(baseSprites[level-1], (int)x, (int)y, width, height, null);
+        }
     }
 
     /**
