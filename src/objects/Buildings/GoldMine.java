@@ -81,7 +81,7 @@ public class GoldMine extends Building {
         if (frames >= GENERATION_INTERVAL) {
             frames = 0;
             
-            int amount = 0;
+            int amount;
             if (level <= goldProduction.length) {
                 amount = goldProduction[level - 1];
             } else {

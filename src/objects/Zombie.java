@@ -24,8 +24,6 @@ import systems.CollisionSystem;
 import systems.ResourceSystem;
 
 public class Zombie extends GameObject {
-    private int tier;
-    private int level;
     private double speed;
     private int damage;
     
@@ -52,16 +50,14 @@ public class Zombie extends GameObject {
      */
     public Zombie(double x, double y, int tier, int level) {
         super(x, y, 35, 35, null);
-        this.tier = tier;
-        this.level = level;
 
-        this.maxHealth = (this.tier * 50) + (this.level * 20);
+        this.maxHealth = 100 + (tier * 50) + (level * 20);
         this.currentHealth = this.maxHealth;
-        this.damage = (int) (1 + (this.tier * 0.2) + (this.level * 0.05));
+        this.damage = (int) (1 + (tier * 0.2) + (level * 0.05));
         this.speed = 2;
 
         //************* Set Tier Color *************//
-        switch (this.tier) {
+        switch (tier) {
             case 1:
                 tierColor = new Color(50, 77, 58); // Green
                 break;
