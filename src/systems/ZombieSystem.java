@@ -39,7 +39,7 @@ public class ZombieSystem {
 
         //************* Spawn Waves *************//
         if (buildingSystem.isGoldStashPlaced() && isNight && !waveSpawnedForNight) {
-            spawnWave(waveCount, buildingSystem);
+            spawnWave(waveCount, buildingSystem, resourceSystem);
             waveSpawnedForNight = true;
             System.out.println("ZombieSystem.java - Spawned wave " + waveCount);
         }
@@ -81,8 +81,9 @@ public class ZombieSystem {
      * Postcondition: A new wave of zombies is spawned and added to the system
      * @param waveCount the current wave count
      * @param buildingSystem the building system
+     * @param resourceSystem the resource system
      */
-    private void spawnWave(int waveCount, BuildingSystem buildingSystem) {
+    private void spawnWave(int waveCount, BuildingSystem buildingSystem, ResourceSystem resourceSystem) {
         int tier = ((waveCount - 1) / 10) + 1;
         int level = ((waveCount - 1) % 10) + 1;
 
@@ -92,8 +93,17 @@ public class ZombieSystem {
 
         int zombieCount = 10 + (waveCount * 2); // Increase zombie count with each wave
         for (int i = 0; i < zombieCount; i++) {
-            Point spawnPoint = RandomGeneration.getRandomBaseLocation(buildingSystem);
+            Point spawnPoint; //Make sure zombies does not spawn on resources
+            while (true) {
+                spawnPoint = RandomGeneration.getRandomBaseLocation(buildingSystem);
+                Rectangle zombieBounds = new Rectangle(spawnPoint.x, spawnPoint.y, 45, 45);
+                
+                if (!CollisionSystem.checkResourceCollision(zombieBounds, resourceSystem)) {
+                    break; 
+                }
+            }
             zombies.add(new Zombie(spawnPoint.x, spawnPoint.y, tier, level));
+        
         }
     }
 
@@ -104,8 +114,8 @@ public class ZombieSystem {
      * @param g2d the Graphics2D context to draw on
      */
     public void draw(Graphics2D g2d) {
-        for (Zombie z : zombies) {
-            z.draw(g2d);
+        for (int i = 0; i < zombies.size(); i++) {
+            zombies.get(i).draw(g2d);
         }
     }
     

@@ -150,4 +150,24 @@ public class CollisionSystem {
         Rectangle playerRect = player.getBounds();
         return box.intersects(playerRect);
     }
+
+    /**
+     * Gets the building that is colliding with the given bounding box
+     * Precondition: box is a valid Rectangle, buildingSystem is a valid BuildingSystem
+     * Postcondition: returns the colliding building, or null if no collision is detected
+     * @param box the bounding box to check for collisions
+     * @param buildingSystem the building system containing placed buildings
+     * @return the colliding building, or null if no collision is detected
+     */
+    public static Building getCollidingBuilding(Rectangle box, BuildingSystem buildingSystem) {
+        ArrayList<Building> buildings = buildingSystem.getPlacedBuildings();
+        for (int i = 0; i < buildings.size(); i++) {
+            Building building = buildings.get(i);            
+            Rectangle buildingRect = new Rectangle((int)building.getX(), (int)building.getY(), building.getWidth(), building.getHeight());
+            if (buildingRect.intersects(box)) {
+                return building;
+            }
+        }
+        return null;
+    }
 }

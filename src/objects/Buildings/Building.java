@@ -13,7 +13,12 @@ import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
+
+import helpers.HealthManager;
+import java.awt.Color;
+import java.awt.Rectangle;
 import objects.GameObject;
 import systems.ResourceSystem;
 
@@ -38,6 +43,10 @@ public abstract class Building extends GameObject {
     //************* Tower Health *************//
     protected int maxHealth;
     protected int health;
+
+    protected long lastDamageTime = 0;
+    protected static final long REGEN_DELAY = 3000;
+    protected int regenCounter = 0;
 
     //************* Tower Sprites *************//
     protected BufferedImage[] baseSprites;
@@ -290,6 +299,7 @@ public abstract class Building extends GameObject {
      */
     public void takeDamage(int amount) {
         this.health -= amount;
+        this.lastDamageTime = System.currentTimeMillis();
     }
 
     /**
@@ -428,6 +438,18 @@ public abstract class Building extends GameObject {
     }
 
     /**
+     * Draws the health bar of the Building if damaged
+     * Precondition: g2d is not null
+     * Postcondition: draws the health bar of the Building
+     * @param g2d the Graphics2D object to draw on
+     */
+    public void drawHealthBar(Graphics2D g2d) {
+        if (health < maxHealth) {
+            HealthManager.drawStatusBar(g2d, health, maxHealth, (int)x, (int)y + height + 5, width, 5, new Color(99, 183, 32), false);
+        }
+    }
+
+    /**
      * Draws the Building
      * Precondition: g2d is not null
      * Postcondition: the Building is drawn on the Graphics2D object
@@ -500,12 +522,40 @@ public abstract class Building extends GameObject {
      * Postcondition: the Building state is updated
      */
     public void update(ResourceSystem resourceSystem) {
+        //************* Update Animation *************//
         animation += 0.01f;
         if (animation > 2) {
             animation = 0;
         }
+
+        //************* Regenerate Health *************//
+        if (health < maxHealth) {
+            if (health > 0) {
+                long now = System.currentTimeMillis();
+                if (now - lastDamageTime > REGEN_DELAY) {
+                    regenCounter++;
+                    if (regenCounter > 5) {
+                        health = health + 2;
+                        if (health > maxHealth) {
+                            health = maxHealth;
+                        }
+                        regenCounter = 0;
+                    }
+                }
+            }
+        }
     }
 
+    /**
+     * Gets the hitbox of the Building
+     * Precondition: N/A
+     * Postcondition: returns the hitbox of the Building
+     * @return the hitbox of the Building
+     */
+    public Rectangle getHitbox(){
+        return new Rectangle((int)x, (int)y, width, height); 
+    }
+    
     public abstract String getDescription();
     public abstract Building createCopy(double x, double y);
 }

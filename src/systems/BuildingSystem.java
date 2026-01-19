@@ -306,8 +306,15 @@ public class BuildingSystem {
      * Postcondition: all placed buildings are updated
      */
     public void update(ResourceSystem resourceSystem) {
-        for (Building b : placedBuildings) {
-            b.update(resourceSystem);
+        for (int i = 0; i < placedBuildings.size(); i++) {
+            Building building = placedBuildings.get(i);
+            building.update(resourceSystem);
+
+            //************* Remove Destroyed Buildings *************//
+            if (building.getHealth() <= 0) {
+                removeBuilding(building);
+                i--; 
+            }
         }
     }
 
@@ -319,7 +326,10 @@ public class BuildingSystem {
      */
     public void draw(Graphics2D g2d) {
         for (int i = 0; i < placedBuildings.size(); i++) {
-            placedBuildings.get(i).draw(g2d);
+            Building building = placedBuildings.get(i);
+            building.draw(g2d);
+
+            building.drawHealthBar(g2d);
         }
     }
 }

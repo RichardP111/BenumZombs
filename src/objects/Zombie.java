@@ -99,60 +99,62 @@ public class Zombie extends GameObject {
      * @param resourceSystem the ResourceSystem object
      */ 
     public void update(Player player, BuildingSystem buildingSystem, ResourceSystem resourceSystem) {
-        double targetX = x;
-        double targetY = y;
-        boolean attackingBuilding = false;
-
-        //************* Target Building *************//
+        //************* Check Current Target Building *************//
         if (targetBuilding != null) {
-            if (!buildingSystem.getPlacedBuildings().contains(targetBuilding)) {
+            if (!buildingSystem.getPlacedBuildings().contains(targetBuilding) || targetBuilding.getHealth() <= 0) {
                 targetBuilding = null;
-            } else {
-                targetX = targetBuilding.getX() + targetBuilding.getWidth() / 2 - width / 2;
-                targetY = targetBuilding.getY() + targetBuilding.getHeight() / 2 - height / 2;
-                attackingBuilding = true;
             }
         }
 
-        //************* Target Stash Or Player *************//
-        if (targetBuilding == null) {
+        double destX, destY;
+
+        if (targetBuilding != null) {
+            destX = targetBuilding.getX() + targetBuilding.getWidth() / 2 - width / 2;
+            destY = targetBuilding.getY() + targetBuilding.getHeight() / 2 - height / 2;
+        } else {
             Building stash = buildingSystem.getActiveStash();
             if (stash != null) {
-                targetBuilding = stash;
-                targetX = stash.getX() + stash.getWidth() / 2 - width / 2;
-                targetY = stash.getY() + stash.getHeight() / 2 - height / 2;
-                attackingBuilding = true;
+                destX = stash.getX() + stash.getWidth()/2.0 - width/2.0;
+                destY = stash.getY() + stash.getHeight()/2.0 - height/2.0;
             } else {
-                targetX = player.getX();
-                targetY = player.getY();
-                attackingBuilding = false;
+                destX = player.getX();
+                destY = player.getY();
             }
         }
     
         //************* Target Movement *************//
-        double dx = targetX - x;
-        double dy = targetY - y;
+        double dx = destX - x;
+        double dy = destY - y;
         rotationAngle = Math.atan2(dy, dx);
         
         double moveX = Math.cos(rotationAngle) * speed;
         double moveY = Math.sin(rotationAngle) * speed;
 
         //************* Collision Check *************//
-        Rectangle nextXPos = new Rectangle((int)(x + moveX), (int)y, width, height);
-        if (!CollisionSystem.checkSolidBuildingCollision(nextXPos, buildingSystem) && !CollisionSystem.checkResourceCollision(nextXPos, resourceSystem) && !CollisionSystem.checkPlayerCollision(nextXPos, player)) {
-            x += moveX;
+        Rectangle futureRect = new Rectangle((int)(x + moveX), (int)(y + moveY), width, height); 
+        if (targetBuilding == null) {
+            Building collidedBuilding = CollisionSystem.getCollidingBuilding(futureRect, buildingSystem);
+            if (collidedBuilding != null) {
+                targetBuilding = collidedBuilding;
+                moveX = 0;
+                moveY = 0;
+            }
+        } else {
+            if (futureRect.intersects(targetBuilding.getHitbox())) {
+                moveX = 0;
+                moveY = 0;
+            }
         }
-        
-        Rectangle nextYPos = new Rectangle((int)x, (int)(y + moveY), width, height);
-        if (!CollisionSystem.checkSolidBuildingCollision(nextYPos, buildingSystem) && !CollisionSystem.checkResourceCollision(nextYPos, resourceSystem) && !CollisionSystem.checkPlayerCollision(nextYPos, player)) {
+
+        if (!CollisionSystem.checkResourceCollision(futureRect, resourceSystem) && !CollisionSystem.checkPlayerCollision(futureRect, player)) {
+            x += moveX;
             y += moveY;
         }
 
         //************* Attack Handling *************//
         Rectangle zombieBounds = new Rectangle((int)x, (int)y, width, height);
         long now = System.currentTimeMillis();
-
-        if (attackingBuilding && targetBuilding != null) {
+        if (targetBuilding != null) {
             if (CollisionSystem.checkBuildingCollision(zombieBounds, buildingSystem)) {
                 if (now - lastAttackTime > ATTACK_COOLDOWN) {
                     targetBuilding.takeDamage(damage);
@@ -160,14 +162,8 @@ public class Zombie extends GameObject {
                 }
             }
         }
-
-        if (!attackingBuilding || CollisionSystem.checkPlayerCollision(zombieBounds, player)) {
-             if (CollisionSystem.checkPlayerCollision(zombieBounds, player)) {
-                if (now - lastAttackTime > ATTACK_COOLDOWN) {
-                    player.takeDamage(damage);
-                    lastAttackTime = now;
-                }
-             }
+        if (CollisionSystem.checkPlayerCollision(zombieBounds, player)) {
+             player.takeDamage(damage); 
         }
     }
 
