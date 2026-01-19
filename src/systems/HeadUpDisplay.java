@@ -36,7 +36,7 @@ import objects.Tools.Tool;
 public class HeadUpDisplay {
     private final Player player;
     private float time = 0.0f;
-    private final float dayLength = 0.03f; // Speed of day-night cycle 00005
+    private final float dayLength = 0.001f; // Speed of day-night cycle 00005
 
     public Rectangle settingsButtonBounds;
     public Rectangle shopButtonBounds;
@@ -91,31 +91,32 @@ public class HeadUpDisplay {
      */
     @SuppressWarnings("Convert2Lambda")
     private void initializeRespawnButton() {
+        //************* Respawn Button *************//
         respawnButton = new RoundedJButton("Respawn");
         respawnButton.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 24f));
         respawnButton.setBackground(new Color(103, 90, 166));
         respawnButton.setForeground(Color.WHITE);
         respawnButton.setFocusable(false); 
-        respawnButton.setVisible(false);   
+        respawnButton.setVisible(false);
+        game.add(respawnButton);
 
+        //************* Respawn Button Action *************//
         respawnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 game.respawnPlayer(); 
             }
         });
-
-        game.add(respawnButton);
     }
 
     /**
      * Handles mouse click events on the HUD
-     * Precondition: p is a valid Point object representing the mouse click location
+     * Precondition: point is a valid Point object representing the mouse click location
      * Postcondition: appropriate action is taken based on the clicked HUD element
-     * @param p the Point object representing the mouse click location 
+     * @param point the Point object representing the mouse click location 
      * @return true if a HUD element was clicked and handled, false otherwise
      */
-    public boolean handleMouseClick(Point p) {
+    public boolean handleMouseClick(Point point) {
         BuildingSystem buildingSystem = game.getBuildingSystem();
         Building building = buildingSystem.getSelectedBuilding();
         ResourceSystem resourceSystem = game.getResourceSystem();
@@ -132,7 +133,7 @@ public class HeadUpDisplay {
                 stashLvl = 1;
             }
 
-            if (upgradeButtonBounds != null && upgradeButtonBounds.contains(p)) {
+            if (upgradeButtonBounds != null && upgradeButtonBounds.contains(point)) {
                 if (building.canUpgrade(stashLvl)) {
                     int woodCost = building.getUpgradeWoodCost();
                     int stoneCost = building.getUpgradeStoneCost();
@@ -153,7 +154,7 @@ public class HeadUpDisplay {
             }
             
             //************* Sell Button Handling *************//
-            if (sellButtonBounds != null && sellButtonBounds.contains(p)) {
+            if (sellButtonBounds != null && sellButtonBounds.contains(point)) {
                 if (building.canBeSold()) {
                     resourceSystem.addWood(building.getWoodSellValue()); 
                     resourceSystem.addStone(building.getStoneSellValue());
@@ -166,7 +167,7 @@ public class HeadUpDisplay {
         }
 
         //************* Settings Button Handling *************//
-        if (settingsButtonBounds != null && settingsButtonBounds.contains(p)) { 
+        if (settingsButtonBounds != null && settingsButtonBounds.contains(point)) { 
             Main.settingsScreen.setGameInstance(game);
             Main.showScreen("SETTINGS");
             System.out.println("HeadUpDisplay.java - Opened Settings Screen");
@@ -174,7 +175,7 @@ public class HeadUpDisplay {
         }
 
         //************* Shop Button Handling *************//
-        if (shopButtonBounds != null && shopButtonBounds.contains(p)) { 
+        if (shopButtonBounds != null && shopButtonBounds.contains(point)) { 
             Main.shopScreen.setGameInstance(game);
             Main.showScreen("SHOP");
             System.out.println("HeadUpDisplay.java - Opened Shop Screen");
@@ -182,16 +183,16 @@ public class HeadUpDisplay {
         }
 
         //************* Toolbar Click Handling *************//
-        return handleToolbarClick(p);
+        return handleToolbarClick(point);
     }
 
     /**
      * Handles clicks on the toolbar
      * Precondition: p is a valid Point object representing the mouse click location
      * Postcondition: active tool is changed if a toolbar slot is clicked
-     * @param p the Point object representing the mouse click location
+     * @param point the Point object representing the mouse click location
      */
-    public boolean handleToolbarClick(Point p) {
+    public boolean handleToolbarClick(Point point) {
         //************* Toolbar Bounds *************//
         int width = game.getWidth();
         int height = game.getHeight();
@@ -204,14 +205,14 @@ public class HeadUpDisplay {
 
         //************* Toolbar Click Handling *************//
         Rectangle toolBarRect = new Rectangle(toolBarX, toolBarY, totalWidth, slotSize);
-        boolean clickedToolbar = toolBarRect.contains(p);
+        boolean clickedToolbar = toolBarRect.contains(point);
 
         if (clickedToolbar) {
             for (int i = 0; i < 4; i++) {
                 int x = toolBarX + i * (slotSize + slotPadding);
                 Rectangle slotBounds = new Rectangle(x, toolBarY, slotSize, slotSize);
 
-                if (slotBounds.contains(p)) {
+                if (slotBounds.contains(point)) { // Clicked tool slot
                     Tool tool = toolSystem.getToolInSlot(i);
                     if (tool != null && tool.getIsUnlocked()) {
                         toolSystem.setActiveSlot(i);
@@ -227,7 +228,7 @@ public class HeadUpDisplay {
         int buildingBarY = height - 70;
         
         Rectangle buildingBarRect = new Rectangle(buildingBarX, buildingBarY, buildingBarW, slotSize);
-        boolean clickedBuildingBar = buildingBarRect.contains(p);
+        boolean clickedBuildingBar = buildingBarRect.contains(point);
 
         //************* Building Bar Click Handling *************//
         if (clickedBuildingBar) {
@@ -239,7 +240,7 @@ public class HeadUpDisplay {
                     int x = buildingBarX + i * (slotSize + slotPadding);
                     Rectangle slotBounds = new Rectangle(x, buildingBarY, slotSize, slotSize);
                     
-                    if (slotBounds.contains(p)) { // Clicked this building slot
+                    if (slotBounds.contains(point)) { // Clicked this building slot
                         Building building = buildingSystem.getBuildingInSlot(i);
                         if (building != null && !building.isLocked()) {
                             
@@ -503,13 +504,26 @@ public class HeadUpDisplay {
         g2d.fillRoundRect(miniX, miniY, miniSize, miniSize, 15, 15);
 
         //************* Minimap World Area *************//
+        // Player position relative to world
         int walkableArea = BenumZombsGame.PLAY_AREA - (BenumZombsGame.BORDER_THICKNESS * 2);
 
         double relativeX = (player.getCenterX() - (BenumZombsGame.OFFSET + BenumZombsGame.BORDER_THICKNESS)) / (double)walkableArea;
         double relativeY = (player.getCenterY() - (BenumZombsGame.OFFSET + BenumZombsGame.BORDER_THICKNESS)) / (double)walkableArea;
-
         int dotX = miniX + (int)(relativeX * miniSize);
         int dotY = miniY + (int)(relativeY * miniSize);
+
+        // Stash position relative to world
+        Building stash = game.getBuildingSystem().getActiveStash();
+        if (stash != null) {
+            double stashRelativeX = (stash.getX() - (BenumZombsGame.OFFSET + BenumZombsGame.BORDER_THICKNESS)) / (double)walkableArea;
+            double stashRelativeY = (stash.getY() - (BenumZombsGame.OFFSET + BenumZombsGame.BORDER_THICKNESS)) / (double)walkableArea;
+            int stashDotX = miniX + (int)(stashRelativeX * miniSize);
+            int stashDotY = miniY + (int)(stashRelativeY * miniSize);
+
+            //************* Minimap Stash Dot *************//
+            g2d.setColor(new Color(135, 95, 69)); 
+            g2d.fillRoundRect(stashDotX, stashDotY, 5, 5, 5, 5);
+        }
 
         //************* Minimap Player Dot *************//
         g2d.setColor(new Color(132, 115, 212)); 
@@ -548,7 +562,7 @@ public class HeadUpDisplay {
             Tool tool = toolSystem.getToolInSlot(i);
             boolean isUnlocked = tool.getIsUnlocked();
 
-            if (isHovered && isUnlocked) { //Hover effect
+            if (isHovered && isUnlocked) { // Hover effect
                 g2d.setColor(new Color(247, 247, 247, 55));
             } else {
                 g2d.setColor(new Color(247, 247, 247, 30));
@@ -859,7 +873,7 @@ public class HeadUpDisplay {
 
         //************ Tier Label *************//
         int currentButtonY = textY + 25;
-        g2d.setColor(Color.LIGHT_GRAY  );
+        g2d.setColor(Color.LIGHT_GRAY);
         g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 16f));
         g2d.drawString("Tier " + building.getLevel() + " Building", textX, currentButtonY);
         
@@ -952,33 +966,34 @@ public class HeadUpDisplay {
      */
     private void drawDeathOverlay(Graphics2D g2d, int screenW, int screenH) {
         //************* Death Panel Size *************//
+        int deathPanelW = screenW - (screenW / 4), deathPanelH = screenH - (screenH / 3);
+        int deathPanelX = (screenW / 2) - (deathPanelW / 2);
+        int deathPanelY = (screenH / 2) - (deathPanelH / 2);
+
+        //************* Death Panel Background *************//
         g2d.setColor(new Color(0, 0, 0, 180));
         g2d.fillRect(0, 0, screenW, screenH);
 
-        int deathPanelW = screenW - 1000, deathPanelH = screenH - 1500;
-        int deathPanelX = screenW + 500;
-        int deathPanelY = (screenH - deathPanelH) / 2 - 100;
-
-        //************* Death Panel Background *************//
         g2d.setColor(new Color(0, 0, 0, 200));
         g2d.fillRoundRect(deathPanelX, deathPanelY, deathPanelW, deathPanelH, 20, 20);
 
         //************* Death Panel Text *************//
-        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 20f));
+        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 25f));
         g2d.setColor(Color.WHITE);
-        int titleW = g2d.getFontMetrics().stringWidth("You Died");
-        g2d.drawString("You Died", (screenW / 2) - (titleW / 2), deathPanelY + 60);        
+        String titleText = "You Died";
+        int titleW = g2d.getFontMetrics().stringWidth(titleText);
+        g2d.drawString(titleText, (screenW / 2) - (titleW / 2), deathPanelY + 60);        
 
-        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 16f));
+        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 17f));
         g2d.setColor(Color.LIGHT_GRAY);
         int messageW = g2d.getFontMetrics().stringWidth(deathMessage);
-        g2d.drawString(deathMessage, (screenW / 2) - (messageW / 2), deathPanelY + 100);
+        g2d.drawString(deathMessage, (screenW / 2) - (messageW / 2), deathPanelY + 120);
 
         //************* Respawn Button *************//
-        int btnW = 200;
-        int btnH = 60;
+        int buttonWidth = 200;
+        int buttonHeight = 40;
         if (respawnButton != null) {
-            respawnButton.setBounds(screenW/2 - btnW/2, screenH/2 + 10, btnW, btnH);
+            respawnButton.setBounds((screenW / 2) - (buttonWidth / 2), deathPanelY + deathPanelH - buttonHeight - 20, buttonWidth, buttonHeight);
             if (!respawnButton.isVisible()) {
                 respawnButton.setVisible(true);
             }

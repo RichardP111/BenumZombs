@@ -163,7 +163,7 @@ public class Zombie extends GameObject {
             }
         }
         if (CollisionSystem.checkPlayerCollision(zombieBounds, player)) {
-            player.takeDamage(damage); 
+            player.takeDamage(damage / 5); 
         }
     }
 

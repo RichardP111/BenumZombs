@@ -5,6 +5,7 @@
  * @version 1.0
  * @since 2026-01-08
  */
+
 package game;
 
 import helpers.RandomGeneration;
@@ -207,7 +208,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         return buildingSystem;
     }
 
-/**
+    /**
      * Returns the ToolSystem instance
      * Precondition: N/A
      * Postcondition: returns the tool system
@@ -513,12 +514,12 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         Building stash = buildingSystem.getActiveStash();
         boolean stashAlive = (stash != null && stash.getHealth() > 0);
         
-        if (player.isDead()) {
-            if (stashAlive) {
-                headUpDisplay.showDeathScreen("You got killed... but fear not, your fortress survives! Get back into action!");
-            } else {
-                headUpDisplay.showDeathScreen("Your stash has been destroyed after " + waveCount + " waves.");
-            }
+        if (player.isDead() && stashAlive) {
+            headUpDisplay.showDeathScreen("You got killed... but fear not, your fortress survives! Get back into action!");
+        }
+
+        if (!stashAlive && stash != null) {
+            headUpDisplay.showDeathScreen("Your stash has been destroyed after " + waveCount + " waves.");
         }
     }
 
@@ -534,6 +535,14 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         if (stashAlive) {
             player.reset(stash.getX() + stash.getWidth()/2, stash.getY() + stash.getHeight()/2);
             toolSystem.reset(); 
+            while (true) {
+                Rectangle test = new Rectangle((int)player.getX(), (int)player.getY(), 50, 50);
+                if (CollisionSystem.checkBuildingCollision(test, buildingSystem)){
+                    player.setY(player.getY() + 30);
+                } else {
+                    break;
+                }
+            }
         } else {            
             resourceSystem.reset(true);
             toolSystem.reset();
@@ -546,18 +555,10 @@ public class BenumZombsGame extends JPanel implements ActionListener {
                 spawn = RandomGeneration.getRandomLocation();
                 Rectangle test = new Rectangle(spawn.x, spawn.y, 50, 50);
                 if (!CollisionSystem.checkResourceCollision(test, resourceSystem)){
-                    player.reset(spawn.x, spawn.y);
-                    while (true) {
-                        if (CollisionSystem.checkBuildingCollision(test, buildingSystem)){
-                            player.setY(player.getY() + 30);
-                        } else {
-                            break;
-                        }
-                    }
                     break;
                 }
             }
-
+            player.reset(spawn.x, spawn.y);
         }
         
         headUpDisplay.hideDeathScreen();

@@ -12,7 +12,6 @@ import game.BenumZombsGame;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import objects.Projectile;
 import objects.Buildings.ArrowTower;
 import objects.Buildings.BombTower;
 import objects.Buildings.Building;
@@ -25,6 +24,7 @@ import objects.Buildings.MageTower;
 import objects.Buildings.MeleeTower;
 import objects.Buildings.SlowTrap;
 import objects.Buildings.Wall;
+import objects.Projectile;
 
 public class BuildingSystem {
     private final Building[] slots = new Building[11];
@@ -335,8 +335,8 @@ public class BuildingSystem {
         selectedBuilding = null;
         
         for (Building slot : slots) {
-            if (slot != null) {
-                slot.setLocked(true);
+            if (slot != null && !slot.isUnlocker()) {
+                slot.setLocked(false);
             }
         }
     }
