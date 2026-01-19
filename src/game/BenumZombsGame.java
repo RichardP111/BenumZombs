@@ -490,6 +490,10 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         buildingSystem.placeBuilding(newBuilding);
         SoundManager.playSound("placeBuilding.wav");
 
+        if (HeadUpDisplay.tutorialStep >= 1 && headUpDisplay.tutorialActive) {
+            HeadUpDisplay.tutorialStep++;
+        }
+
         //************* Check for Limit, Gold Stash, and Resources *************//
         boolean limitReached = buildingSystem.isLimitReached(placementBuilding);
         if (placementBuilding.isUnlocker() || limitReached) {

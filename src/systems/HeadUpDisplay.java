@@ -36,7 +36,7 @@ import objects.Tools.Tool;
 public class HeadUpDisplay {
     private final Player player;
     private float time = 0.0f;
-    private final float dayLength = 0.0005f; // Speed of day-night cycle 00005
+    private final float dayLength = 0.00005f; // Speed of day-night cycle
 
     public Rectangle settingsButtonBounds;
     public Rectangle shopButtonBounds;
@@ -53,8 +53,8 @@ public class HeadUpDisplay {
     private String deathMessage = "";
     private RoundedJButton respawnButton;
 
-    private int tutorialStep = 0;
-    private boolean tutorialActive = true;
+    public static int tutorialStep = 1;
+    public static boolean tutorialActive = true;
 
     /**
      * Constructor for HeadUpDisplay
@@ -69,8 +69,8 @@ public class HeadUpDisplay {
         this.player = player;
         this.toolSystem = toolSystem;
 
-        loadIcons();
         initializeRespawnButton();
+        loadIcons();
     }
 
     /**
@@ -320,6 +320,8 @@ public class HeadUpDisplay {
         drawHealthBar(g2d, screenW, screenH);
         drawToolbars(g2d, screenW, screenH, toolSystem);
         drawActionButtons(g2d, screenW, screenH);
+        drawTutorial(g2d, screenW, screenH);
+        drawDeathOverlay(g2d, screenW, screenH);
 
         //************* Draw Upgrade/Sell Box *************//
         Building selected = game.getBuildingSystem().getSelectedBuilding();
@@ -328,11 +330,6 @@ public class HeadUpDisplay {
         } else {
             upgradeButtonBounds = null;
             sellButtonBounds = null;
-        }
-
-        //************* Draw Death Screen *************//
-        if (isDeathScreenVisible) {
-            drawDeathOverlay(g2d, screenW, screenH);
         }
     }
 
@@ -971,37 +968,39 @@ public class HeadUpDisplay {
      * @param screenH the height of the screen
      */
     private void drawDeathOverlay(Graphics2D g2d, int screenW, int screenH) {
-        //************* Death Panel Size *************//
-        int deathPanelW = screenW - (screenW / 4), deathPanelH = screenH - (screenH / 3);
-        int deathPanelX = (screenW / 2) - (deathPanelW / 2);
-        int deathPanelY = (screenH / 2) - (deathPanelH / 2);
+        if (isDeathScreenVisible) {
+            //************* Death Panel Size *************//
+            int deathPanelW = screenW - (screenW / 4), deathPanelH = screenH - (screenH / 3);
+            int deathPanelX = (screenW / 2) - (deathPanelW / 2);
+            int deathPanelY = (screenH / 2) - (deathPanelH / 2);
 
-        //************* Death Panel Background *************//
-        g2d.setColor(new Color(0, 0, 0, 180));
-        g2d.fillRect(0, 0, screenW, screenH);
+            //************* Death Panel Background *************//
+            g2d.setColor(new Color(0, 0, 0, 180));
+            g2d.fillRect(0, 0, screenW, screenH);
 
-        g2d.setColor(new Color(0, 0, 0, 200));
-        g2d.fillRoundRect(deathPanelX, deathPanelY, deathPanelW, deathPanelH, 20, 20);
+            g2d.setColor(new Color(0, 0, 0, 170));
+            g2d.fillRoundRect(deathPanelX, deathPanelY, deathPanelW, deathPanelH, 20, 20);
 
-        //************* Death Panel Text *************//
-        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 25f));
-        g2d.setColor(Color.WHITE);
-        String titleText = "You Died";
-        int titleW = g2d.getFontMetrics().stringWidth(titleText);
-        g2d.drawString(titleText, (screenW / 2) - (titleW / 2), deathPanelY + 60);        
+            //************* Death Panel Text *************//
+            g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 25f));
+            g2d.setColor(Color.WHITE);
+            String titleText = "You Died";
+            int titleW = g2d.getFontMetrics().stringWidth(titleText);
+            g2d.drawString(titleText, (screenW / 2) - (titleW / 2), deathPanelY + 60);        
 
-        g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 17f));
-        g2d.setColor(Color.LIGHT_GRAY);
-        int messageW = g2d.getFontMetrics().stringWidth(deathMessage);
-        g2d.drawString(deathMessage, (screenW / 2) - (messageW / 2), deathPanelY + 120);
+            g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 17f));
+            g2d.setColor(Color.LIGHT_GRAY);
+            int messageW = g2d.getFontMetrics().stringWidth(deathMessage);
+            g2d.drawString(deathMessage, (screenW / 2) - (messageW / 2), deathPanelY + 120);
 
-        //************* Respawn Button *************//
-        int buttonWidth = 200;
-        int buttonHeight = 40;
-        if (respawnButton != null) {
-            respawnButton.setBounds((screenW / 2) - (buttonWidth / 2), deathPanelY + deathPanelH - buttonHeight - 20, buttonWidth, buttonHeight);
-            if (!respawnButton.isVisible()) {
-                respawnButton.setVisible(true);
+            //************* Respawn Button *************//
+            int buttonWidth = 200;
+            int buttonHeight = 40;
+            if (respawnButton != null) {
+                respawnButton.setBounds((screenW / 2) - (buttonWidth / 2), deathPanelY + deathPanelH - buttonHeight - 20, buttonWidth, buttonHeight);
+                if (!respawnButton.isVisible()) {
+                    respawnButton.setVisible(true);
+                }
             }
         }
     }
@@ -1038,5 +1037,48 @@ public class HeadUpDisplay {
      */
     public boolean isDeathScreenVisible() {
         return isDeathScreenVisible;
+    }
+
+    private void drawTutorial(Graphics2D g2d, int screenW, int screenH) {
+        if (tutorialActive){
+            //************* Tutorial Panel Size *************//
+            int tutorialPanelW = screenW - (screenW / 2) - 50, tutorialPanelH = 80;
+            int tutorialPanelX = (screenW / 2) - (tutorialPanelW / 2);
+            int tutorialPanelY = 10;
+
+            g2d.setColor(new Color(0, 0, 0, 130));
+            g2d.fillRoundRect(tutorialPanelX, tutorialPanelY, tutorialPanelW, tutorialPanelH, 20, 20);
+
+            //************* Tutorial Text *************//
+            g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 16f));
+            g2d.setColor(Color.WHITE);
+            String text = "";
+            ArrayList<String> description = new ArrayList<>();
+            switch(tutorialStep){
+                case 1:
+                    text = "Start off by gathering some resources. Collect 10 wood and stone using WASD keys and harvesting with Left Click";
+                    description = TextFormatter.wrapText(text, 50);
+                    break;
+                case 2:
+                    text = "Now you're ready to place down your gold stash! Once you establish your base zombies will start spawning each night.";
+                    description = TextFormatter.wrapText(text, 50);
+                    break;
+                case 3:
+                    text = "You're ready to start building your defenses! Start by using the 5 wood you gathered earlier to place an Arrow Tower from the toolbar below.";
+                    description = TextFormatter.wrapText(text, 50);
+                    break;
+                case 4:
+                    text = "Now you're protected you should start generating gold. Do this by building a Gold Mine from the toolbar, this will passively give you gold.";
+                    description = TextFormatter.wrapText(text, 50);
+                    tutorialActive = false;
+
+                    break;
+            }
+            int textY = tutorialPanelY + 10;
+            for (int i = 0; i < description.size(); i++) {
+                textY += 18;
+                g2d.drawString(description.get(i), tutorialPanelX + 80, textY);
+            }
+        }
     }
 }

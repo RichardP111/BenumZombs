@@ -9,11 +9,10 @@
 package systems;
 
 import java.util.ArrayList;
-
 import objects.Tools.*;
 
 public class ToolSystem {
-    private ArrayList<Tool> inventory;
+    private final ArrayList<Tool> inventory;
     private int activeSlot = 0;
 
     /**
