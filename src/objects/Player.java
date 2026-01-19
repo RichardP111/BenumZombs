@@ -559,9 +559,9 @@ public class Player extends GameObject {
         g2d.drawString(name, nameX, screenY - 20);
 
         //************* Local Player Health *************//
-        helpers.HealthManager.drawStatusBar(g2d, currentHealth, MAX_HEALTH, screenX, screenY, width, height, new Color(113, 191, 71), false);
+        helpers.HealthManager.drawStatusBar(g2d, currentHealth, MAX_HEALTH, screenX, screenY + width - 2, width, 5, new Color(113, 191, 71), false);
         if (getMaxShieldHealth() > 0) {
-            helpers.HealthManager.drawStatusBar(g2d, shieldHealth, getMaxShieldHealth(), screenX, screenY, width, height, new Color(61, 161, 217), true);
+            helpers.HealthManager.drawStatusBar(g2d, shieldHealth, getMaxShieldHealth(), screenX, screenY + width - 2, width, 5, new Color(61, 161, 217), true);
         }
     }
 

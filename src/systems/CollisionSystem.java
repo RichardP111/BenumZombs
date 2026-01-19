@@ -163,7 +163,7 @@ public class CollisionSystem {
         ArrayList<Building> buildings = buildingSystem.getPlacedBuildings();
         for (int i = 0; i < buildings.size(); i++) {
             Building building = buildings.get(i);            
-            Rectangle buildingRect = new Rectangle((int)building.getX(), (int)building.getY(), building.getWidth(), building.getHeight());
+            Rectangle buildingRect = new Rectangle((int)building.getX() - 2, (int)building.getY() - 2, building.getWidth() + 4, building.getHeight() + 4);
             if (buildingRect.intersects(box)) {
                 return building;
             }

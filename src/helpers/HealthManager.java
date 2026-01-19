@@ -27,8 +27,8 @@ public class HealthManager {
      * @param armorBar whether the bar is an armor bar (true) or a health bar (false)
      */
     public static void drawStatusBar(Graphics2D g2d, double current, double max, int x, int y, int width, int height, Color barColor, boolean armorBar) {
-        int barW = 50; 
-        int barH = 6;
+        int barW = width; 
+        int barH = height;
         int barX = x + (width / 2) - (barW / 2);
         int barY;
 

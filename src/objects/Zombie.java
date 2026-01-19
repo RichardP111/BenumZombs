@@ -152,7 +152,7 @@ public class Zombie extends GameObject {
         }
 
         //************* Attack Handling *************//
-        Rectangle zombieBounds = new Rectangle((int)x, (int)y, width, height);
+        Rectangle zombieBounds = new Rectangle((int)x - 5, (int)y - 5, width + 10, height + 10);
         long now = System.currentTimeMillis();
         if (targetBuilding != null) {
             if (CollisionSystem.checkBuildingCollision(zombieBounds, buildingSystem)) {
@@ -208,7 +208,7 @@ public class Zombie extends GameObject {
 
         g2d.setTransform(oldTransform); // Restore original transform
 
-        HealthManager.drawStatusBar(g2d, currentHealth, maxHealth, (int)x, (int)y, width, height, new Color(122, 55, 32), false);
+        HealthManager.drawStatusBar(g2d, currentHealth, maxHealth, (int)x + (width - 30) / 2, (int)y + 20, 30, 5, new Color(122, 55, 32), false);
     }
 
     /**

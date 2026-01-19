@@ -445,7 +445,7 @@ public abstract class Building extends GameObject {
      */
     public void drawHealthBar(Graphics2D g2d) {
         if (health < maxHealth) {
-            HealthManager.drawStatusBar(g2d, health, maxHealth, (int)x, (int)y + height + 5, width, 5, new Color(99, 183, 32), false);
+            HealthManager.drawStatusBar(g2d, health, maxHealth, (int)x + 5, (int)y + height - 5, width - 10, 5, new Color(99, 183, 32), false);
         }
     }
 
