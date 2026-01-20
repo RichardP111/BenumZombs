@@ -174,7 +174,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
             public void mouseExited(MouseEvent e) {}
         });
 
-        gameTimer = new Timer(10, this); 
+        gameTimer = new Timer(13, this); 
         gameTimer.start();
     }
 

@@ -29,7 +29,7 @@ import systems.ToolSystem;
 public class Player extends GameObject {
 
     //************* Player Properties *************//
-    private static final double SPEED = 5; //player speed
+    private static final double SPEED = 3; //player speed
     private final String name;
 
     private static final int MAX_HEALTH = 1000;
