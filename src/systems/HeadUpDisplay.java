@@ -36,7 +36,7 @@ import objects.Tools.Tool;
 public class HeadUpDisplay {
     private final Player player;
     private float time = 0.0f;
-    private final float dayLength = 0.00005f; // Speed of day-night cycle
+    private final float dayLength = 0.00009f; // Speed of day-night cycle
 
     public Rectangle settingsButtonBounds;
     public Rectangle shopButtonBounds;

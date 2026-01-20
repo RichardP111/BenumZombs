@@ -4,16 +4,24 @@
  * @author Richard Pu   
  * @version 1.0
  * @since 2026-01-16
+ * The following building is currently under development and may not be fully functional.
  */
 
 package objects.Buildings;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import objects.Stone;
+import objects.Tree;
 import systems.BuildingSystem;
-import systems.ZombieSystem;
 import systems.ResourceSystem;
+import systems.ZombieSystem;
 
 public class Harvester extends Building {
+    private long lastHarvestTime = 0;
+    private long harvestCooldown = 2500;
+    private int harvestAmount = 1;
+    private Rectangle harvestRangeBox;
 
     /**
      * Constructor for Harvester
@@ -26,7 +34,7 @@ public class Harvester extends Building {
         super(x, y, 35, 35, "Harvester", "harvester.png");
         this.woodCost = 5;
         this.stoneCost = 5;
-        this.description = "Harvests resources automatically, fuelled by gold. Hit with a pickaxe to collect.";
+        this.description = "Harvests resources automatically over time.";
         this.isLocked = true;
 
         this.maxHealth = 150 + (level * 100);
@@ -34,7 +42,10 @@ public class Harvester extends Building {
 
         this.limits = 2;
 
-        loadSprites("harvester", false, true, true, null);
+        this.harvestCooldown = 2500 - (level * 100);
+        this.harvestAmount = 1 + level;
+        
+        loadSprites("harvester", false, true, false, null);
 
         this.upgradeGoldCosts = new int[] {100, 200, 600, 1200, 2000, 8000, 10000};
         this.upgradeWoodCosts = new int[] {25, 30, 40, 50, 70, 300, 600};
@@ -73,6 +84,38 @@ public class Harvester extends Building {
     @Override
     public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem, BuildingSystem buildingSystem) {
         super.update(resourceSystem, zombieSystem, buildingSystem);
+        if (harvestRangeBox == null) {
+            int padding = 60;
+            harvestRangeBox = new Rectangle((int)x - padding, (int)y - padding, width + (padding*2), height + (padding*2));
+        }
+        
+        //************* Harvest resources *************//
+        long now = System.currentTimeMillis();
+        if (now - lastHarvestTime > harvestCooldown) {
+            boolean gathered = false;
+            
+            //************* Check trees in range *************//
+            for (int i = 0; i < resourceSystem.getTrees().size(); i++) {
+                Tree tree = resourceSystem.getTrees().get(i);
+                if (tree.getBounds().intersects(harvestRangeBox)) {
+                    resourceSystem.addWood(harvestAmount);
+                    gathered = true;
+                }
+            }
+            
+            //************* Check stones in range *************//
+            for (int i = 0; i < resourceSystem.getStones().size(); i++) {
+                Stone stone = resourceSystem.getStones().get(i);
+                if (stone.getBounds().intersects(harvestRangeBox)) {
+                    resourceSystem.addStone(harvestAmount);
+                    gathered = true;
+                }
+            }
+            
+            if (gathered) { // Only update time if something was gathered
+                lastHarvestTime = now;
+            }
+        }
     }
 
     /**
@@ -83,8 +126,14 @@ public class Harvester extends Building {
      */
     @Override
     public void draw(Graphics2D g2d) {
+        //************* Draw base *************//
         if (baseSprites != null) {
             g2d.drawImage(baseSprites[level-1], (int)x, (int)y, width, height, null);
+        }
+
+        //************* Draw top*************//
+        if (topSprites != null && level - 1 < topSprites.length) {
+            g2d.drawImage(topSprites[level-1], (int)x, (int) (y + (height - (height * 0.75)) / 2), width, (int) (height * 0.75), null);
         }
     }
 
