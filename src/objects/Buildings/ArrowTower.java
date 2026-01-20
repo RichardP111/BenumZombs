@@ -93,7 +93,7 @@ public class ArrowTower extends Building {
             //****************** Attack if in range ****************//
             long now = System.currentTimeMillis();
             if (now - lastAttackTime > attackCooldown) {
-                Projectile p = new Projectile(x + width/2, y + height/2, headRotation, 1, damage, 0, projectileSprite);
+                Projectile p = new Projectile(x + width/2, y + height/2, headRotation, 10, damage, 0, projectileSprite);
                 buildingSystem.addProjectile(p);
                 lastAttackTime = now;
             }

@@ -93,7 +93,7 @@ public class CannonTower extends Building {
             //************* Attack if in range *************//
             long now = System.currentTimeMillis();
             if (now - lastAttackTime > attackCooldown) {
-                Projectile p = new Projectile(x + width/2, y + height/2, headRotation, 0.8, damage, 0, projectileSprite);
+                Projectile p = new Projectile(x + width/2, y + height/2, headRotation, 8, damage, 50, projectileSprite);
                 buildingSystem.addProjectile(p);
                 lastAttackTime = now;
             }

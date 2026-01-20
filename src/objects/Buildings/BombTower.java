@@ -103,7 +103,7 @@ public class BombTower extends Building {
                 double dy = (target.getY() + target.getHeight()/2) - (y + height/2);
                 double angle = Math.atan2(dy, dx);
                 
-                Projectile p = new Projectile(x + width/2, y + height/2, angle, 0.5, damage, 120, projectileSprite);
+                Projectile p = new Projectile(x + width/2, y + height/2, angle, 7, damage, 120, projectileSprite);
                 buildingSystem.addProjectile(p);
                 
                 pulse = MAX_SCALE;

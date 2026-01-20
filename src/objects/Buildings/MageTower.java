@@ -104,9 +104,9 @@ public class MageTower extends Building {
                 double dy = (target.getY() + target.getHeight()/2) - (y + height/2);
                 double angle = Math.atan2(dy, dx);
                 
-                buildingSystem.addProjectile(new Projectile(x + width/2, y + height/2, angle, 1, damage, 0, projectileSprite));
-                buildingSystem.addProjectile(new Projectile(x + width/2, y + height/2, angle - 0.2, 1, damage, 0, projectileSprite));
-                buildingSystem.addProjectile(new Projectile(x + width/2, y + height/2, angle + 0.2, 1, damage, 0, projectileSprite));
+                buildingSystem.addProjectile(new Projectile(x + width/2, y + height/2, angle, 11, damage, 20, projectileSprite));
+                buildingSystem.addProjectile(new Projectile(x + width/2, y + height/2, angle - 0.2, 11, damage, 20, projectileSprite));
+                buildingSystem.addProjectile(new Projectile(x + width/2, y + height/2, angle + 0.2, 11, damage, 20, projectileSprite));
                 
                 pulse = MAX_SCALE;
                 lastAttackTime = now;
