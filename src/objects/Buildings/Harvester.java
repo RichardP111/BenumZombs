@@ -95,17 +95,19 @@ public class Harvester extends Building {
         long now = System.currentTimeMillis();
         if (now - lastHarvestTime > harvestCooldown) {
             boolean gathered = false;
-            
-            //************* Check trees in range *************//
-            if (CollisionSystem.checkResourceHitCollision(harvestRangeBox, resourceSystem).equals("tree")) {
-                resourceSystem.addWood(harvestAmount);
-                gathered = true;
-            }
-               
-            //************* Check stones in range *************//
-            if (CollisionSystem.checkResourceHitCollision(harvestRangeBox, resourceSystem).equals("stone")) {
-                resourceSystem.addStone(harvestAmount);
-                gathered = true;
+
+            String hitObject = CollisionSystem.checkResourceHitCollision(harvestRangeBox, resourceSystem);
+
+            if (hitObject != null) {     
+                //************* Check trees in range *************//
+                if (hitObject.equals("tree")) {
+                    resourceSystem.addWood(harvestAmount);
+                    gathered = true;
+                //************* Check stones in range *************//
+                } else if (hitObject.equals("stone")) {
+                    resourceSystem.addStone(harvestAmount);
+                    gathered = true;
+                }
             }
             
             if (gathered) { // Only update time if something was gathered
