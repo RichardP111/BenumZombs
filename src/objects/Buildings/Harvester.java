@@ -11,9 +11,8 @@ package objects.Buildings;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import objects.Stone;
-import objects.Tree;
 import systems.BuildingSystem;
+import systems.CollisionSystem;
 import systems.ResourceSystem;
 import systems.ZombieSystem;
 
@@ -98,21 +97,15 @@ public class Harvester extends Building {
             boolean gathered = false;
             
             //************* Check trees in range *************//
-            for (int i = 0; i < resourceSystem.getTrees().size(); i++) {
-                Tree tree = resourceSystem.getTrees().get(i);
-                if (tree.getBounds().intersects(harvestRangeBox)) {
-                    resourceSystem.addWood(harvestAmount);
-                    gathered = true;
-                }
+            if (CollisionSystem.checkResourceHitCollision(harvestRangeBox, resourceSystem).equals("tree")) {
+                resourceSystem.addWood(harvestAmount);
+                gathered = true;
             }
-            
+               
             //************* Check stones in range *************//
-            for (int i = 0; i < resourceSystem.getStones().size(); i++) {
-                Stone stone = resourceSystem.getStones().get(i);
-                if (stone.getBounds().intersects(harvestRangeBox)) {
-                    resourceSystem.addStone(harvestAmount);
-                    gathered = true;
-                }
+            if (CollisionSystem.checkResourceHitCollision(harvestRangeBox, resourceSystem).equals("stone")) {
+                resourceSystem.addStone(harvestAmount);
+                gathered = true;
             }
             
             if (gathered) { // Only update time if something was gathered
