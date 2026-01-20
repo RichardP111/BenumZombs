@@ -105,10 +105,10 @@ public abstract class Building extends GameObject {
      * Loads the sprites for the Building
      * Precondition: N/A
      * Postcondition: sprites are loaded for the Building at all levels
-     * @param name the base name of the building sprites (folder name)
-     * @param hasMiddle whether the building has middle sprites (for multi-part structures)
-     * @param hasHead whether the building has head/top sprites (for towers)
-     * @param hasClaw whether the building has claw/other sprites (for special animations)
+     * @param name the base name of the building sprites
+     * @param hasMiddle whether the building has middle sprites
+     * @param hasHead whether the building has head/top sprites
+     * @param hasClaw whether the building has claw/other sprites
      * @param projectileName the filename of the projectile sprite, or null if building doesn't shoot
      */
     protected void loadSprites(String name, boolean hasMiddle, boolean hasHead, boolean hasClaw, String projectileName) {

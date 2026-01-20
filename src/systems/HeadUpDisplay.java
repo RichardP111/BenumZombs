@@ -1039,6 +1039,10 @@ public class HeadUpDisplay {
         return isDeathScreenVisible;
     }
 
+    /** 
+     * @param g2d
+     * @param screenW
+     */
     private void drawTutorial(Graphics2D g2d, int screenW) {
         if (tutorialActive){
             //************* Tutorial Panel Size *************//
