@@ -285,7 +285,6 @@ public class ShopScreen extends JPanel {
      * @param w the width of the card
      * @param h the height of the card
      * @param tool the Tool object to display on the card
-     * @param slot the slot index of the tool
      */
     private void drawShopCard(Graphics2D g2d, int x, int y, int w, int h, Tool tool) {
         if (tool == null) {

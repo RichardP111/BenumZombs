@@ -35,8 +35,10 @@ public class Projectile extends GameObject {
      * @param x the x-coordinate of the projectile
      * @param y the y-coordinate of the projectile
      * @param angle the angle at which the projectile is fired
+     * @param speed the speed of the projectile
      * @param damage the damage the projectile will inflict
      * @param damageRadius the radius of damage the projectile will inflict
+     * @param imageName the Image representing the projectile
      */
     public Projectile(double x, double y, double angle, double speed, int damage, int damageRadius, Image imageName) {
         super(x - 10, y - 10, 20, 20, null, null);
@@ -56,7 +58,9 @@ public class Projectile extends GameObject {
      * @param x the x-coordinate of the projectile
      * @param y the y-coordinate of the projectile
      * @param angle the angle at which the projectile is fired
+     * @param speed the speed of the projectile
      * @param damage the damage the projectile will inflict
+     * @param damageRadius the radius of damage the projectile will inflict
      * @param imageName the filename of the image representing the projectile
      */
     public Projectile(double x, double y, double angle, double speed, int damage, int damageRadius, String imageName) {

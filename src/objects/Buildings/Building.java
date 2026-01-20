@@ -290,10 +290,10 @@ public abstract class Building extends GameObject {
     }
 
     /**
-     * Damages the Building by a specified amount
-     * Precondition: amount is a non-negative integer
-     * Postcondition: reduces the health of the Building by the specified amount
-     * @param amount the amount of damage to inflict
+     * Gets the maximum health of the Building
+     * Precondition: N/A
+     * Postcondition: returns the maximum health of the Building
+     * @return the maximum health of the Building
      */
     public int getMaxHealth() { 
         return maxHealth; 
@@ -483,6 +483,9 @@ public abstract class Building extends GameObject {
      * Updates the Building state
      * Precondition: N/A
      * Postcondition: the Building state is updated
+     * @param resourceSystem the ResourceSystem object
+     * @param zombieSystem the ZombieSystem object
+     * @param buildingSystem the BuildingSystem object
      */
     public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem, BuildingSystem buildingSystem) {
         //************* Update Animation *************//

@@ -76,6 +76,9 @@ public class ArrowTower extends Building {
      * Updates the ArrowTower state
      * Precondition: N/A
      * Postcondition: The ArrowTower state is updated
+     * @param resourceSystem the ResourceSystem object
+     * @param zombieSystem the ZombieSystem object
+     * @param buildingSystem the BuildingSystem object
      */
     @Override
     public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem, BuildingSystem buildingSystem) {

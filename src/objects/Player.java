@@ -61,6 +61,7 @@ public class Player extends GameObject {
      * @param x the x-coordinate of the player
      * @param y the y-coordinate of the player
      * @param name the name of the player
+     * @param toolSystem the ToolSystem managing the player's tools
      */
     public Player(double x, double y, String name, ToolSystem toolSystem) {
         super(x, y, 50, 50, new Color(252, 200, 117), null);

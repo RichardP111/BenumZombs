@@ -33,7 +33,6 @@ public class SettingsScreen extends JPanel {
      * Constructor for SettingsScreen
      * Precondition: window is a valid JFrame, gameInstance is a valid BenumZombsGame, or null
      * Postcondition: SettingsScreen panel is created within the given window
-     * @param window the main game window
      */
     @SuppressWarnings("Convert2Lambda")
     public SettingsScreen() {

@@ -100,12 +100,6 @@ public class BuildingSystem {
      * @param y the y-coordinate of the new Building
      * @return a new Building instance
      */
-    /** 
-     * @param building
-     * @param x
-     * @param y
-     * @return Building
-     */
     public Building createBuilding(Building building, double x, double y) {
         if (building != null) {
             Building buildingCopy = building.createCopy(x, y);
@@ -122,9 +116,6 @@ public class BuildingSystem {
      * Postcondition: building is added to the placed buildings list
      * @param building the Building to place
      */
-    /** 
-     * @param building
-     */
     public void placeBuilding(Building building) {
         placedBuildings.add(building);
         if (building.isUnlocker()) {
@@ -140,11 +131,6 @@ public class BuildingSystem {
      * @param worldX the x-coordinate in the world
      * @param worldY the y-coordinate in the world
      * @return true if a building was selected, false otherwise
-     */
-    /** 
-     * @param worldX
-     * @param worldY
-     * @return boolean
      */
     public boolean selectBuildingAt(int worldX, int worldY) {
         for (int i = placedBuildings.size() - 1; i >= 0; i--) {
@@ -178,9 +164,6 @@ public class BuildingSystem {
      * Postcondition: returns the currently selected building, or null if none
      * @return the currently selected building
      */
-    /** 
-     * @return Building
-     */
     public Building getSelectedBuilding() {
         return selectedBuilding;
     }
@@ -190,9 +173,6 @@ public class BuildingSystem {
      * Precondition: building is not null
      * Postcondition: building is removed from the placed buildings list
      * @param building the Building to remove
-     */
-    /** 
-     * @param building
      */
     public void removeBuilding(Building building) {
         placedBuildings.remove(building);
@@ -207,10 +187,6 @@ public class BuildingSystem {
      * Postcondition: returns true if the area is occupied, false otherwise
      * @param area the area to check
      * @return true if the area is occupied, false otherwise
-     */
-    /** 
-     * @param area
-     * @return boolean
      */
     public boolean isOccupied(Rectangle area) {
         for (int i = 0; i < placedBuildings.size(); i++) {
@@ -245,9 +221,6 @@ public class BuildingSystem {
      * Postcondition: returns true if the Gold Stash is placed, false otherwise
      * @return true if the Gold Stash is placed, false otherwise
      */
-    /** 
-     * @return boolean
-     */
     public boolean isGoldStashPlaced() {
         return goldStashPlaced;
     }
@@ -258,10 +231,6 @@ public class BuildingSystem {
      * Postcondition: returns true if the limit is reached, false otherwise
      * @param building the Building type to check
      * @return true if the limit is reached, false otherwise
-     */
-    /** 
-     * @param building
-     * @return boolean
      */
     public boolean isLimitReached(Building building) {
         return getBuildingCount(building) >= getBuildingLimit(building);
@@ -274,10 +243,6 @@ public class BuildingSystem {
      * Postcondition: returns the count of the specified building type
      * @param building the Building type to count
      * @return the count of the specified building type
-     */
-    /** 
-     * @param building
-     * @return int
      */
     public int getBuildingCount(Building building) {
         int count = 0;
@@ -297,10 +262,6 @@ public class BuildingSystem {
      * @param building the Building type to get the limit for
      * @return the limit of the specified building type
      */
-    /** 
-     * @param building
-     * @return int
-     */
     public int getBuildingLimit(Building building) {
         if (activeStash == null) {
             if (building.isUnlocker()) return 1;
@@ -316,10 +277,6 @@ public class BuildingSystem {
      * @param index the index of the slot
      * @return the Building in the specified slot
      */
-    /** 
-     * @param index
-     * @return Building
-     */
     public Building getBuildingInSlot(int index) {
         if (index >= 0 && index < slots.length) {
             return slots[index];
@@ -333,9 +290,6 @@ public class BuildingSystem {
      * Postcondition: returns the active Gold Stash building
      * @return the active Gold Stash building
      */
-    /** 
-     * @return Building
-     */
     public Building getActiveStash() {
         return activeStash;
     }
@@ -345,9 +299,6 @@ public class BuildingSystem {
      * Precondition: N/A
      * Postcondition: returns the list of placed buildings
      * @return the list of placed buildings
-     */
-    /** 
-     * @return ArrayList<Building>
      */
     public ArrayList<Building> getPlacedBuildings() {
         return placedBuildings;
@@ -359,9 +310,6 @@ public class BuildingSystem {
      * Postcondition: projectile is added to the projectile list
      * @param projectile the Projectile to add
      */
-    /** 
-     * @param projectile
-     */
     public void addProjectile(Projectile projectile) {
         projectiles.add(projectile);
     }
@@ -371,9 +319,6 @@ public class BuildingSystem {
      * Precondition: N/A
      * Postcondition: returns the list of active projectiles
      * @return the list of active projectiles
-     */
-    /** 
-     * @return ArrayList<Projectile>
      */
     public ArrayList<Projectile> getProjectiles() {
         return projectiles;
@@ -402,10 +347,8 @@ public class BuildingSystem {
      * Updates all placed buildings
      * Precondition: N/A
      * Postcondition: all placed buildings are updated
-     */
-    /** 
-     * @param resourceSystem
-     * @param zombieSystem
+     * @param resourceSystem the ResourceSystem object
+     * @param zombieSystem the ZombieSystem object
      */
     public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem) {
         //************* Update Placed Buildings *************//
@@ -436,9 +379,6 @@ public class BuildingSystem {
      * Precondition: g2d is not null
      * Postcondition: all placed buildings are drawn
      * @param g2d the Graphics2D object to draw with
-     */
-    /** 
-     * @param g2d
      */
     public void draw(Graphics2D g2d) {
         for (int i = 0; i < placedBuildings.size(); i++) {

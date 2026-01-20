@@ -197,6 +197,7 @@ public class HeadUpDisplay {
      * Precondition: p is a valid Point object representing the mouse click location
      * Postcondition: active tool is changed if a toolbar slot is clicked
      * @param point the Point object representing the mouse click location
+     * @return true if a toolbar slot was clicked and handled, false otherwise
      */
     public boolean handleToolbarClick(Point point) {
         //************* Toolbar Bounds *************//
@@ -1039,9 +1040,12 @@ public class HeadUpDisplay {
         return isDeathScreenVisible;
     }
 
-    /** 
-     * @param g2d
-     * @param screenW
+    /**
+     * Draws the tutorial panel on the HUD
+     * Precondition: g2d is a valid Graphics2D object, screenW is the width of the screen
+     * Postcondition: tutorial panel is drawn on the HUD if tutorial is active
+     * @param g2d the Graphics2D object used for drawing
+     * @param screenW the width of the screen
      */
     private void drawTutorial(Graphics2D g2d, int screenW) {
         if (tutorialActive){

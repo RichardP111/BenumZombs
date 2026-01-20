@@ -79,6 +79,9 @@ public class MageTower extends Building {
      * Updates the MageTower
      * Precondition: N/A
      * Postcondition: The MageTower state is updated
+     * @param resourceSystem the ResourceSystem object
+     * @param zombieSystem the ZombieSystem object
+     * @param buildingSystem the BuildingSystem object
      */
     @Override
     public void update(ResourceSystem resourceSystem, ZombieSystem zombieSystem, BuildingSystem buildingSystem) {

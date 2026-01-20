@@ -45,9 +45,6 @@ public class ResourceSystem {
      * Postcondition: Resources are spawned on the map
      * @param count the number of resources to spawn
      */
-    /** 
-     * @param count
-     */
     public void spawnResources( int count) {
         Random random = new Random();
 
@@ -85,9 +82,6 @@ public class ResourceSystem {
      * Postcondition: Resources are drawn on the screen
      * @param g2d the Graphics2D object used for drawing
      */
-    /** 
-     * @param g2d
-     */
     public void draw(Graphics2D g2d) {
         for (int i = 0; i < trees.size(); i++) {
             trees.get(i).draw(g2d);
@@ -103,9 +97,6 @@ public class ResourceSystem {
      * Postcondition: List of trees is returned
      * @return the list of Tree objects
      */
-    /** 
-     * @return ArrayList<Tree>
-     */
     public ArrayList<Tree> getTrees() {
         return trees;
     }
@@ -115,9 +106,6 @@ public class ResourceSystem {
      * Precondition: N/A
      * Postcondition: List of stones is returned
      * @return the list of Stone objects
-     */
-    /** 
-     * @return ArrayList<Stone>
      */
     public ArrayList<Stone> getStones() {
         return stones;
@@ -129,9 +117,6 @@ public class ResourceSystem {
      * Postcondition: Wood count is increased by amount
      * @param amount the amount of wood to add
      */
-    /** 
-     * @param amount
-     */
     public void addWood(int amount) {
         woodCount += amount;      
     }
@@ -141,9 +126,6 @@ public class ResourceSystem {
      * Precondition: amount is a integer
      * Postcondition: Stone count is increased by amount
      * @param amount the amount of stone to add
-     */
-    /** 
-     * @param amount
      */
     public void addStone(int amount) {
         stoneCount += amount;      
@@ -155,9 +137,6 @@ public class ResourceSystem {
      * Postcondition: Gold count is increased by amount
      * @param amount the amount of gold to add
      */
-    /** 
-     * @param amount
-     */
     public void addGold(int amount) {
         goldCount += amount;      
     }
@@ -167,9 +146,6 @@ public class ResourceSystem {
      * Precondition: amount is a integer
      * Postcondition: Token count is increased by amount
      * @param amount the amount of tokens to add
-     */
-    /** 
-     * @param amount
      */
     public void addTokens(int amount) {
         tokenCount += amount;      
@@ -181,9 +157,6 @@ public class ResourceSystem {
      * Postcondition: Current wood count is returned
      * @return the current wood count
      */
-    /** 
-     * @return int
-     */
     public int getWoodCount() {
         return woodCount;
     }
@@ -193,9 +166,6 @@ public class ResourceSystem {
      * Precondition: N/A
      * Postcondition: Current stone count is returned
      * @return the current stone count
-     */
-    /** 
-     * @return int
      */
     public int getStoneCount() {
         return stoneCount;
@@ -207,9 +177,6 @@ public class ResourceSystem {
      * Postcondition: Current gold count is returned
      * @return the current gold count
      */
-    /** 
-     * @return int
-     */
     public int getGoldCount() {
         return goldCount;
     }
@@ -219,9 +186,6 @@ public class ResourceSystem {
      * Precondition: N/A
      * Postcondition: Current token count is returned
      * @return the current token count
-     */
-    /** 
-     * @return int
      */
     public int getTokenCount() {
         return tokenCount;
@@ -236,12 +200,6 @@ public class ResourceSystem {
      * @param goldCost the gold cost to check
      * @return true if the player can afford the cost, false otherwise
      */
-    /** 
-     * @param woodCost
-     * @param stoneCost
-     * @param goldCost
-     * @return boolean
-     */
     public boolean canAfford(int woodCost, int stoneCost, int goldCost) {
         return woodCount >= woodCost && stoneCount >= stoneCost && goldCount >= goldCost;
     }
@@ -251,9 +209,6 @@ public class ResourceSystem {
      * Precondition: N/A
      * Postcondition: Resource counts are reset
      * @param keepGold true to keep gold count, false to reset it
-     */
-    /** 
-     * @param keepGold
      */
     public void reset(boolean keepGold) {
         this.woodCount = 0;

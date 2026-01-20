@@ -115,6 +115,8 @@ public class ZombieSystem {
 
     /**
      * Applies area damage to zombies within a certain radius
+     * Precondition: N/A
+     * Postcondition: All zombies within the specified radius take damage
      * @param cx the x-coordinate of the center of the damage area
      * @param cy the y-coordinate of the center of the damage area
      * @param radius the radius of the damage area
