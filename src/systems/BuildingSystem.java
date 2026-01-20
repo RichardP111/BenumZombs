@@ -137,12 +137,14 @@ public class BuildingSystem {
             Building building = placedBuildings.get(i);
             Rectangle buildingRect = new Rectangle((int)building.getX(), (int)building.getY(), building.getWidth(), building.getHeight());
             
+            // Check if click is within building bounds
             if (buildingRect.contains(worldX, worldY)) {
                 selectedBuilding = building;
                 return true;
             }
         }
         
+        // Deselect if clicked on empty space
         selectedBuilding = null;
         return false;
     }

@@ -170,11 +170,39 @@ public abstract class Tool {
         return 0;
     }
 
+    /**
+     * Called when the player obtains the tool
+     * Precondition: N/A
+     * Postcondition: Tool-specific on-get behavior is executed
+     * @param player the Player object obtaining the tool
+     */
     public void onGet(Player player) {}
 
+    /**
+     * Gets the upgrade cost of the tool
+     * Precondition: N/A
+     * Postcondition: returns the cost to upgrade the tool
+     * @return the upgrade cost of the tool
+     */
     public abstract int getUpgradeCost();
 
+    /**
+     * Gets the description of the tool
+     * Precondition: N/A
+     * Postcondition: returns the description of the tool
+     * @return the description of the tool
+     */
     public abstract String getDescription();
     
+    /**
+     * Draws the tool on the provided Graphics2D context
+     * Precondition: g2d is a valid Graphics2D object, x and y are the position to draw at, angle is the rotation angle, scale is the drawing scale
+     * Postcondition: The tool is drawn at the specified position, angle, and scale
+     * @param g2d the Graphics2D object to draw on
+     * @param x the x-coordinate to draw at
+     * @param y the y-coordinate to draw at
+     * @param angle the rotation angle
+     * @param scale the drawing scale
+     */
     public abstract void draw(Graphics2D g2d, int x, int y, double angle, double scale);
 }

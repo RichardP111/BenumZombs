@@ -118,6 +118,18 @@ public abstract class GameObject {
         this.height = height; 
     }
 
+    /**
+     * Abstract method to update the GameObject state
+     * Precondition: N/A
+     * Postcondition: GameObject state is updated
+     */
     public abstract void update();
+
+    /**
+     * Abstract method to draw the GameObject
+     * Precondition: g2d is a valid Graphics2D object
+     * Postcondition: GameObject is drawn on the screen
+     * @param g2d the Graphics2D object used for drawing
+     */
     public abstract void draw(Graphics2D g2d);
 }

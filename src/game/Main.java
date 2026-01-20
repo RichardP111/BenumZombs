@@ -1,7 +1,7 @@
 /**
  * Main.java
  * The main class to start the BenumZombs game application
- * Anknowledgements: https://docs.google.com/document/d/1JccsGbz9-viOxhGuASJULYrJF2vKoy3G_eF5oNd1vVI/edit?usp=sharing 
+ * Acknowledgements: https://docs.google.com/document/d/1JccsGbz9-viOxhGuASJULYrJF2vKoy3G_eF5oNd1vVI/edit?usp=sharing 
  * @author Richard Pu
  * @version 1.0
  * @since 2026-01-04

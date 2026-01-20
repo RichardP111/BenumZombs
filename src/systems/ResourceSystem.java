@@ -219,7 +219,7 @@ public class ResourceSystem {
         }
     }
 
-    // Very super duper ultra classified level 99 clearance secret dev mode method to add resources because im too lazy to acutally play the game normally
+    // super secret top level clearance dev mode method to add lots of resources for testing
     public void devModeAddResources() {
         woodCount = 99999999;
         stoneCount = 99999999;

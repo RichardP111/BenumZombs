@@ -269,7 +269,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
                 player.toggleSpaceSwing();
             }
 
-            if (keyCode == KeyEvent.VK_ESCAPE) { // Cancel placement
+            if (keyCode == KeyEvent.VK_ESCAPE) { // Cancel building placement
                 cancelPlacement();
             }
 

@@ -137,7 +137,7 @@ public class Player extends GameObject {
      * @return the maximum shield health of the player
      */
     public int getMaxShieldHealth() {
-    Armor armor = (Armor) toolSystem.getToolInSlot(4);
+    Armor armor = (Armor) toolSystem.getToolInSlot(ToolSystem.ARMOR_SLOT);
         if (armor != null && armor.getIsUnlocked()) {
             return armor.getBonusHP();
         }
@@ -360,8 +360,8 @@ public class Player extends GameObject {
     /**
      * Updates the player's swing animation and processes hits
      * Precondition: N/A
-     * Postcondition: swing animation is updated and hits are processed
-     * @param resourceSystem the ResourceSystem for hit detection
+     * Postcondition: swing animation is updated, cooldowns are applied, and hits are processed
+     * @param resourceSystem the ResourceSystem for hit detection on trees and stones
      */
     public void updateSwing(ResourceSystem resourceSystem) {
         Tool activeTool = toolSystem.getActiveTool();

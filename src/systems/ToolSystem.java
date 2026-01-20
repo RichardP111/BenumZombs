@@ -14,6 +14,7 @@ import objects.Tools.*;
 public class ToolSystem {
     private final ArrayList<Tool> inventory;
     private int activeSlot = 0;
+    public static final int ARMOR_SLOT = 4;
 
     /**
      * Constructor for Tool System

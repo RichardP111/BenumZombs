@@ -47,7 +47,7 @@ public class ZombieSystem {
         //************* Update Zombies *************//
         Rectangle playerTool = player.getToolBounds();
         int toolDamage = player.getToolDamage();
-        ArrayList<Projectile> allProjectiles = player.getProjectiles();
+        ArrayList<Projectile> allProjectiles= new ArrayList<>();
         allProjectiles.addAll(player.getProjectiles());
         allProjectiles.addAll(buildingSystem.getProjectiles());
 
@@ -89,6 +89,7 @@ public class ZombieSystem {
      * @param resourceSystem the resource system
      */
     private void spawnWave(int waveCount, BuildingSystem buildingSystem, ResourceSystem resourceSystem) {
+        // Calculate tier (increases every 10 waves) and level (cycles 1-10 within each tier)
         int tier = ((waveCount - 1) / 10) + 1;
         int level = ((waveCount - 1) % 10) + 1;
 

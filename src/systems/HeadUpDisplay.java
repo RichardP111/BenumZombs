@@ -336,7 +336,7 @@ public class HeadUpDisplay {
     /**
      * Draws the resource panel on the HUD
      * Precondition: g2d is a valid Graphics2D object, screenW and screenH are the screen dimensions
-     * Postcondition: resource panel is drawn on the HUD
+     * Postcondition: resource panel is drawn on the HUD with formatted resource values
      * @param g2d the Graphics2D object used for drawing
      * @param screenW the width of the screen
      * @param screenH the height of the screen

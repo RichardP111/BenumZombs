@@ -203,7 +203,7 @@ public class StartMenu extends JPanel {
      * Gets the player's name from the text field
      * Precondition: none
      * Postcondition: player's name is returned
-     * @return
+     * @return the player's name as a String
      */
     public static String getPlayerName() {
         return playerName;

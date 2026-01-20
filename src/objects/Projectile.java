@@ -93,7 +93,8 @@ public class Projectile extends GameObject {
         x += Math.cos(angle) * speed;
         y += Math.sin(angle) * speed;
 
-        //************* Projectile Range *************//
+        //************* Projectile Range Check *************//
+        // Calculate distance from projectile center to spawn point using Pythagorean theorem
         double dx = x + (width / 2) - startX;
         double dy = y + (height / 2) - startY;
         double distance = Math.sqrt((dx * dx) + (dy * dy)); 

@@ -55,9 +55,9 @@ public class ShopScreen extends JPanel {
     private ShopTab[] tabs;
 
     /**
-     * Constructor for Shop Screen
+     * Constructor for ShopScreen
      * Precondition: N/A
-     * Postcondition: Shop screen panel is created
+     * Postcondition: ShopScreen panel is created with all UI elements and tabs initialized
      */
     public ShopScreen() {
         setLayout(null);
