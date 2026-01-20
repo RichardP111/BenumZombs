@@ -320,7 +320,7 @@ public class HeadUpDisplay {
         drawHealthBar(g2d, screenW, screenH);
         drawToolbars(g2d, screenW, screenH, toolSystem);
         drawActionButtons(g2d, screenW, screenH);
-        drawTutorial(g2d, screenW, screenH);
+        drawTutorial(g2d, screenW);
         drawDeathOverlay(g2d, screenW, screenH);
 
         //************* Draw Upgrade/Sell Box *************//
@@ -1039,10 +1039,10 @@ public class HeadUpDisplay {
         return isDeathScreenVisible;
     }
 
-    private void drawTutorial(Graphics2D g2d, int screenW, int screenH) {
+    private void drawTutorial(Graphics2D g2d, int screenW) {
         if (tutorialActive){
             //************* Tutorial Panel Size *************//
-            int tutorialPanelW = screenW - (screenW / 2) - 50, tutorialPanelH = 80;
+            int tutorialPanelW = 500, tutorialPanelH = 80;
             int tutorialPanelX = (screenW / 2) - (tutorialPanelW / 2);
             int tutorialPanelY = 10;
 
@@ -1052,7 +1052,7 @@ public class HeadUpDisplay {
             //************* Tutorial Text *************//
             g2d.setFont(FontManager.googleSansFlex.deriveFont(Font.BOLD, 16f));
             g2d.setColor(Color.WHITE);
-            String text = "";
+            String text;
             ArrayList<String> description = new ArrayList<>();
             switch(tutorialStep){
                 case 1:
@@ -1070,14 +1070,12 @@ public class HeadUpDisplay {
                 case 4:
                     text = "Now you're protected you should start generating gold. Do this by building a Gold Mine from the toolbar, this will passively give you gold.";
                     description = TextFormatter.wrapText(text, 50);
-                    tutorialActive = false;
-
                     break;
             }
             int textY = tutorialPanelY + 10;
             for (int i = 0; i < description.size(); i++) {
                 textY += 18;
-                g2d.drawString(description.get(i), tutorialPanelX + 80, textY);
+                g2d.drawString(description.get(i), tutorialPanelX + 20, textY);
             }
         }
     }

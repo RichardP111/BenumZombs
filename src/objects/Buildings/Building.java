@@ -8,16 +8,14 @@
 
 package objects.Buildings;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import helpers.HealthManager;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import objects.GameObject;
 import objects.Zombie;
 import systems.BuildingSystem;
@@ -265,6 +263,7 @@ public abstract class Building extends GameObject {
      * Postcondition: sets the width of the Building
      * @param w the width to set
      */
+    @Override
     public void setWidth(int w) {
         this.width = w;
     }
@@ -275,6 +274,7 @@ public abstract class Building extends GameObject {
      * Postcondition: sets the height of the Building
      * @param h the height to set
      */
+    @Override
     public void setHeight(int h) {
         this.height = h;
     }

@@ -22,6 +22,7 @@ import objects.Tools.Armor;
 import objects.Tools.Tool;
 import systems.BuildingSystem;
 import systems.CollisionSystem;
+import systems.HeadUpDisplay;
 import systems.ResourceSystem;
 import systems.ToolSystem;
 
@@ -451,6 +452,10 @@ public class Player extends GameObject {
                 resourceSystem.addWood((int) amount);
             } else if (hitObject.equals("stone")) {
                 resourceSystem.addStone((int) amount);
+            }
+
+            if (HeadUpDisplay.tutorialStep == 1 && HeadUpDisplay.tutorialActive) {
+                HeadUpDisplay.tutorialStep++;
             }
         }
     }

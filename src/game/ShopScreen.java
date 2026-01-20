@@ -210,7 +210,7 @@ public class ShopScreen extends JPanel {
 
         //************* Set Bounds of Main Labels and Buttons *************//
         shopLabel.setBounds(largeBoxX + 30, largeBoxY + 20, 300, 40);
-        backButton.setBounds((width - 150) / 2, largeBoxY + largeBoxH + 50, 250, 40);
+        backButton.setBounds((width - 250) / 2, largeBoxY + largeBoxH + 50, 250, 40);
 
         int tabWidth = (largeBoxW - 60) / tabs.length;
         for (int i = 0; i < tabs.length; i++) {
@@ -318,7 +318,7 @@ public class ShopScreen extends JPanel {
 
         tool.setLevel(displayLevel);
 
-        tool.draw(g2d, iconX + (iconBoxSize / 3), (int)(iconY + iconBoxSize - (iconBoxSize * 0.25)), 0.8, (iconBoxSize / 80) * 0.75);
+        tool.draw(g2d, iconX + iconBoxSize / 2 - (iconBoxSize / 12), iconY + iconBoxSize / 2 + (iconBoxSize / 12), 0.8, iconBoxSize / 100.0);
 
         tool.setLevel(originalLevel);
 

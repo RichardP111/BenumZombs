@@ -490,8 +490,14 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         buildingSystem.placeBuilding(newBuilding);
         SoundManager.playSound("placeBuilding.wav");
 
-        if (HeadUpDisplay.tutorialStep >= 1 && headUpDisplay.tutorialActive) {
-            HeadUpDisplay.tutorialStep++;
+        if (HeadUpDisplay.tutorialActive) {
+            if (HeadUpDisplay.tutorialStep == 1) {
+                HeadUpDisplay.tutorialStep = 3;
+            } else if (HeadUpDisplay.tutorialStep == 4) {
+                HeadUpDisplay.tutorialActive = false;
+            }else if (HeadUpDisplay.tutorialStep >= 2) {
+                HeadUpDisplay.tutorialStep++;
+            }
         }
 
         //************* Check for Limit, Gold Stash, and Resources *************//
@@ -537,7 +543,7 @@ public class BenumZombsGame extends JPanel implements ActionListener {
         Building stash = buildingSystem.getActiveStash();
         boolean stashAlive = stash != null && stash.getHealth() > 0;
 
-        if (stashAlive) {
+        if (stashAlive && stash != null) {
             player.reset(stash.getX() + stash.getWidth()/2, stash.getY() + stash.getHeight()/2);
             toolSystem.reset(); 
             while (true) {
