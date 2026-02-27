@@ -15,7 +15,6 @@
 * **Resource Management:** Harvest wood and stone to craft buildings and tools.
 * **Shop System:** Purchase upgrades and new items.
 * **Survival Mechanics:** Manage your health and keep your Gold Stash safe. If your stash is destroyed, it's game over!
-* **Custom Graphics & Audio:** Includes custom assets for zombies, buildings, and sound effects.
 
 ## ⌨️ Controls
 
@@ -30,7 +29,6 @@
 | **F** | Quick Use Health Potion |
 | **0 - 9** | Select Building from Hotbar |
 | **Esc** | Cancel Placement |
-| **F12** | Developer Mode (Add Resources) |
 
 ## 🛠️ Project Structure
 
